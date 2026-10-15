@@ -1,0 +1,6 @@
+const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),$=s=>document.querySelector(s);
+const D=[["Clásico","#111"],["Azul","linear-gradient(135deg,#2a7be4,#0b3c8c)"],["Verde","linear-gradient(135deg,#34b24d,#0e5c25)"],["Amarillo","linear-gradient(135deg,#ffd83a,#e0a800)"],["Morado","linear-gradient(135deg,#8e44d6,#4a1a8c)"],["Naranja","linear-gradient(135deg,#ff8a1f,#d35400)"],["Turquesa","linear-gradient(135deg,#20c4c4,#0a7a82)"],["Rosa","linear-gradient(135deg,#ff3d8b,#b0125a)"],["Negro","linear-gradient(135deg,#3a3a3a,#050505)"],["Arcoíris","conic-gradient(red,orange,yellow,green,cyan,blue,violet,red)"]];
+const CH=[["🪓","Leñador"],["🧑‍🚀","Astronauta"],["👸","Princesa"],["🎸","Rockero"],["🤡","Payaso"],["🎪","Payasa"],["💃","Bailarina"],["💪","Fisicoculturista"],["⚔️","Samurái"],["🪖","Soldado"],["🐺","Hombre lobo"],["🦸","Héroe"]];
+const CC={R:'#d32f2f',Y:'#f5c400',G:'#2e9e44',B:'#1e6fd9'},SYM={skip:'⊘',rev:'⇄','+2':'+2','+4':'+4',W:'✦'};
+const bk=(i,cls='')=>`<div class="card back ${cls}" style="background:${D[i][1]}"><i class="ov ${i==0?'cl':''}">${i==0?'UNO':'⇄'}</i></div>`;
+const cardH=(c,cls='',click='')=>`<div class="card ${c.c} ${cls}" ${click}>${c.c==='W'?'<b>'+SYM[c.v]+'</b>':(SYM[c.v]||c.v)}</div>`;
