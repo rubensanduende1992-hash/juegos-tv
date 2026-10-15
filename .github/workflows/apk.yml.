@@ -42,3 +42,4 @@ jobs:
           name: UNO v${{ github.run_number }}
           files: uno.apk
           make_latest: true
+
