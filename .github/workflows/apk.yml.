@@ -1,0 +1,44 @@
+name: Compilar APK
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.7
+      - name: Preparar recursos
+        run: |
+          W=android/app/src/main/assets/www
+          cp uno-servidor/common.js uno-servidor/style.css uno-servidor/play.html $W/
+          {
+          cat <<'EOF'
+          const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');var urls=[];function send(){window.onChange&&window.onChange()}
+          EOF
+          sed -n '/^const num=/,/^let clients=/p' uno-servidor/server.js | sed '$d' | grep -v '^const urls='
+          cat <<'EOF'
+          function hostAct(s){const b=JSON.parse(s);const r=act(b,S.pl.findIndex(p=>p.id===b.id));send();return JSON.stringify(r)}
+          function hostView(id){return JSON.stringify(view(id))}
+          EOF
+          } > $W/host.js
+      - name: Compilar
+        working-directory: android
+        run: gradle assembleDebug --no-daemon
+      - name: Preparar APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk uno.apk
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: UNO v${{ github.run_number }}
+          files: uno.apk
+          make_latest: true
