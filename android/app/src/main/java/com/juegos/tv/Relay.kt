@@ -11,6 +11,7 @@ import java.io.IOException
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.Executors
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -20,6 +21,7 @@ class Relay(private val ctx: Context, private val host: WebView) : NanoHTTPD(300
 
     private val clients = CopyOnWriteArrayList<Client>()
     private val ui = Handler(Looper.getMainLooper())
+    private val ex = Executors.newSingleThreadExecutor()
 
     private fun js(code: String): String? {
         val latch = CountDownLatch(1)
@@ -31,12 +33,14 @@ class Relay(private val ctx: Context, private val host: WebView) : NanoHTTPD(300
 
     private fun unq(v: String?): String? = try { JSONArray("[$v]").getString(0) } catch (e: Exception) { null }
 
+    @Synchronized
     private fun push(c: Client) {
         val v = unq(js("hostView(${JSONObject.quote(c.id)})")) ?: return
         try { c.out.write("data: $v\n\n".toByteArray()); c.out.flush() } catch (e: IOException) { clients.remove(c) }
     }
 
-    fun changed() { clients.forEach { push(it) } }
+    /** Se llama desde la página de la TV: vuelve enseguida y envía a los celulares en otro hilo (evita el bloqueo). */
+    fun changed() { ex.execute { clients.forEach { push(it) } } }
 
     override fun serve(s: IHTTPSession): Response {
         val p = s.uri
