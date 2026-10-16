@@ -1,0 +1,6 @@
+1) Instalá Node.js (nodejs.org, versión LTS) en la PC.
+2) Abrí una terminal en esta carpeta y ejecutá:  node server.js
+3) Se muestran las direcciones y el código de sala.
+4) TV: abrí http://localhost:3000 (o la IP de la PC) en el navegador.
+5) Celulares (misma Wi-Fi): abrí la dirección que termina en /play, escribí el código y elegí personaje.
+El primer jugador que entra elige el mazo y empieza la partida.
