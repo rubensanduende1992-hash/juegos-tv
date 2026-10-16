@@ -58,6 +58,10 @@ class Relay(private val ctx: Context, private val host: WebView) : NanoHTTPD(300
             return newFixedLengthResponse(Response.Status.OK, "application/json", r)
         }
         val f = if (p == "/") "tv-app.html" else p.trimStart('/')
+        if (f == "play.html") {
+            val h = ctx.assets.open("www/$f").bufferedReader().readText().replace("</head>", "<link rel=\"stylesheet\" href=\"/skin.css\"></head>")
+            return newFixedLengthResponse(Response.Status.OK, "text/html; charset=utf-8", h)
+        }
         val mime = when (f.substringAfterLast('.')) { "html" -> "text/html"; "js" -> "text/javascript"; "css" -> "text/css"; else -> "application/octet-stream" }
         return try {
             newChunkedResponse(Response.Status.OK, "$mime; charset=utf-8", ctx.assets.open("www/$f"))
