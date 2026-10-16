@@ -49,7 +49,7 @@ setInterval(()=>clients.forEach(c=>c.res.write(': ping\n\n')),15000);
 http.createServer((req,res)=>{const u=new URL(req.url,'http://x');
 if(u.pathname==='/events'){res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache',Connection:'keep-alive'});const c={res,id:u.searchParams.get('id')};clients.push(c);res.write('data: '+JSON.stringify(view(c.id))+'\n\n');req.on('close',()=>clients=clients.filter(x=>x!==c));return}
 if(u.pathname==='/act'&&req.method==='POST'){let d='';req.on('data',x=>d+=x);req.on('end',()=>{let r;try{const b=JSON.parse(d);r=act(b,S.pl.findIndex(p=>p.id===b.id))}catch(e){r={err:'Error'}}res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify(r));send()});return}
-if(/^\/(decks|chars)\/\d+\.webp$/.test(u.pathname)){res.writeHead(200,{'Content-Type':'image/webp'});return res.end(fs.readFileSync(path.join(__dirname,u.pathname)))}
+if(/^\/(decks|chars)\/(full\/)?\d+\.webp$/.test(u.pathname)){try{const d=fs.readFileSync(path.join(__dirname,u.pathname));res.writeHead(200,{'Content-Type':'image/webp'});return res.end(d)}catch(e){res.writeHead(404);return res.end()}}
 if(u.pathname==='/state'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify(view(u.searchParams.get('id')||'')))}
 const f=FILES[u.pathname];if(!f){res.writeHead(404);return res.end('No encontrado')}
 res.writeHead(200,{'Content-Type':TYPE[f.split('.')[1]]+';charset=utf-8'});res.end(fs.readFileSync(path.join(__dirname,f)))
