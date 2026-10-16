@@ -40,10 +40,18 @@ class Relay(private val ctx: Context, private val host: WebView) : NanoHTTPD(300
     }
 
     /** Se llama desde la página de la TV: vuelve enseguida y envía a los celulares en otro hilo (evita el bloqueo). */
-    fun changed() { ex.execute { clients.forEach { push(it) } } }
+    fun changed() { }
 
     override fun serve(s: IHTTPSession): Response {
         val p = s.uri
+        if (p == "/state") {
+            val id = s.parameters["id"]?.firstOrNull() ?: ""
+            val v = unq(js("hostView(${JSONObject.quote(id)})"))
+                ?: return newFixedLengthResponse(Response.Status.SERVICE_UNAVAILABLE, "text/plain", "sin estado")
+            val r = newFixedLengthResponse(Response.Status.OK, "application/json", v)
+            r.addHeader("Cache-Control", "no-store")
+            return r
+        }
         if (p == "/events") {
             val id = s.parameters["id"]?.firstOrNull() ?: ""
             val inp = PipedInputStream(65536)
