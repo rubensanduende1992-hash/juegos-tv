@@ -1,0 +1,9 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UNO TV</title><link rel="stylesheet" href="/style.css"></head>
+<body><div id="app"></div><script src="/common.js"></script><script>
+let s;const es=new EventSource('/events');es.onmessage=e=>{s=JSON.parse(e.data);show()};
+function show(){
+if(s.phase==='lobby'){$('#app').innerHTML=`<div class="pn"><h1>🃏 UNO</h1><p>Entrá desde tu celular a:</p>${s.urls.map(u=>`<h2>${u}</h2>`).join('')}<p>Código de sala:</p><h1 style="font-size:72px;letter-spacing:10px">${s.code}</h1><div class="row">${s.players.map(p=>`<div class="lp">${av(p.ch,'xs')}${E(p.name)}</div>`).join('')||'Esperando jugadores…'}</div><p>Mazo: <b>${D[s.deck][0]}</b> (lo elige ${s.players[0]?E(s.players[0].name):'el Jugador 1'})</p>${bk(s.deck,'lg')}</div>`;return}
+const n=s.players.length;
+const seats=s.players.map((p,i)=>{const a=(90+i*360/n)*Math.PI/180;return `<div class="seat ${i==s.turn&&!s.over?'act':''}" style="left:${50+41*Math.cos(a)}%;top:${50+36*Math.sin(a)}%">${av(p.ch,'seatimg')}<b>${E(p.name)}</b><div class="fan">${Array.from({length:Math.min(p.n,12)},()=>bk(s.deck,'xs')).join('')}<em>${p.n}</em></div><div>${p.sc} pts</div></div>`}).join('');
+$('#app').innerHTML=`<div class="pn"><div class="table">${seats}<div class="ctr">${bk(s.deck,'lg')}${cardH(s.top,'lg')}<div class="cd" style="background:${CC[s.col]}"></div><div class="dir">${s.dir>0?'↻':'↺'}</div></div></div><div class="log">${E(s.log)} · mazo: ${s.drawN}</div>${s.over?`<div class="win">🏆 ${E(s.players[s.win.i].name)} gana la ronda (+${s.win.pts} pts)</div>`:''}</div>${s.shout!=null?`<div class="shout">¡UNO!<br>${av(s.players[s.shout].ch,'big')}</div>`:''}`}
+</script></body></html>
