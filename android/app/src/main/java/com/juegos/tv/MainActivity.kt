@@ -30,6 +30,7 @@ class MainActivity : Activity() {
         super.onCreate(b)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         menu()
+        Updater.check(this)
     }
 
     private fun menu() {
