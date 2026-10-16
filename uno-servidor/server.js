@@ -1,7 +1,7 @@
 // UNO TV - servidor de prueba. Uso: node server.js  (sin instalar nada más)
 const http=require('http'),fs=require('fs'),os=require('os'),path=require('path'),PORT=3000;
 const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');
-const FILES={'/':'tv.html','/play':'play.html','/common.js':'common.js','/style.css':'style.css'};
+const FILES={'/':'tv.html','/play':'play.html','/common.js':'common.js','/style.css':'style.css','/qr.js':'qr.js'};
 const TYPE={html:'text/html',js:'text/javascript',css:'text/css'};
 const num=v=>/^[0-9]$/.test(v);
 let S={phase:'lobby',deck:0,pl:[],draw:[],disc:[],turn:0,dir:1,col:'',drawn:null,over:false,win:null,log:'',shout:null};
@@ -49,6 +49,7 @@ setInterval(()=>clients.forEach(c=>c.res.write(': ping\n\n')),15000);
 http.createServer((req,res)=>{const u=new URL(req.url,'http://x');
 if(u.pathname==='/events'){res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache',Connection:'keep-alive'});const c={res,id:u.searchParams.get('id')};clients.push(c);res.write('data: '+JSON.stringify(view(c.id))+'\n\n');req.on('close',()=>clients=clients.filter(x=>x!==c));return}
 if(u.pathname==='/act'&&req.method==='POST'){let d='';req.on('data',x=>d+=x);req.on('end',()=>{let r;try{const b=JSON.parse(d);r=act(b,S.pl.findIndex(p=>p.id===b.id))}catch(e){r={err:'Error'}}res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify(r));send()});return}
+if(/^\/(decks|chars)\/\d+\.webp$/.test(u.pathname)){res.writeHead(200,{'Content-Type':'image/webp'});return res.end(fs.readFileSync(path.join(__dirname,u.pathname)))}
 const f=FILES[u.pathname];if(!f){res.writeHead(404);return res.end('No encontrado')}
 res.writeHead(200,{'Content-Type':TYPE[f.split('.')[1]]+';charset=utf-8'});res.end(fs.readFileSync(path.join(__dirname,f)))
 }).listen(PORT,'0.0.0.0',()=>{console.log('\nUNO TV listo.\n  TV (abrir en el navegador de la TV o de esta PC): http://localhost:'+PORT+'\n  Celulares: '+urls.join('  ')+'\n  Código de sala: '+code+'\n')});
