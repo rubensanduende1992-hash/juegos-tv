@@ -1,8 +1,0 @@
-const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),$=s=>document.querySelector(s);
-const D=[["Clásico","#111"],["Azul","linear-gradient(135deg,#2a7be4,#0b3c8c)"],["Verde","linear-gradient(135deg,#34b24d,#0e5c25)"],["Amarillo","linear-gradient(135deg,#ffd83a,#e0a800)"],["Morado","linear-gradient(135deg,#8e44d6,#4a1a8c)"],["Naranja","linear-gradient(135deg,#ff8a1f,#d35400)"],["Turquesa","linear-gradient(135deg,#20c4c4,#0a7a82)"],["Rosa","linear-gradient(135deg,#ff3d8b,#b0125a)"],["Negro","linear-gradient(135deg,#3a3a3a,#050505)"],["Arcoíris","conic-gradient(red,orange,yellow,green,cyan,blue,violet,red)"]];
-const CH=[["🪓","Leñador"],["🧑‍🚀","Astronauta"],["👸","Princesa"],["🎸","Rockero"],["🤡","Payaso"],["🎪","Payasa"],["💃","Bailarina"],["💪","Fisicoculturista"],["⚔️","Samurái"],["🪖","Soldado"],["🐺","Hombre lobo"],["🦸","Héroe"]];
-const CC={R:'#d32f2f',Y:'#f5c400',G:'#2e9e44',B:'#1e6fd9'},SYM={skip:'⊘',rev:'⇄','+2':'+2','+4':'+4',W:'✦'};
-const bk=(i,cls='')=>`<div class="card back ${cls}" style="background-image:url(/decks/${i}.webp)"></div>`;
-const cardH=(c,cls='',click='')=>`<div class="card ${c.c} ${cls}" ${click}>${c.c==='W'?'<b>'+SYM[c.v]+'</b>':(SYM[c.v]||c.v)}</div>`;
-const av=(ch,cls='')=>`<img class="chimg ${cls}" src="/chars/${ch}.webp">`;
-const qr=(t,px=260)=>{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),m=4;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m},${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" width="${px}" height="${px}" shape-rendering="crispEdges" style="background:#fff;border-radius:12px"><path d="${d}" fill="#000"/></svg>`};
