@@ -70,3 +70,23 @@ html.scene-img .tbl,html.scene-img .moon,html.scene-img .lamp{display:none}
 .card.fk{width:4.4vw;height:6.6vw;font-size:2vw}
 .fan2 span{margin-left:-2.3vw}.fan2 span:first-child{margin-left:0}
 .st.B .fan2{margin-bottom:1.4vh}.st.B .fg{width:10vh;height:10vh;margin-top:0}
+
+.fx{display:none}html.scene-img .fx{display:block}
+.sky{position:absolute;left:31%;width:39%;top:0;height:30%;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+.cl{position:absolute;display:block;width:60%;height:55%;left:-70%;background:radial-gradient(ellipse at 25% 60%,#7186b080,transparent 62%),radial-gradient(ellipse at 60% 45%,#5d72a070,transparent 58%),radial-gradient(ellipse at 80% 65%,#51658f66,transparent 55%);filter:blur(1vh);animation:drift 80s linear infinite}
+.c1{top:8%}.c2{top:34%;width:75%;animation-duration:115s;animation-delay:-55s;opacity:.85}.c3{top:56%;animation-duration:150s;animation-delay:-95s;opacity:.65}
+@keyframes drift{to{transform:translateX(300%)}}
+.fire{position:absolute;width:9vh;height:12vh;transform:translate(-50%,-50%);pointer-events:none}
+.f1{left:7.4%;top:36%}.f2{left:92.3%;top:37%}
+.fire b{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,#ffe08a,#ff9a1f88 35%,transparent 70%);mix-blend-mode:screen;animation:flk .8s ease-in-out infinite alternate}
+.fire::after{content:'';position:absolute;left:50%;top:60%;width:36vh;height:36vh;transform:translate(-50%,-50%);background:radial-gradient(circle,#ff9a3a40,transparent 65%);mix-blend-mode:screen;animation:flk 1.3s ease-in-out infinite alternate}
+.fire i{position:absolute;left:50%;top:48%;width:3.2vh;height:7vh;margin-left:-1.6vh;border-radius:50% 50% 50% 50%/62% 62% 38% 38%;background:linear-gradient(#fff6c0,#ffb02e 45%,#ff6a00cc);mix-blend-mode:screen;transform-origin:50% 100%;animation:tongue .45s ease-in-out infinite alternate}
+.fire.f2 i{animation-duration:.55s;animation-delay:-.2s}.fire.f2 b{animation-duration:.95s;animation-delay:-.3s}
+.fire u{position:absolute;left:50%;top:42%;width:.55vh;height:.55vh;border-radius:50%;background:#ffc866;box-shadow:0 0 1vh #ff9a1f;opacity:0;animation:emb 2.6s linear infinite;animation-delay:var(--d)}
+@keyframes flk{0%{opacity:.5;transform:scale(.85)}30%{opacity:.95;transform:scale(1.1,1.2)}55%{opacity:.65;transform:scale(.95)}80%{opacity:1;transform:scale(1.15,1.05)}100%{opacity:.7;transform:scale(.9,1.1)}}
+@keyframes tongue{0%{transform:scale(.9,.85) skewX(-6deg)}50%{transform:scale(1,1.1) skewX(4deg)}100%{transform:scale(.92,1.2) skewX(7deg)}}
+@keyframes emb{0%{transform:translate(0,0);opacity:0}15%{opacity:1}100%{transform:translate(var(--x),-9vh);opacity:0}}
+html.scene-img .ctr2{top:62%}
+html.scene-img .st.B .card.fk{width:6vw;height:9vw;font-size:2.8vw}html.scene-img .st.B .fan2 span{margin-left:-3.2vw}html.scene-img .st.B .fan2 span:first-child{margin-left:0}
+html.scene-img .ctr2{top:55%}
+.fire i{width:2.6vh;height:5.6vh;margin-left:-1.3vh}

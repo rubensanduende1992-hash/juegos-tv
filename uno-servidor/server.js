@@ -51,6 +51,7 @@ if(u.pathname==='/events'){res.writeHead(200,{'Content-Type':'text/event-stream'
 if(u.pathname==='/act'&&req.method==='POST'){let d='';req.on('data',x=>d+=x);req.on('end',()=>{let r;try{const b=JSON.parse(d);r=act(b,S.pl.findIndex(p=>p.id===b.id))}catch(e){r={err:'Error'}}res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify(r));send()});return}
 if(/^\/(decks|chars)\/(full\/)?\d+\.webp$/.test(u.pathname)){try{const d=fs.readFileSync(path.join(__dirname,u.pathname));res.writeHead(200,{'Content-Type':'image/webp'});return res.end(d)}catch(e){res.writeHead(404);return res.end()}}
 if(u.pathname==='/state'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify(view(u.searchParams.get('id')||'')))}
+if(u.pathname==='/scene.jpg'){try{const d=fs.readFileSync(path.join(__dirname,'scene.jpg'));res.writeHead(200,{'Content-Type':'image/jpeg'});return res.end(d)}catch(e){res.writeHead(404);return res.end()}}
 const f=FILES[u.pathname];if(!f){res.writeHead(404);return res.end('No encontrado')}
 res.writeHead(200,{'Content-Type':TYPE[f.split('.')[1]]+';charset=utf-8'});res.end(fs.readFileSync(path.join(__dirname,f)))
 }).listen(PORT,'0.0.0.0',()=>{console.log('\nUNO TV listo.\n  TV (abrir en el navegador de la TV o de esta PC): http://localhost:'+PORT+'\n  Celulares: '+urls.join('  ')+'\n  Código de sala: '+code+'\n')});
