@@ -5,7 +5,7 @@ function poll(){fetch('/state?id='+encodeURIComponent(id),{cache:'no-store'}).th
 function connect(){clearInterval(tm);poll();tm=setInterval(poll,600)}
 const post=b=>fetch('/act',{method:'POST',body:JSON.stringify({id,...b})}).then(r=>r.json());
 function join(){if(!$('#nm').value.trim()){$('#er').textContent='Escribí tu nombre';return}post({t:'join',name:$('#nm').value,code:$('#cd').value,ch:sel}).then(r=>{if(r.err){$('#er').textContent=r.err;return}id=r.id;localStorage.uid=id;connect()})}
-const act=(t,x={})=>{post({t,...x}).then(poll)};
+const act=(t,x={})=>{if(t==='uno'&&navigator.vibrate)navigator.vibrate(150);post({t,...x}).then(poll)};
 function pickCh(j){if(!s.players.some(p=>p.ch===j)){sel=j;show()}}
 function clk(cid){const c=s.hand.find(x=>x.id===cid);if(!c||!c.ok)return;if(c.c==='W'){pend=cid;show();return}act('play',{cid})}
 function pick(col){const cid=pend;pend=null;act('play',{cid,col})}
