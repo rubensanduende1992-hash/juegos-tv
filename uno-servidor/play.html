@@ -1,5 +1,6 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UNO – Control</title><link rel="stylesheet" href="/style.css"></head>
 <body><div id="app"><div class="pn phone"><h2>Conectando con la TV…</h2></div></div><script src="/common.js"></script><script>
+let sortMode='color';
 let id=localStorage.uid||'',s,pend=null,sel=-1,last='',tm;
 function poll(){fetch('/state?id='+encodeURIComponent(id),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{const k=JSON.stringify(j);if(k!==last){last=k;s=j;show()}}).catch(()=>{if(!s)$('#app').innerHTML='<div class="pn phone"><h2>Conectando con la TV…</h2><p>Revisá que estés en la misma Wi-Fi que la TV.</p></div>'})}
 function connect(){clearInterval(tm);poll();tm=setInterval(poll,600)}
@@ -9,7 +10,7 @@ const act=(t,x={})=>{if(t==='uno'&&navigator.vibrate)navigator.vibrate(150);post
 function pickCh(j){if(!s.players.some(p=>p.ch===j)){sel=j;show()}}
 function clk(cid){const c=s.hand.find(x=>x.id===cid);if(!c||!c.ok)return;if(c.c==='W'){pend=cid;show();return}act('play',{cid})}
 function pick(col){const cid=pend;pend=null;act('play',{cid,col})}
-function show(){const A=$('#app');
+function show(){const A=$('#app');document.body.classList.toggle('gp-on',!!s&&s.me>=0&&s.phase==='game');
 if(s.me<0){const taken=s.players.map(p=>p.ch);if(!$('#jf')){A.innerHTML=`<div class="pn phone" id="jf"><h1>🃏 UNO</h1><label>Tu nombre</label><input id="nm" placeholder="Escribí tu nombre" maxlength="12"><label>Código de la TV</label><input id="cd" placeholder="Código de la TV" maxlength="4" style="text-transform:uppercase" value="${E((new URLSearchParams(location.search).get('c')||'').slice(0,4))}"><p id="er" style="color:#ff8a80"></p><button class="b go" style="width:100%" onclick="join()">Entrar</button></div>`}
 return}
 const me=s.players[s.me];
@@ -18,10 +19,37 @@ A.innerHTML=`<div class="pn phone"><h2>${E(me.name)}</h2><p>Mirá la TV y elegí
 <div class="selp"><img class="chimg" src="/chars/${cur}.webp"><b>${CH[cur][1]}</b><small>${own?'✔ Es tu personaje':free?'Libre':'Ocupado por '+E(s.players[ow].name)}</small></div>
 <div class="dpad"><span></span><button class="b" onclick="act('move',{d:-6})">▲</button><span></span><button class="b" onclick="act('move',{d:-1})">◀</button><button class="b go" ${free||own?'':'disabled'} onclick="act('pick')">${own?'Quitar':'Elegir'}</button><button class="b" onclick="act('move',{d:1})">▶</button><span></span><button class="b" onclick="act('move',{d:6})">▼</button><span></span></div>
 ${s.me===0?`<p>Mazo:</p><div class="row">${D.map((d,i)=>`<div class="sw ${s.deck==i?'on':''}" onclick="act('deck',{i:${i}})">${bk(i,'sm')}<span>${d[0]}</span></div>`).join('')}</div><button class="b go" style="width:100%;margin-top:12px" ${all?'':'disabled'} onclick="act('start')">${all?'Empezar partida':'Faltan jugadores por elegir'}</button>`:`<p>${me.ch>=0?'Listo. Esperando que el Jugador 1 empiece…':'Elegí tu personaje para estar listo.'}</p>`}</div>`;return}
-const mine=s.me===s.turn&&!s.over,hand=s.hand.slice().sort((a,b)=>'RYGBW'.indexOf(a.c)-'RYGBW'.indexOf(b.c)||(+a.v||50)-(+b.v||50));
-const st=s.over?'Terminó la ronda':mine?(s.drawn!=null?'Robaste: jugá esa carta o pasá':'¡Es tu turno!'):'Turno de '+E(s.players[s.turn].name);
-A.innerHTML=`<div class="pn phone"><b>${av(me.ch,'xs')} ${E(me.name)}</b> · ${me.sc} pts<br>${st}<div class="hand">${hand.map(c=>cardH(c,mine&&c.ok?'ok':'dim',`onclick="clk(${c.id})"`)).join('')}</div>
-${pend!=null?`<div class="row">${'RYGB'.split('').map(c=>`<button class="b" style="background:${CC[c]};color:${c=='Y'?'#222':'#fff'}" onclick="pick('${c}')">${{R:'Rojo',Y:'Amarillo',G:'Verde',B:'Azul'}[c]}</button>`).join('')}</div>`:`<div class="row"><button class="b" ${mine&&s.drawn==null?'':'disabled'} onclick="act('draw')">Robar</button>${mine&&s.drawn!=null?`<button class="b" onclick="act('pass')">Pasar</button>`:''}<button class="b" ${me.n<=2&&!s.over?'':'disabled'} onclick="act('uno')" style="background:#e50914;border-color:#e50914;color:#ffd800">¡UNO!</button>${s.vul?`<button class="b" onclick="act('cazar')">¡Cazar!</button>`:''}</div>`}
-${s.over?`<div class="win" style="margin-top:10px">🏆 ${E(s.players[s.win.i].name)} gana (+${s.win.pts})${s.me===0?`<div class="row" style="justify-content:center;margin-top:8px"><button class="b" onclick="act('again')">Otra ronda</button><button class="b" onclick="act('menu')">Menú</button></div>`:''}</div>`:''}</div>`}
+const val=c=>/^[0-9]$/.test(c.v)?+c.v:c.c==='W'?99:20,ci=c=>'RYGBW'.indexOf(c.c);
+const mine=s.me===s.turn&&!s.over,turn=s.players[s.turn],hand=s.hand.slice().sort(sortMode==='num'?(a,b)=>val(a)-val(b)||ci(a)-ci(b):(a,b)=>ci(a)-ci(b)||val(a)-val(b));
+const st=s.over?'Fin de la ronda':mine?(s.drawn!=null?'Jugá la carta o pasá':'Tu turno'):'Turno de '+E(turn.name),n=s.players.length;
+const f0=$('#fan3'),fx=f0?f0.scrollLeft:0;
+A.innerHTML=`<div class="gp ${mine?'mine':''}"><div class="rot"><b>↻</b><span>Girá el celular</span></div>
+<div class="rb gear">⚙</div><div class="gpill gst ${mine?'on':''}">${ICO.person}${st}</div>
+<div class="gpill gpl">${ICO.people}<span>Jugadores<br><b>${n}/${n}</b></span></div>
+<div class="mid"><div class="pile">${bk(s.deck,'pb')}</div>${ARR('L',s.dir<0)}<div class="disc" style="--c:${CC[s.col]}">${pcard(s.top)}</div>${ARR('R',s.dir<0)}</div>
+<button class="cbtn org" onclick="sortToggle()">${ICO.cards}Organizar<br>cartas</button><button class="cbtn back" onclick="scrollHand(-1)">‹</button>
+<button class="uno" ${me.n<=2&&!s.over?'':'disabled'} onclick="act('uno')">¡UNO!</button>${s.vul?`<button class="cz" onclick="act('cazar')">¡Cazar!</button>`:''}
+<div class="rcol">${mine&&s.drawn!=null?`<button class="draw" onclick="act('pass')">Pasar</button>`:`<button class="draw" ${mine?'':'disabled'} onclick="act('draw')">${ICO.draw}Tomar carta</button>`}
+<button class="qp" onclick="quick('skip')"><i style="background:#ff9f1a">${ICO.skip}</i>Saltar</button><button class="qp" onclick="quick('rev')"><i style="background:#14c04a">${ICO.rev}</i>Invertir</button><button class="qp" onclick="quick('+2')"><i style="background:#1677ff">+2</i>+2</button><button class="qp" onclick="quick('W')"><i class="wi"></i>Comodín</button></div>
+<div class="fan3" id="fan3">${hand.map((c,i)=>pcard(c,mine&&c.ok?'ok':'dim',`onclick="clk(${c.id})" style="--r:${((i-(hand.length-1)/2)*2.2).toFixed(1)}deg;--d:${(Math.abs(i-(hand.length-1)/2)*.3).toFixed(1)}vh"`)).join('')}</div>
+${pend!=null?`<div class="ovl"><b>Elegí un color</b><div class="row">${'RYGB'.split('').map(c=>`<button class="cc" style="background:${CC[c]}" onclick="pick('${c}')"></button>`).join('')}</div></div>`:''}
+${s.over?`<div class="ovl"><b>🏆 ${E(s.players[s.win.i].name)} gana la ronda (+${s.win.pts})</b>${s.me===0?`<div class="row"><button class="b go" onclick="act('again')">Otra ronda</button><button class="b" onclick="act('menu')">Menú</button></div>`:'<small>Esperando al Jugador 1…</small>'}</div>`:''}
+<div class="toast" id="toast"></div></div>`;
+const f1=$('#fan3');if(f1)f1.scrollLeft=fx}
+const ICO={
+person:'<svg viewBox="0 0 32 32" width="30" height="30"><circle cx="16" cy="11" r="6" fill="#28d17c"/><path d="M4 29c0-7 5-11 12-11s12 4 12 11z" fill="#28d17c"/></svg>',
+people:'<svg viewBox="0 0 40 32" width="36" height="30"><circle cx="14" cy="11" r="6" fill="#dfe8ff"/><path d="M2 29c0-7 5-11 12-11s12 4 12 11z" fill="#dfe8ff"/><circle cx="29" cy="12" r="5" fill="#9db8ff"/><path d="M24 20c8-1 14 3 14 9h-12z" fill="#9db8ff"/></svg>',
+cards:'<svg viewBox="0 0 48 48" width="46" height="46"><rect x="7" y="11" width="24" height="30" rx="4" fill="none" stroke="#dfe8ff" stroke-width="3" transform="rotate(-12 19 26)"/><rect x="16" y="7" width="24" height="30" rx="4" fill="#1b2d8f" stroke="#fff" stroke-width="3" transform="rotate(8 28 22)"/><text x="29" y="29" font-size="16" font-weight="900" fill="#fff" text-anchor="middle" font-family="Arial Black,sans-serif">3</text></svg>',
+draw:'<svg viewBox="0 0 48 48" width="52" height="52"><rect x="6" y="10" width="26" height="32" rx="4" fill="#fff" opacity=".85" transform="rotate(-12 19 26)"/><rect x="16" y="6" width="26" height="32" rx="4" fill="#fff" transform="rotate(8 29 22)"/><rect x="24" y="14" width="11" height="15" rx="2" fill="none" stroke="#e11" stroke-width="3" transform="rotate(8 29 22)"/></svg>',
+skip:'<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="8" fill="none" stroke="#fff" stroke-width="3"/><path d="M6.5 17.5l11-11" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>',
+rev:'<svg viewBox="0 0 24 24" width="26" height="26"><path d="M6 8h11l-3-3M18 16H7l3 3" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'};
+const ARR=(side,ccw)=>`<svg class="arr ${side} ${ccw?'ccw':''}" viewBox="0 0 60 90"><path d="M48 82C12 74 6 34 36 12" fill="none" stroke="#9db8ff" stroke-width="7" stroke-linecap="round"/><path d="M20 14L45 3L47 29Z" fill="#9db8ff"/></svg>`;
+const SYMB={skip:'⊘',rev:'⇄','+2':'+2','+4':'+4',W:''};
+function pcard(c,cls='',click=''){const x=SYMB[c.v]!==undefined?SYMB[c.v]:c.v;return `<div class="pc ${c.c} ${cls}" ${click}><i class="cn tl">${x}</i><span class="ov2"><b>${x}</b></span><i class="cn br">${x}</i></div>`}
+function toast(m){const e=$('#toast');if(!e)return;e.textContent=m;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1600)}
+function sortToggle(){sortMode=sortMode==='color'?'num':'color';show();toast('Ordenadas por '+(sortMode==='color'?'color':'número'))}
+function scrollHand(d){const f=$('#fan3');f&&f.scrollBy({left:d*innerWidth*.25,behavior:'smooth'})}
+function quick(v){const c=s.hand.find(x=>x.ok&&x.v===v)||(v==='W'?s.hand.find(x=>x.ok&&x.v==='+4'):null);if(!c){toast('No tenés esa carta para jugar ahora');return}clk(c.id)}
+
 connect();
 </script></body></html>
