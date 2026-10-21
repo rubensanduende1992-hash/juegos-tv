@@ -26,6 +26,16 @@ class MainActivity : Activity() {
         @JavascriptInterface fun changed() { relay?.changed() }
     }
 
+    inner class PhoneBridge {
+        @Suppress("DEPRECATION")
+        @JavascriptInterface fun landscape(on: Boolean) {
+            runOnUiThread {
+                requestedOrientation = if (on) android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE else android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                window.decorView.systemUiVisibility = if (on) (android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or android.view.View.SYSTEM_UI_FLAG_FULLSCREEN or android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE) else android.view.View.SYSTEM_UI_FLAG_VISIBLE
+            }
+        }
+    }
+
     override fun onCreate(b: Bundle?) {
         super.onCreate(b)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -73,7 +83,9 @@ class MainActivity : Activity() {
 
     private fun startPhone(ip: String) {
         if (ip.isEmpty()) return
-        web().loadUrl("http://$ip:3000/play.html")
+        val w = web()
+        w.addJavascriptInterface(PhoneBridge(), "AndroidPhone")
+        w.loadUrl("http://$ip:3000/play.html")
     }
 
     private fun localIp(): String =
