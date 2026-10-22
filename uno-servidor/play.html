@@ -12,7 +12,7 @@ function clk(cid){const c=s.hand.find(x=>x.id===cid);if(!c||!c.ok)return;if(c.c=
 function pick(col){const cid=pend;pend=null;act('play',{cid,col})}
 function show(){const A=$('#app');document.body.classList.toggle('gp-on',!!s&&s.me>=0&&s.phase==='game');
 const gg=!!s&&s.me>=0&&s.phase==='game';if(gg!==lastG){lastG=gg;try{window.AndroidPhone&&AndroidPhone.landscape(gg)}catch(e){}}
-if(s.me<0){const taken=s.players.map(p=>p.ch);if(!$('#jf')){A.innerHTML=`<div class="pn phone" id="jf"><h1>🃏 UNO</h1><label>Tu nombre</label><input id="nm" placeholder="Escribí tu nombre" maxlength="12"><label>Código de la TV</label><input id="cd" placeholder="Código de la TV" maxlength="4" style="text-transform:uppercase" value="${E((new URLSearchParams(location.search).get('c')||'').slice(0,4))}"><p id="er" style="color:#ff8a80"></p><button class="b go" style="width:100%" onclick="join()">Entrar</button></div>`}
+if(s.me<0){const taken=s.players.map(p=>p.ch);if(!$('#jf')){A.innerHTML=`<div class="pn phone" id="jf"><h1>🃏 UNO</h1>${appBtn()}<label>Tu nombre</label><input id="nm" placeholder="Escribí tu nombre" maxlength="12"><label>Código de la TV</label><input id="cd" placeholder="Código de la TV" maxlength="4" style="text-transform:uppercase" value="${E((new URLSearchParams(location.search).get('c')||'').slice(0,4))}"><p id="er" style="color:#ff8a80"></p><button class="b go" style="width:100%" onclick="join()">Entrar</button></div>`}
 return}
 const me=s.players[s.me];
 if(s.phase==='lobby'){const cur=me.cur,ow=s.players.findIndex(p=>p.ch===cur),own=ow===s.me,free=ow<0,all=s.players.length>=2&&s.players.every(p=>p.ch>=0);
@@ -56,6 +56,8 @@ const conf=w?Array.from({length:46},(_,i)=>`<i style="left:${(i*37)%100}%;backgr
 return `<div class="end ${w?'win':'lose'}"><div class="glow"></div>${conf}<div class="etxt"><h1>${w?'WINNER!!!':'LOSER!!!'}</h1><p>${w?'🏆 ¡Ganaste la ronda! +'+s.win.pts+' pts':'💀 '+wn+' ganó la ronda'}</p>${s.me===0?`<div class="row" style="justify-content:center"><button class="b go" onclick="act('again')">Otra ronda</button><button class="b" onclick="act('menu')">Menú</button></div>`:'<small>Esperando al Jugador 1…</small>'}</div></div>`}
 function goLand(){const e=document.documentElement;try{(e.requestFullscreen||e.webkitRequestFullscreen).call(e);setTimeout(()=>{try{screen.orientation.lock('landscape')}catch(x){}},300)}catch(x){}}
 document.addEventListener('pointerdown',()=>{if(lastG&&innerHeight>innerWidth)goLand()});
+const appUrl=()=>{const c=new URLSearchParams(location.search).get('c')||'';return `intent://${location.host}/sala?c=${encodeURIComponent(c)}#Intent;scheme=unotv;package=com.juegos.tv;S.browser_fallback_url=${encodeURIComponent(location.href)};end`};
+const appBtn=()=>(!window.AndroidPhone&&/Android/.test(navigator.userAgent))?`<a class="b go" style="display:block;text-align:center;text-decoration:none;margin:6px 0" href="${appUrl()}">Abrir en la app de UNO TV</a>`:'';
 const SYMB={skip:'⊘',rev:'⇄','+2':'+2','+4':'+4',W:''};
 function pcard(c,cls='',click=''){const x=SYMB[c.v]!==undefined?SYMB[c.v]:c.v;return `<div class="pc ${c.c} ${cls}" ${click}><i class="cn tl">${x}</i><span class="ov2"><b>${x}</b></span><i class="cn br">${x}</i></div>`}
 function toast(m){const e=$('#toast');if(!e)return;e.textContent=m;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1600)}
