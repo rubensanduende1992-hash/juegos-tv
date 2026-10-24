@@ -42,7 +42,7 @@ return{}}
 const urls=Object.values(os.networkInterfaces()).flat().filter(n=>n.family==='IPv4'&&!n.internal).map(n=>`http://${n.address}:${PORT}/play`);
 function view(id){const i=S.pl.findIndex(p=>p.id===id),p=S.pl[i];
 const v={phase:S.phase,code,urls,deck:S.deck,players:S.pl.map(q=>({name:q.name,ch:q.ch,cur:q.cur,n:q.hand.length,sc:q.sc})),turn:S.turn,dir:S.dir,col:S.col,top:S.disc[S.disc.length-1],drawN:S.draw.length,log:S.log,over:S.over,win:S.win,shout:S.shout,me:i};
-if(p&&S.phase==='game'){v.hand=p.hand.map(c=>({...c,ok:i===S.turn&&can(c,p)}));v.drawn=S.drawn;v.vul=S.pl.some((x,j)=>x.vuln&&j!==i)}return v}
+if(p&&S.phase==='game'){v.hand=p.hand.map(c=>({...c,ok:i===S.turn&&can(c,p)}));v.drawn=S.drawn;v.vul=S.pl.some((x,j)=>x.vuln&&j!==i);v.said=!!p.uno}return v}
 let clients=[];
 function send(){clients.forEach(c=>c.res.write('data: '+JSON.stringify(view(c.id))+'\n\n'))}
 setInterval(()=>clients.forEach(c=>c.res.write(': ping\n\n')),15000);

@@ -35,7 +35,7 @@ class MainActivity : Activity() {
         @Suppress("DEPRECATION")
         @JavascriptInterface fun landscape(on: Boolean) {
             runOnUiThread {
-                requestedOrientation = if (on) android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE else android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                if (on) requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
             }
         }
     }
@@ -95,7 +95,13 @@ class MainActivity : Activity() {
                     .setPrompt("Apuntá al QR de la TV").setBeepEnabled(false).setOrientationLocked(false).initiateScan()
             }
         }
-        l.addView(t); l.addView(bt); l.addView(bs); l.addView(ip); l.addView(bp)
+        l.orientation = LinearLayout.HORIZONTAL
+        val left = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
+        val right = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
+        left.addView(t); left.addView(bt)
+        right.addView(bs); right.addView(ip); right.addView(bp)
+        l.addView(left, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(20, 0, 20, 0) })
+        l.addView(right, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(20, 0, 20, 0) })
         val lp = FrameLayout.LayoutParams(-1, -2, Gravity.CENTER).apply { setMargins(120, 0, 120, 0) }
         root.addView(l, lp)
         setContentView(root)
@@ -152,7 +158,6 @@ class MainActivity : Activity() {
         if (inWeb) {
             try { relay?.stop() } catch (e: Exception) { }
             relay = null
-            requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             menu()
         } else super.onBackPressed()
     }

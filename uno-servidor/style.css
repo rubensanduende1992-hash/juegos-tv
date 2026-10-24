@@ -246,3 +246,65 @@ html.scene-img .card.cd{width:5.6vw;height:8.4vw;font-size:2.6vw}
 /* etapa 1: TV como antes, sin personajes sentados ni manos hasta rehacerlos */
 .sfw,.hands{display:none!important}
 html.hands-img .myfan{visibility:visible!important}
+
+/* ---- entrada y selección en horizontal ---- */
+.gp.lob{overflow:auto;display:flex;align-items:center;justify-content:center}
+.lob .jbox{display:flex;gap:calc(4*var(--u));width:min(94vw,960px);align-items:center;padding:calc(2*var(--u)) 0}
+.lob .jl{flex:1;text-align:center}.lob .jl h1{font:900 calc(16*var(--u)) "Arial Black",sans-serif;margin:0}
+.lob .jl small{display:block;font-size:calc(3.4*var(--u));margin:calc(1*var(--u)) 0}
+.lob .jr{flex:1}.lob label{display:block;font-size:calc(3.4*var(--u));margin-top:calc(1.2*var(--u))}
+.lob input{font-size:calc(5*var(--u));padding:calc(1.6*var(--u));margin:calc(.6*var(--u)) 0;border-radius:calc(2*var(--u))}
+.lob .er{color:#ffb3b3;min-height:calc(4*var(--u));font-size:calc(3.2*var(--u));margin:0}
+.lob .b{font-size:calc(4.4*var(--u));padding:calc(1.4*var(--u)) calc(3*var(--u))}
+.lob .jr .b{width:100%}
+.lob .sbox{display:flex;align-items:center;gap:calc(3*var(--u));width:min(96vw,1000px);height:100%;padding:calc(2*var(--u)) 0}
+.lob .sl{flex:0 0 28%;text-align:center}
+.lob .sl .selp .chimg{height:calc(46*var(--u));width:auto;max-width:100%;margin:0 auto;border:calc(.6*var(--u)) solid #fff;border-radius:calc(2*var(--u))}
+.lob .sl b{display:block;font-size:calc(5*var(--u));margin-top:calc(1*var(--u))}.lob .sl small{font-size:calc(3.2*var(--u))}
+.lob .sm{flex:0 0 32%;text-align:center}.lob .pname{font:800 calc(5*var(--u)) sans-serif}.lob .sh{font-size:calc(3*var(--u));margin:calc(.6*var(--u)) 0}
+.lob .dpad{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(1.2*var(--u));margin:0}
+.lob .dpad .b{font-size:calc(5.4*var(--u));padding:calc(1.6*var(--u)) 0;min-height:36px}
+.lob .sr{flex:1;text-align:center;font-size:calc(3.2*var(--u))}.lob .sr p{margin:0 0 calc(.8*var(--u))}
+.lob .sr .row{justify-content:center;gap:calc(.8*var(--u))}
+.lob .sw{padding:calc(.4*var(--u))}.lob .sw .card.sm{width:calc(6.4*var(--u));height:calc(9.6*var(--u))}
+
+/* ---- aviso de turno ---- */
+:root{--u:1vh}@supports (height:1dvh){:root{--u:1dvh}}
+#turnfx{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(circle at 50% 50%,#9dffc4dd,#18c46acc 42%,#0a1040dd 100%)}
+#turnfx.on{display:flex;animation:tflash 1.8s ease-out both}
+#turnfx b{font:900 calc(24*var(--u)) "Arial Black",Impact,sans-serif;color:#fff;-webkit-text-stroke:calc(.7*var(--u)) #0a7a3a;text-shadow:0 calc(1.2*var(--u)) 0 #07502a,0 0 calc(5*var(--u)) #7dffb0;animation:tpop .5s ease-out both}
+@keyframes tflash{0%{opacity:0}10%{opacity:1}72%{opacity:1}100%{opacity:0}}
+@keyframes tpop{0%{transform:scale(.3) rotate(-8deg)}60%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+.gp.mine::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:15;box-shadow:inset 0 0 calc(7*var(--u)) calc(1.2*var(--u)) #4dff9d;animation:glowb .9s ease-in-out infinite alternate}
+@keyframes glowb{from{opacity:.3}to{opacity:1}}
+.gp .gst.on{font-size:calc(4.2*var(--u))}
+/* ---- fondo horizontal en entrada y selección ---- */
+.gp.lob{background:linear-gradient(#0a1040cc,#2a0f6aaa),url(/bg-tv.jpg) center/cover #241468}
+
+/* ---- cartas: todas visibles, de un toque y más levantadas ---- */
+.fan3{overflow:visible;justify-content:center;touch-action:manipulation;height:calc(56*var(--u));padding:calc(12*var(--u)) 0 calc(1.6*var(--u));left:19vw;right:23vw}
+.fan3 .pc{width:var(--cw);height:calc(var(--cw)*1.5);margin-left:var(--ov);cursor:pointer;touch-action:manipulation}
+.fan3 .pc:first-child{margin-left:0}
+.fan3 .pc.ok{transform:translateY(calc(var(--d,0px) - 9*var(--u))) rotate(var(--r,0deg)) scale(1.05);box-shadow:0 0 calc(3*var(--u)) #ffe45a,0 calc(.6*var(--u)) calc(1.6*var(--u)) #0008;z-index:2}
+/* ---- columna derecha con aire ---- */
+.gp .rcol{right:3.5vw;top:calc(15*var(--u));gap:calc(2.4*var(--u));width:18vw}
+/* ---- botón UNO grande que brilla ---- */
+.gp .uno{left:2vw;right:auto;top:auto;bottom:calc(2*var(--u));width:calc(26*var(--u));height:calc(26*var(--u));font-size:calc(6.4*var(--u));line-height:1;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:12}
+.gp .uno small{font:700 calc(2.6*var(--u)) sans-serif;-webkit-text-stroke:0}
+.gp .uno.hot{animation:unoglow .55s ease-in-out infinite alternate}
+@keyframes unoglow{from{box-shadow:0 0 calc(2*var(--u)) #fff;transform:scale(1)}to{box-shadow:0 0 calc(8*var(--u)) calc(2.4*var(--u)) #ffe84a,0 0 calc(14*var(--u)) #ff3b3b;transform:scale(1.1)}}
+.gp .cz{right:auto;left:2vw;top:auto;bottom:calc(30*var(--u))}
+
+/* ---- UX: textos legibles, botones cómodos para el dedo y menos movimiento ---- */
+.gp{font-size:14px}
+.gp .gst{min-height:40px;font-size:max(15px,calc(3.6*var(--u)))}
+.gp .gpl{min-height:40px;font-size:max(12px,calc(2.6*var(--u)))}.gp .gpl b{font-size:max(15px,calc(3.2*var(--u)))}
+.gp .gear{width:max(40px,calc(9*var(--u)));height:max(40px,calc(9*var(--u)));padding:0}
+.gp .gear svg{width:58%;height:58%}
+.gp .draw{min-height:54px;font-size:max(14px,calc(3.2*var(--u)))}
+.gp .qp{min-height:44px;font-size:max(14px,calc(3.2*var(--u)))}
+.gp .rcol{gap:max(8px,calc(2*var(--u)))}
+.gp .cbtn{font-size:max(11px,calc(2.5*var(--u)))}
+.gp .toast{font-size:max(14px,calc(3*var(--u)))}
+@media (max-height:340px){.gp .qp{min-height:38px}.gp .draw{min-height:46px}.gp .rcol{gap:6px}}
+@media (prefers-reduced-motion:reduce){.gp *,.gp::before,.gp::after,.end,.end *,#turnfx b{animation:none!important}}
