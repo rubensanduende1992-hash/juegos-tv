@@ -6,7 +6,7 @@ const CC={R:'#d32f2f',Y:'#f5c400',G:'#2e9e44',B:'#1e6fd9'},SYM={skip:'⊘',rev:'
 const bk=(i,cls='')=>`<div class="card back ${cls}" style="background-image:url(/decks/${i}.webp)"></div>`;
 const cardH=(c,cls='',click='')=>`<div class="card ${c.c} ${cls}" ${click}>${c.c==='W'?'<b>'+SYM[c.v]+'</b>':(SYM[c.v]||c.v)}</div>`;
 const av=(ch,cls='')=>`<img class="chimg ${cls}" src="/chars/${ch}.webp">`;
-const qr=(t,px=260)=>{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),m=4;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m},${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" width="${px}" height="${px}" shape-rendering="crispEdges" style="background:#fff;border-radius:12px"><path d="${d}" fill="#000"/></svg>`};
+const qr0=(t,px=260)=>{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),m=4;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m},${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" width="${px}" height="${px}" shape-rendering="crispEdges" style="background:#fff;border-radius:12px"><path d="${d}" fill="#000"/></svg>`};
 
 const SL={B:[50,87],L:[11,48],TL:[24,14],TC:[50,13],TR:[76,14],R:[89,48]};
 const ORD={2:['B','TC'],3:['B','TL','TR'],4:['B','L','TC','R'],5:['B','L','TL','TR','R'],6:['B','L','TL','TC','TR','R']};
@@ -26,7 +26,7 @@ const seats=s.players.map((p,i)=>{const k=o[i],bot=k==='B',m=Math.min(p.n,12),mf
 const mini=Array.from({length:m},()=>bk(s.deck,'xm')).join('');
 const fig=bot?`<div class="myfan">${Array.from({length:mf},(_,q)=>`<span style="transform:rotate(${(q-(mf-1)/2)*5}deg)">${cardH(fakeCard(i,q),'fk')}</span>`).join('')}</div>`:`<div class="sfw"><img class="seatfig" src="/seat/${p.ch}.webp" onerror="this.parentNode.remove()"></div>`;
 return `<div class="st ${k} ${i==s.turn&&!s.over?'act':''}" data-i="${i}" style="left:${SL[k][0]}%;top:${SL[k][1]}%">${fig}<div class="who2"><img class="chip" src="/chars/${p.ch}.webp"><div class="tag">${E(p.name)}</div><div class="cnt"><span class="mini">${mini}</span><b>${p.n}</b></div></div></div>`}).join('');
-return `<div class="scene n${n}"><div class="fx sky"><i class="cl c1"></i><i class="cl c2"></i><i class="cl c3"></i></div>${fire('f1')}${fire('f2')}<div class="moon"></div><div class="lamp l1"></div><div class="lamp l2"></div><div class="tbl"><div class="felt"></div></div><div class="ctr2"><span id="dpile">${bk(s.deck,'cd')}</span><span id="dtop">${cardH(s.top,'cd')}</span><i class="dot" style="background:${CC[s.col]}"></i><b class="dr">${s.dir>0?'↻':'↺'}</b></div><img class="hands" src="/hands.webp" onerror="this.remove()">${seats}<div class="pill">${E(s.log)} · mazo: ${s.drawN}</div>${s.over?`<div class="win">🏆 ${E(s.players[s.win.i].name)} gana la ronda (+${s.win.pts} pts)</div>`:''}${s.shout!=null?yell(s,o):''}</div>`}
+return `<div class="scene n${n}"><div class="fx sky"><i class="cl c1"></i><i class="cl c2"></i><i class="cl c3"></i></div>${fire('f1')}${fire('f2')}<div class="moon"></div><div class="lamp l1"></div><div class="lamp l2"></div><div class="tbl"><div class="felt"></div></div><div class="ctr2"><span id="dpile">${bk(s.deck,'cd')}${bk(s.deck,'cd lz lz1')}${bk(s.deck,'cd lz lz2')}${bk(s.deck,'cd lz lz3')}</span><span id="dtop">${cardH(s.top,'cd')}</span><i class="dot" style="background:${CC[s.col]}"></i><b class="dr">${s.dir>0?'↻':'↺'}</b></div><img class="hands" src="/hands.webp" onerror="this.remove()">${seats}<div class="pill">${E(s.log)} · mazo: ${s.drawN}</div>${s.over?`<div class="win">🏆 ${E(s.players[s.win.i].name)} gana la ronda (+${s.win.pts} pts)</div>`:''}${s.shout!=null?yell(s,o):''}</div>`}
 const fire=c=>`<div class="fx fire ${c}"><b></b><i></i>${[['.1s','-1.4vh'],['.8s','1.2vh'],['1.5s','-.6vh'],['2.1s','1.8vh']].map(e=>`<u style="--d:${e[0]};--x:${e[1]}"></u>`).join('')}</div>`;
 
 let __p=null;
@@ -40,11 +40,11 @@ const P=R(pile),T=R(top);
 const ev=[];s.players.forEach((pl,i)=>{const d=pl.n-p.players[i].n;if(d)ev.push([i,d])});
 if(s.shout!=null&&p.shout==null){say('¡Uno!');const f=document.querySelector(`.st[data-i="${s.shout}"] .chip`);f&&f.animate([{transform:'rotate(0)'},{transform:'rotate(-5deg) scale(1.1)'},{transform:'rotate(5deg) scale(1.1)'},{transform:'rotate(-3deg)'},{transform:'rotate(0)'}],{duration:500})}
 if(!ev.length||ev.reduce((a,e)=>a+Math.abs(e[1]),0)>8)return;
-const fly=(html,A,B,s0,s1,delay,rot,after)=>{
+const fly=(html,A,B,s0,s1,delay,rot,after,rx0=0,rx1=0)=>{
  const w=document.createElement('div');w.className='fly';w.innerHTML=html;sc.appendChild(w);
  const r=w.getBoundingClientRect(),hw=r.width/2,hh=r.height/2;
- const k=(x,y,sc_,ro)=>`translate(${x-hw}px,${y-hh}px) scale(${sc_}) rotate(${ro}deg)`;
- const a=w.animate([{transform:k(A.x,A.y,s0,0)},{transform:k((A.x+B.x)/2,(A.y+B.y)/2-innerHeight*.09,(s0+s1)/2,rot/2),offset:.5},{transform:k(B.x,B.y,s1,rot)}],{duration:620,delay,easing:'ease-in-out',fill:'both'});
+ const k=(x,y,sc_,ro,rx)=>`translate(${x-hw}px,${y-hh}px) scale(${sc_}) perspective(900px) rotateX(${rx}deg) rotate(${ro}deg)`;
+ const a=w.animate([{transform:k(A.x,A.y,s0,0,rx0)},{transform:k((A.x+B.x)/2,(A.y+B.y)/2-innerHeight*.09,(s0+s1)/2,rot/2,(rx0+rx1)/2),offset:.5},{transform:k(B.x,B.y,s1,rot,rx1)}],{duration:620,delay,easing:'ease-in-out',fill:'both'});
  a.onfinish=()=>{w.remove();after&&after()}};
 const lean=(el,A,B,dur)=>{if(!el)return;const dx=B.x-A.x,dy=B.y-A.y,d=Math.hypot(dx,dy)||1,m=Math.min(d*.12,innerHeight*.045);
  el.animate([{transform:'none'},{transform:`translate(${dx/d*m}px,${dy/d*m}px) scale(1.09)`,offset:.4},{transform:'none'}],{duration:dur,easing:'ease-out'})};
@@ -53,13 +53,14 @@ ev.forEach(([i,d])=>{
  const fan=seat.querySelector('.cnt'),fg=seat.querySelector('.seatfig')||seat.querySelector('.chip'),F=R(seat.querySelector('.myfan')||fan);
  if(d<0&&s.top.id!==p.top.id){
   top.style.visibility='hidden';
-  fly(cardH(s.top,'cd'),F,T,.55,1,0,(i%2?1:-1)*8,()=>{top.style.visibility='visible';top.animate([{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:200})});
+  fly(cardH(s.top,'cd'),F,T,.55,1,0,(i%2?1:-1)*8,()=>{top.style.visibility='visible';top.animate([{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:200})},0,52);
   lean(fg,F,T,700);fan&&fan.animate([{transform:'none'},{transform:'translateY(-1.4vh)'},{transform:'none'}],{duration:500});
  }else if(d>0){
-  for(let j=0;j<d;j++)fly(bk(s.deck,'cd'),P,F,1,.62,j*220,(j%2?-1:1)*10);
+  for(let j=0;j<d;j++)fly(bk(s.deck,'cd'),P,F,1,.62,j*220,(j%2?-1:1)*10,null,52,0);
   lean(fg,F,P,700+d*120);
  }});
 }
 
 const yell=(s,o)=>{const k=o[s.shout],x=SL[k][0],y=SL[k][1],dx=k==='B'?0:k==='TC'?14:(x<50?14:-14),by=k==='B'?-24:-4;return `<div class="yell" style="left:${x+dx}%;top:${y+by}%"><b>¡UNO!</b></div>`};
 function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='es-ES';u.rate=1.05;u.pitch=1.5;u.volume=1;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+const qr=(t,px)=>{try{return qr0(t,px)}catch(e){return '<div class="qrfail">QR no disponible<br>'+E(String(e&&e.message||e))+'</div>'}};
