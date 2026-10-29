@@ -327,3 +327,28 @@ html.scene-img .card.cd{width:7vw;height:10.5vw;font-size:3.4vw;border-width:.3v
 .selfoot .qrb svg{width:17vh;height:17vh}
 .selfoot .qrb+.qrb svg{width:12vh;height:12vh}
 .selfoot .qrfail{width:17vh;font-size:max(10px,1.6vh)}
+/* ---- cartas del centro: en el medio del paño, bien centradas ---- */
+.ctr2{gap:2.2vw}
+html.scene-img .ctr2{top:59%}
+.ctr2 .dot{position:absolute;left:calc(100% + 1.6vw);top:18%;width:1.6vw;height:1.6vw;border-width:.25vw}
+.ctr2 .dr{position:absolute;left:calc(100% + 1.4vw);top:50%;font-size:2.6vw;line-height:1}
+/* mano de reserva más chica y más abajo (hasta que vuelvan las manos de verdad) */
+html.scene-img .st.B .card.fk{width:4.6vw;height:6.9vw;font-size:2.2vw}
+html.scene-img .st.B .fan2 span,.st.B .myfan span{margin-left:-2.7vw}
+html.scene-img .st.B .myfan span:first-child{margin-left:0}
+.myfan{margin-bottom:.8vh}
+html.scene-img .ctr2{top:56.5%}
+.myfan{margin-bottom:-3.2vh}
+html.scene-img .st.B .card.fk{width:4.2vw;height:6.3vw;font-size:2vw}
+html.scene-img .st.B .myfan span{margin-left:-2.4vw}
+html.scene-img .st.B .myfan span:first-child{margin-left:0}
+
+/* ---- cartas del centro: apoyadas con la perspectiva medida de la referencia ---- */
+#tstage{position:absolute;left:0;top:0;width:1680px;height:944px;transform-origin:0 0;pointer-events:none}
+.tp,#dpile.tp,#dtop.tp{position:absolute;left:0;top:0;width:200px;height:300px;transform-origin:0 0;display:block}
+.card.tc{width:200px;height:300px;border-width:10px;border-radius:26px;font-size:130px;box-shadow:0 16px 30px rgba(0,0,0,.75)}
+.card.back.tc{border:0}
+.card.tc.top{z-index:6}
+.tl{position:absolute;left:0}.tl .card.tc{box-shadow:none}
+.t60{width:60px;height:60px;border-radius:50%;border:6px solid #fff;box-sizing:border-box;box-shadow:0 6px 12px rgba(0,0,0,.6)}
+.tdir{background:none;border:0;box-shadow:none;color:#fff;font:900 54px/60px sans-serif;text-align:center;text-shadow:0 0 6px #000}
