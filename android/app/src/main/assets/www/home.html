@@ -1,41 +1,22 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Juegos TV</title>
 <style>
-*{box-sizing:border-box}html,body{height:100%;margin:0}
-body{background:#0e1117 url(/bg-tv.jpg) center/cover no-repeat fixed;color:#fff;font-family:system-ui,Arial,sans-serif;overflow:hidden}
-.shade{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 55%,rgba(5,8,18,.45),rgba(5,8,18,.88))}
-.wrap{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5vh}
-h1{margin:0;font-size:6.5vh;letter-spacing:.6vh;color:#ffe08a;text-shadow:0 .5vh 1.5vh #000;font-weight:800}
-.games{display:flex;gap:7vh;align-items:flex-start}
-.tile{width:46vh;text-align:center;outline:none;cursor:pointer;transition:transform .18s,filter .18s;filter:brightness(.78) saturate(.9)}
-.tile .art{width:46vh;height:46vh;border-radius:5vh;overflow:hidden;box-shadow:0 1.5vh 4vh rgba(0,0,0,.7);position:relative;border:.7vh solid transparent;transition:border-color .18s,box-shadow .18s}
-.tile .art img{width:100%;height:100%;display:block;object-fit:cover}
-.tile:focus,.tile:hover{transform:scale(1.08);filter:none}
-.tile:focus .art,.tile:hover .art{border-color:#fff3b0;box-shadow:0 0 0 .6vh #e0a020,0 0 6vh 1.5vh rgba(255,200,60,.75),0 2vh 5vh #000}
-.tile b{display:block;margin-top:2.4vh;font-size:5vh;letter-spacing:.4vh;text-shadow:0 .4vh 1vh #000}
-.tile small{display:block;margin-top:.6vh;font-size:2.6vh;color:#cfd6e6;text-shadow:0 .3vh .8vh #000}
-.uno{background:radial-gradient(circle at 50% 40%,#ff4a3d,#b3120d 70%);border:.9vh solid #f0b020;border-radius:5vh}
-.uno .oval{position:absolute;left:50%;top:50%;width:76%;height:52%;transform:translate(-50%,-50%) rotate(-24deg);background:#fff;border-radius:50%;box-shadow:inset 0 0 0 .8vh #f0b020}
-.uno .t{position:absolute;inset:0;display:grid;place-items:center;font:900 italic 17vh/1 "Arial Black",Impact,sans-serif;color:#ffd32a;-webkit-text-stroke:.5vh #8a1008;text-shadow:.8vh .8vh 0 #8a1008;transform:rotate(-8deg)}
-.uno .c{position:absolute;width:11vh;height:16vh;border-radius:1.2vh;border:.5vh solid #fff;top:5%;box-shadow:0 .6vh 1.2vh rgba(0,0,0,.5)}
-.uno .c1{left:8%;background:#1e6fd9;transform:rotate(-22deg)}.uno .c2{left:30%;background:#2e9e44;transform:rotate(-8deg)}.uno .c3{right:30%;background:#f5c400;transform:rotate(8deg)}.uno .c4{right:8%;background:#d32f2f;transform:rotate(22deg)}
-.hint{position:fixed;left:0;right:0;bottom:3vh;text-align:center;font-size:2.4vh;color:#cfd6e6;text-shadow:0 .3vh .8vh #000}
-.hint kbd{display:inline-block;padding:.2vh 1.2vh;border-radius:.8vh;background:rgba(255,255,255,.18);margin:0 .4vh;font:inherit}
-</style></head><body><div class="shade"></div>
-<div class="wrap"><h1>ELEGÍ UN JUEGO</h1>
-<div class="games" id="g">
-<div class="tile" tabindex="0" data-go="/uno" id="t_uno"><div class="art uno"><span class="c c1"></span><span class="c c2"></span><span class="c c3"></span><span class="c c4"></span><div class="oval"></div><div class="t">UNO</div></div><b>UNO</b><small>2 a 6 jugadores</small></div>
-<div class="tile" tabindex="0" data-go="/truco" id="t_truco"><div class="art"><img src="/games/truco.webp" alt="Truco"></div><b>TRUCO</b><small>1 vs 1 · 2 vs 2</small></div>
-</div></div>
-<div class="hint"><kbd>◀</kbd><kbd>▶</kbd> moverse &nbsp; <kbd>OK</kbd> elegir &nbsp; <kbd>Atrás</kbd> volver al menú</div>
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:#000;overflow:hidden}
+#st{position:absolute;left:50%;top:50%;width:min(100vw,177.78vh);aspect-ratio:1672/941;transform:translate(-50%,-50%);background:url(/games/seleccion.webp) 0 0/100% 100%}
+.tile{position:absolute;outline:none;cursor:pointer;border-radius:4.2%/7.4%;transition:box-shadow .2s}
+.tile:after{content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(0,0,0,.42);transition:opacity .2s}
+.tile:focus:after,.tile:hover:after{opacity:0}
+.tile:focus,.tile:hover{box-shadow:0 0 0 .5vh #fff3b0,0 0 4vh 1.2vh rgba(255,215,90,.95)}
+.hint{position:absolute;left:0;right:0;bottom:.4%;text-align:center;font:600 1.7vh system-ui,Arial,sans-serif;color:#ffe9b0;text-shadow:0 .2vh .6vh #000}
+</style></head><body><div id="st">
+<div class="tile" tabindex="0" data-go="/truco" style="left:1.1%;top:21.3%;width:48.1%;height:72.5%" aria-label="Truco"></div>
+<div class="tile" tabindex="0" data-go="/uno" style="left:51.2%;top:21.3%;width:47.8%;height:72.5%" aria-label="UNO"></div>
+<div class="hint">◀ ▶ moverse &nbsp;·&nbsp; OK elegir &nbsp;·&nbsp; Atrás: volver al menú</div></div>
 <script>
-const T=[...document.querySelectorAll('.tile')];
-const go=t=>{location.href=t.dataset.go};
-T.forEach(t=>{t.onclick=()=>go(t)});
-document.addEventListener('keydown',e=>{
- const i=Math.max(0,T.indexOf(document.activeElement));
+const T=[...document.querySelectorAll('.tile')],go=t=>{location.href=t.dataset.go};
+T.forEach(t=>t.onclick=()=>go(t));
+document.addEventListener('keydown',e=>{const i=Math.max(0,T.indexOf(document.activeElement));
  if(e.key==='ArrowRight'||e.keyCode===22){T[(i+1)%T.length].focus();e.preventDefault()}
  else if(e.key==='ArrowLeft'||e.keyCode===21){T[(i-1+T.length)%T.length].focus();e.preventDefault()}
- else if(e.key==='Enter'||e.keyCode===23||e.keyCode===66){go(T[i]);e.preventDefault()}
-});
+ else if(e.key==='Enter'||e.keyCode===23||e.keyCode===66){go(T[i]);e.preventDefault()}});
 T[0].focus();
 </script></body></html>
