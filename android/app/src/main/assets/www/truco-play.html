@@ -1,0 +1,42 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Truco</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}
+body{background:#120a05 url(/bg-phone.jpg) center/cover fixed no-repeat;color:#fff;font-family:system-ui,Arial,sans-serif}
+.shade{position:fixed;inset:0;background:rgba(10,6,3,.72)}
+.pg{position:relative;max-width:480px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 18px 28px;text-align:center}
+.ico{width:120px;height:120px;border-radius:24px;box-shadow:0 8px 24px #000}
+h1{margin:10px 0 2px;font-size:30px;color:#ffe08a}p{color:#cfd6e6;margin:4px 0 14px}
+.box{background:rgba(24,14,8,.9);border:2px solid #c9962e;border-radius:18px;padding:18px;text-align:left}
+label{display:block;font-size:14px;color:#cfd6e6;margin:10px 0 4px}
+input{width:100%;padding:13px;border-radius:10px;border:2px solid #6b4a1a;background:#1a1008;color:#fff;font-size:20px}
+#cd{text-transform:uppercase;letter-spacing:6px;text-align:center;font-weight:800}
+button,.b{display:block;width:100%;margin-top:14px;padding:14px;border:0;border-radius:12px;background:linear-gradient(#ffd96a,#d9981a);color:#2a1600;font-weight:800;font-size:19px;text-align:center;text-decoration:none}
+button.g{background:#3a2a18;color:#fff}button:disabled{opacity:.4}
+.er{color:#ff8a8a;min-height:20px;margin-top:8px}
+.slot{display:flex;gap:10px;align-items:center;padding:10px 12px;margin:6px 0;border-radius:10px;background:rgba(255,255,255,.08);font-size:18px}
+.slot.empty{opacity:.45;font-style:italic}.slot.me{outline:2px solid #ffd96a}
+.code{font:900 40px "Arial Black",sans-serif;letter-spacing:8px;text-align:center;color:#ffe08a}
+.seg{display:flex;gap:8px;margin-top:8px}.seg button{margin:0;padding:11px;font-size:17px}.seg button.on{background:linear-gradient(#ffd96a,#d9981a);color:#2a1600}.seg button:not(.on){background:#3a2a18;color:#fff}
+</style></head><body><div class="shade"></div><div class="pg"><img class="ico" src="/games/truco.webp" alt=""><h1>TRUCO</h1><div id="app"><p>Conectando con la TV…</p></div></div>
+<script>
+const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),$=s=>document.querySelector(s);
+let id=localStorage.truco_uid||'',s=null,last='';
+const qs=new URLSearchParams(location.search);
+const post=b=>fetch('/act',{method:'POST',body:JSON.stringify({id,...b})}).then(r=>r.json());
+function poll(){fetch('/state?id='+encodeURIComponent(id),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{const k=JSON.stringify(j);if(k!==last){last=k;s=j;show()}}).catch(()=>{if(!s)$('#app').innerHTML='<div class="box"><b>Conectando con la TV…</b><p>Revisá que la TV tenga Truco abierto y que estén en la misma Wi-Fi.</p></div>'})}
+function join(){const n=$('#nm').value.trim();if(!n){$('#er').textContent='Escribí tu nombre';return}
+ post({t:'join',name:n,code:$('#cd').value}).then(r=>{if(r.err){$('#er').textContent=r.err;return}id=r.id;localStorage.truco_uid=id;last='';poll()})}
+const appUrl=()=>`intent://${location.host}/sala?c=${encodeURIComponent(qs.get('c')||'')}&g=truco#Intent;scheme=unotv;package=com.juegos.tv;S.browser_fallback_url=${encodeURIComponent(location.href)};end`;
+const appBtn=()=>(!window.AndroidPhone&&/Android/.test(navigator.userAgent))?`<a class="b g" href="${appUrl()}">Abrir en la app Juegos TV</a>`:'';
+function show(){const A=$('#app');
+ if(s.me<0){if(!$('#jf'))A.innerHTML=`<div class="box" id="jf"><p style="margin-top:0">Escaneá el QR de la TV o escribí el código</p><label>Tu nombre</label><input id="nm" maxlength="12" autocomplete="off"><label>Código de sala</label><input id="cd" maxlength="4" value="${E((qs.get('c')||'').toUpperCase())}" autocomplete="off"><div class="er" id="er"></div><button onclick="join()">Entrar a la sala</button>${appBtn()}</div>`;return}
+ const n=s.players.length,host=s.me===0,full=n===s.need;
+ let rows='';for(let k=0;k<Math.max(s.need,n);k++){const p=s.players[k];rows+=p?`<div class="slot ${k===s.me?'me':''}"><b>${k+1}</b> ${E(p.name)}${k===s.me?' (vos)':''}</div>`:`<div class="slot empty"><b>${k+1}</b> Esperando jugador…</div>`}
+ if(s.phase==='ready'){A.innerHTML=`<div class="box"><div class="code">${E(s.code)}</div><h2 style="text-align:center">¡Sala lista!</h2>${rows}${host?'<button class="g" onclick="post({t:\'back\'}).then(poll)">Volver a la sala</button>':''}</div>`;return}
+ A.innerHTML=`<div class="box"><p style="margin:0;text-align:center">Código de sala</p><div class="code">${E(s.code)}</div>
+ ${host?`<div class="seg"><button class="${s.mode==='1v1'?'on':''}" onclick="post({t:'mode',m:'1v1'}).then(poll)">1 vs 1</button><button class="${s.mode==='2v2'?'on':''}" onclick="post({t:'mode',m:'2v2'}).then(poll)">2 vs 2</button></div>`:`<p style="text-align:center;margin-top:8px">Modo: <b>${s.mode==='2v2'?'2 vs 2':'1 vs 1'}</b></p>`}
+ <div style="margin-top:10px">${rows}</div>
+ ${host?`<button ${full?'':'disabled'} onclick="post({t:'start'}).then(poll)">${full?'Empezar':'Faltan jugadores ('+n+'/'+s.need+')'}</button>`:`<p style="text-align:center">${full?'Esperando que el anfitrión empiece…':'Esperando jugadores…'}</p>`}
+ <button class="g" onclick="post({t:'leave'}).then(()=>{localStorage.removeItem('truco_uid');id='';last='';poll()})">Salir de la sala</button></div>`}
+poll();setInterval(poll,1000);
+</script></body></html>

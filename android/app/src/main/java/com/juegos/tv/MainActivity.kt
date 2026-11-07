@@ -25,6 +25,7 @@ import java.net.NetworkInterface
 class MainActivity : Activity() {
     private var relay: Relay? = null
     private var inWeb = false
+    private var curWeb: WebView? = null
 
     inner class Bridge {
         @JavascriptInterface fun ip(): String = localIp()
@@ -57,11 +58,13 @@ class MainActivity : Activity() {
     private fun handleLink(text: String?): Boolean {
         val u = try { android.net.Uri.parse(text ?: return false) } catch (e: Exception) { return false }
         val host = u.host ?: return false
-        val ok = u.scheme == "unotv" || (u.scheme == "http" && (u.path ?: "").startsWith("/play"))
+        val pth = u.path ?: ""
+        val ok = u.scheme == "unotv" || (u.scheme == "http" && (pth.startsWith("/play") || pth.startsWith("/truco-play")))
         if (!ok) return false
         val port = if (u.port > 0) u.port else 3000
         val code = u.getQueryParameter("c") ?: ""
-        openPhone("http://$host:$port/play.html" + if (code.isNotEmpty()) "?c=$code" else "")
+        val page = if (u.getQueryParameter("g") == "truco" || pth.startsWith("/truco-play")) "truco-play.html" else "play.html"
+        openPhone("http://$host:$port/$page" + if (code.isNotEmpty()) "?c=$code" else "")
         return true
     }
 
@@ -69,7 +72,7 @@ class MainActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val r = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (r != null && r.contents != null) {
-            if (!handleLink(r.contents)) android.widget.Toast.makeText(this, "Ese QR no es de una sala de UNO TV", android.widget.Toast.LENGTH_LONG).show()
+            if (!handleLink(r.contents)) android.widget.Toast.makeText(this, "Ese QR no es de una sala de Juegos TV", android.widget.Toast.LENGTH_LONG).show()
         } else super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -84,7 +87,7 @@ class MainActivity : Activity() {
             try { setImageBitmap(BitmapFactory.decodeStream(assets.open("www/bg-tv.jpg"))) } catch (e: Exception) { }
         }, FrameLayout.LayoutParams(-1, -1))
         val l = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(60, 40, 60, 40); gravity = Gravity.CENTER; setBackgroundColor(0xB0000000.toInt()) }
-        val t = TextView(this).apply { text = "UNO TV  v" + version(); textSize = 32f; gravity = Gravity.CENTER; setTextColor(Color.WHITE) }
+        val t = TextView(this).apply { text = "JUEGOS TV  v" + version(); textSize = 32f; gravity = Gravity.CENTER; setTextColor(Color.WHITE) }
         val bt = Button(this).apply { text = "Modo TV (mesa)"; setOnClickListener { startTv() } }
         val ip = EditText(this).apply { hint = "Dirección de la TV, ej: 192.168.1.20"; setSingleLine(); setTextColor(Color.WHITE); setHintTextColor(Color.LTGRAY) }
         val bp = Button(this).apply { text = "Modo celular (control)"; setOnClickListener { startPhone(ip.text.toString().trim()) } }
@@ -122,6 +125,7 @@ class MainActivity : Activity() {
             }
         }
         inWeb = true
+        curWeb = w
         setContentView(w)
         return w
     }
@@ -156,6 +160,8 @@ class MainActivity : Activity() {
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
         if (inWeb) {
+            val path = try { android.net.Uri.parse(curWeb?.url ?: "").path ?: "/" } catch (e: Exception) { "/" }
+            if (relay != null && path != "/" && path != "") { curWeb?.loadUrl("http://127.0.0.1:3000/"); return }
             try { relay?.stop() } catch (e: Exception) { }
             relay = null
             menu()

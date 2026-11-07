@@ -1,0 +1,39 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Truco</title>
+<style>
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:#120a05 url(/bg-tv.jpg) center/cover fixed no-repeat;color:#fff;font-family:system-ui,Arial,sans-serif;overflow:hidden}
+.shade{position:fixed;inset:0;background:rgba(10,6,3,.78)}
+.row{position:relative;height:100%;display:flex;align-items:center;justify-content:center;gap:3vh;padding:3vh}
+.cover{width:min(60vw,126vh);aspect-ratio:3/2;flex:none;border-radius:2.4vh;box-shadow:0 2vh 6vh #000;background:url(/games/truco-cover.webp) center/cover}
+.pn{width:34vw;min-width:44vh;background:rgba(24,14,8,.92);border:.5vh solid #c9962e;border-radius:2.4vh;padding:3vh;box-shadow:0 2vh 6vh #000}
+.pn h2{margin:0 0 1vh;font-size:3vh;color:#cfd6e6;font-weight:600;letter-spacing:.3vh}
+.code{font:900 11vh/1 "Arial Black",Impact,sans-serif;letter-spacing:1.2vh;color:#ffe08a;text-shadow:0 .5vh 1.5vh #000;margin-bottom:2.4vh}
+.qrs{display:flex;gap:2.4vh;margin-bottom:2.4vh}.qb{flex:1;text-align:center;font-size:2.4vh}.qb svg{width:100%;height:auto;max-width:21vh}.qb b{display:block;margin-top:.6vh}.qb small{display:block;color:#b8c0d4;font-size:1.9vh}
+.pl{border-top:.2vh solid rgba(255,255,255,.18);padding-top:2vh}
+.slot{display:flex;align-items:center;gap:1.4vh;padding:1.1vh 1.6vh;margin-bottom:1vh;border-radius:1.2vh;background:rgba(255,255,255,.08);font-size:3vh}
+.slot.me{background:linear-gradient(90deg,#7a1010,#3a0a0a)}.slot.t2.me{background:linear-gradient(90deg,#10306a,#0a1a3a)}
+.slot i{font-style:normal;width:4vh;height:4vh;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:2.4vh}
+.slot.empty{opacity:.45;font-style:italic}
+.tm{font-size:2.2vh;color:#e0a020;margin:1vh 0 .8vh;font-weight:700}
+.st{margin-top:2vh;text-align:center;font-size:3vh;font-weight:700;color:#ffe08a}
+.chip{display:inline-block;padding:.4vh 1.8vh;border-radius:99px;background:#c9962e;color:#2a1600;font-weight:800;font-size:2.6vh;margin-left:1.4vh;vertical-align:middle}
+</style></head><body><div class="shade"></div><div class="row"><div class="cover"></div><div class="pn" id="p"></div></div>
+<script src="/qr.js"></script><script src="/truco-host.js"></script><script>
+const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
+const qr0=(t,px)=>{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),m=4;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m},${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" width="${px}" height="${px}" shape-rendering="crispEdges" style="background:#fff;border-radius:12px"><path d="${d}" fill="#000"/></svg>`};
+const qr=(t,px)=>{try{return qr0(t,px)}catch(e){return '<div>QR no disponible</div>'}};
+let ip='127.0.0.1';try{ip=Android.ip()}catch(e){}
+urls=['http://'+ip+':3000/truco-play.html'];
+function slot(p,k,t2){return p?`<div class="slot me ${t2?'t2':''}"><i>${k}</i>${E(p.name)}</div>`:`<div class="slot empty"><i>${k}</i>Esperando jugador…</div>`}
+function view_(s){
+ const host=new URL(s.urls[0]).host,P=s.players;let list='';
+ if(s.mode==='2v2'){list=`<div class="tm">EQUIPO 1</div>${slot(P[0],1)}${slot(P[2],3)}<div class="tm">EQUIPO 2</div>${slot(P[1],2,1)}${slot(P[3],4,1)}`}
+ else list=slot(P[0],1)+slot(P[1],2,1);
+ const st=s.phase==='ready'?'¡Sala lista!':(P.length<s.need?`Esperando jugadores (${P.length}/${s.need})`:(P.length>s.need?'Sobran jugadores: elegí 2 vs 2':'Todos conectados · el anfitrión empieza desde su celular'));
+ return `<h2>CÓDIGO DE SALA<span class="chip">${s.mode==='2v2'?'2 vs 2':'1 vs 1'}</span></h2><div class="code">${E(s.code)}</div>
+ <div class="qrs"><div class="qb">${qr('unotv://'+host+'/sala?c='+s.code+'&g=truco',200)}<b>Con la app</b><small>abre Juegos TV al escanear</small></div>
+ <div class="qb">${qr(s.urls[0]+'?c='+s.code,200)}<b>Sin la app</b><small>${E(new URL(s.urls[0]).hostname)}</small></div></div>
+ <div class="pl">${list}</div><div class="st">${st}</div>`}
+window.onChange=()=>{try{document.getElementById('p').innerHTML=view_(JSON.parse(hostView('')))}catch(e){document.getElementById('p').innerHTML='<pre style="color:#fff;background:#b00020;padding:2vh;font:2.2vh monospace;white-space:pre-wrap">Error en la pantalla de Truco:\n'+E(String(e&&e.stack||e))+'</pre>'}try{Android.changed()}catch(e){}};
+onChange();
+</script></body></html>
