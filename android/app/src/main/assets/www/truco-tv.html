@@ -1,39 +1,166 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Truco</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto+Condensed:wght@700&display=swap">
 <style>
-*{box-sizing:border-box}html,body{height:100%;margin:0}
-body{background:#120a05 url(/bg-tv.jpg) center/cover fixed no-repeat;color:#fff;font-family:system-ui,Arial,sans-serif;overflow:hidden}
-.shade{position:fixed;inset:0;background:rgba(10,6,3,.78)}
-.row{position:relative;height:100%;display:flex;align-items:center;justify-content:center;gap:3vh;padding:3vh}
-.cover{width:min(60vw,126vh);aspect-ratio:3/2;flex:none;border-radius:2.4vh;box-shadow:0 2vh 6vh #000;background:url(/games/truco-cover.webp) center/cover}
-.pn{width:34vw;min-width:44vh;background:rgba(24,14,8,.92);border:.5vh solid #c9962e;border-radius:2.4vh;padding:3vh;box-shadow:0 2vh 6vh #000}
-.pn h2{margin:0 0 1vh;font-size:3vh;color:#cfd6e6;font-weight:600;letter-spacing:.3vh}
-.code{font:900 11vh/1 "Arial Black",Impact,sans-serif;letter-spacing:1.2vh;color:#ffe08a;text-shadow:0 .5vh 1.5vh #000;margin-bottom:2.4vh}
-.qrs{display:flex;gap:2.4vh;margin-bottom:2.4vh}.qb{flex:1;text-align:center;font-size:2.4vh}.qb svg{width:100%;height:auto;max-width:21vh}.qb b{display:block;margin-top:.6vh}.qb small{display:block;color:#b8c0d4;font-size:1.9vh}
-.pl{border-top:.2vh solid rgba(255,255,255,.18);padding-top:2vh}
-.slot{display:flex;align-items:center;gap:1.4vh;padding:1.1vh 1.6vh;margin-bottom:1vh;border-radius:1.2vh;background:rgba(255,255,255,.08);font-size:3vh}
-.slot.me{background:linear-gradient(90deg,#7a1010,#3a0a0a)}.slot.t2.me{background:linear-gradient(90deg,#10306a,#0a1a3a)}
-.slot i{font-style:normal;width:4vh;height:4vh;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:2.4vh}
-.slot.empty{opacity:.45;font-style:italic}
-.tm{font-size:2.2vh;color:#e0a020;margin:1vh 0 .8vh;font-weight:700}
-.st{margin-top:2vh;text-align:center;font-size:3vh;font-weight:700;color:#ffe08a}
-.chip{display:inline-block;padding:.4vh 1.8vh;border-radius:99px;background:#c9962e;color:#2a1600;font-weight:800;font-size:2.6vh;margin-left:1.4vh;vertical-align:middle}
-</style></head><body><div class="shade"></div><div class="row"><div class="cover"></div><div class="pn" id="p"></div></div>
-<script src="/qr.js"></script><script src="/truco-host.js"></script><script>
-const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
-const qr0=(t,px)=>{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),m=4;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m},${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" width="${px}" height="${px}" shape-rendering="crispEdges" style="background:#fff;border-radius:12px"><path d="${d}" fill="#000"/></svg>`};
-const qr=(t,px)=>{try{return qr0(t,px)}catch(e){return '<div>QR no disponible</div>'}};
+:root{--bg:#000}html,body{height:100%;margin:0;background:var(--bg);overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
+#stage>*{position:absolute}#bg{inset:0;width:100%;height:100%}
+.p{height:350px;top:535px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+
+#deck{left:0;top:0;width:110px;height:165px;transform-origin:0 0;transform:matrix3d(0.38363636, 0, 0, 0, -0.65899032, -0.38179319, 0, -0.00078725398, 0, 0, 1, 0, 814.3, 646.4, 0, 1)}
+.c{position:absolute;inset:0;border-radius:9px;background:#fff;box-shadow:0 0 0 1px #c9cfdc}
+.c i{position:absolute;inset:6px;border-radius:5px;background:radial-gradient(circle at 50% 50%,#9db4ff 0 9%,transparent 10%),repeating-linear-gradient(45deg,#1d3fa5 0 6px,#2a52c9 6px 12px)}
+.sh{position:absolute;left:-6px;top:10px;width:126px;height:175px;border-radius:12px;background:#000;opacity:.4;filter:blur(7px)}
+
+.p{transform-origin:50% 100%}
+@keyframes lL{35%{transform:translateX(18px) rotate(4deg)}}@keyframes lR{35%{transform:translateX(-18px) rotate(-4deg)}}
+.lL{animation:lL .6s ease-out}.lR{animation:lR .6s ease-out}
+.tag{position:absolute;transform:translateX(-50%);text-align:center;pointer-events:none;font-family:system-ui,sans-serif}
+.tag b{display:inline-block;padding:5px 18px;border-radius:999px;background:rgba(20,12,8,.82);color:#ffe9b0;border:2px solid #d9a441;font-size:24px;letter-spacing:.5px;box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.tag s{display:flex;justify-content:center;align-items:center;gap:5px;margin-top:6px;text-decoration:none;color:#fff;font-size:18px;font-weight:700;text-shadow:0 1px 3px #000}
+.tag s i{width:15px;height:22px;border-radius:3px;background:repeating-linear-gradient(45deg,#1d3fa5 0 3px,#2a52c9 3px 6px);border:1.5px solid #fff;transition:opacity .3s,transform .3s}
+.tag s i.off{opacity:0;transform:scale(.3)}
+.cf{position:absolute;inset:0;border-radius:9px;background:#fbf3dc;box-shadow:0 0 0 2px #8a7a52;font:700 28px Georgia,serif;color:var(--k)}
+.cf em{position:absolute;left:9px;top:3px;font-style:normal}.cf em.r{left:auto;right:9px;top:auto;bottom:3px;transform:rotate(180deg)}
+.cf svg{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px}
+.fly,.sc,.big{position:absolute;left:0;top:0;width:110px;height:165px}
+.sc{transform-origin:0 0;filter:drop-shadow(3px 3px 3px rgba(0,0,0,.5));animation:pop .25s ease-out}@keyframes pop{from{opacity:0}}
+.big{transition:opacity .4s;filter:drop-shadow(0 8px 12px rgba(0,0,0,.5))}
+#cap{position:absolute;left:836px;top:372px;transform:translateX(-50%);padding:6px 16px;border-radius:999px;background:rgba(20,12,8,.85);color:#fff;font:700 22px system-ui,sans-serif;transition:opacity .4s;white-space:nowrap}
+#sim button{padding:7px 12px;border:0;border-radius:8px;background:#d9a441;font-weight:700;cursor:pointer}
+.p img{position:absolute;left:0;top:0;height:100%}.hud{position:absolute;pointer-events:none}
+.ht{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;font-family:"Playfair Display",Georgia,serif;font-weight:700;color:transparent;background:linear-gradient(#fff9dc,#e3b85a);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 2px 1px rgba(0,0,0,.75))}
+.nm{font-size:38px}.scr{font-size:60px}.sm{font-size:30px}.md{font-size:50px}.xs{font-size:17px}.ct{font-size:34px;font-family:"Playfair Display",Georgia,serif}
+.pt{font-size:32px;background:linear-gradient(#fffbe8,#f0d9a0);-webkit-background-clip:text;background-clip:text}
+.np{position:absolute;display:flex;height:45px;transform:translateX(-50%);pointer-events:none;transition:filter .3s}
+.np i{display:block;height:45px;background-repeat:no-repeat;background-size:100% 100%}.np .l,.np .r{width:46px}.np .m{flex:1}
+.np.on{filter:drop-shadow(0 0 10px #ffd860) drop-shadow(0 0 18px #ffb020)}
+.mc{position:absolute;display:flex;align-items:center;height:34px;pointer-events:none;color:#fff;font:700 24px "Roboto Condensed","Arial Narrow",Arial,sans-serif;text-shadow:-1px -1px 0 #0a0a30,1px -1px 0 #0a0a30,-1px 1px 0 #0a0a30,1px 1px 0 #0a0a30,0 2px 3px #000}
+.mc i{display:block;width:21px;height:32px;border-radius:4px;border:2px solid #fff;background:linear-gradient(135deg,#2f7be8,#1650b8);margin-right:-6px;box-shadow:0 2px 3px rgba(0,0,0,.5)}
+.mc span{margin-left:14px}
+.tu{transition:opacity .3s}
+#tb{position:absolute;left:836px;top:262px;transform:translate(-50%,-50%) scale(.5);opacity:0;min-width:760px;padding:12px 70px 16px;border-radius:38px;text-align:center;background:linear-gradient(#2c1c12,#140c07);border:9px solid #d9a441;box-shadow:0 0 70px 14px rgba(255,200,60,.55),0 12px 34px #000;pointer-events:none;z-index:6}
+#tb.p0{border-color:#ff5a5a;box-shadow:0 0 70px 14px rgba(255,60,60,.6),0 12px 34px #000;background:linear-gradient(#4a1010,#1c0606)}
+#tb.p1{border-color:#6aa8ff;box-shadow:0 0 70px 14px rgba(70,140,255,.6),0 12px 34px #000;background:linear-gradient(#10264a,#07101e)}
+#tb b{display:block;white-space:nowrap;font:700 124px/1.05 "Roboto Condensed","Arial Narrow",Arial,sans-serif;background:linear-gradient(#fff6c4,#f0b020);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 5px 3px rgba(0,0,0,.75));letter-spacing:3px}
+#tb s{display:block;text-decoration:none;color:#fff;font:700 44px/1.1 "Roboto Condensed","Arial Narrow",Arial,sans-serif;letter-spacing:2px;margin-top:4px}
+#tb.show{animation:tb 2.8s ease forwards}
+@keyframes tb{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}10%{transform:translate(-50%,-50%) scale(1.1);opacity:1}18%{transform:translate(-50%,-50%) scale(1);opacity:1}86%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+.fly img,.sc img,.big img{display:block;width:100%;height:100%}
+#sim select{padding:6px;border-radius:6px}
+#lobby{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;gap:3vh;padding:3vh;background:#120a05 url(/bg-tv.jpg) center/cover no-repeat;color:#fff;font-family:system-ui,Arial,sans-serif;z-index:5}
+#lobby:before{content:"";position:absolute;inset:0;background:rgba(10,6,3,.78)}#lobby>*{position:relative}
+#lobby .cover{width:min(60vw,126vh);aspect-ratio:3/2;flex:none;border-radius:2.4vh;box-shadow:0 2vh 6vh #000;background:url(/games/truco-cover.webp) center/cover}
+#lobby .pn{width:34vw;min-width:44vh;background:rgba(24,14,8,.92);border:.5vh solid #c9962e;border-radius:2.4vh;padding:3vh;box-shadow:0 2vh 6vh #000}
+#lobby h2{margin:0 0 1vh;font-size:3vh;color:#cfd6e6;font-weight:600;letter-spacing:.3vh}
+#lobby .code{font:900 11vh/1 "Arial Black",Impact,sans-serif;letter-spacing:1.2vh;color:#ffe08a;text-shadow:0 .5vh 1.5vh #000;margin-bottom:2.4vh}
+#lobby .qrs{display:flex;gap:2.4vh;margin-bottom:2.4vh}#lobby .qb{flex:1;text-align:center;font-size:2.4vh}#lobby .qb svg{width:100%;height:auto;max-width:21vh}#lobby .qb b{display:block;margin-top:.6vh}#lobby .qb small{display:block;color:#b8c0d4;font-size:1.9vh}
+#lobby .pl{border-top:.2vh solid rgba(255,255,255,.18);padding-top:2vh}
+#lobby .slot{display:flex;align-items:center;gap:1.4vh;padding:1.1vh 1.6vh;margin-bottom:1vh;border-radius:1.2vh;background:rgba(255,255,255,.08);font-size:3vh}
+#lobby .slot.me{background:linear-gradient(90deg,#7a1010,#3a0a0a)}#lobby .slot.t2.me{background:linear-gradient(90deg,#10306a,#0a1a3a)}
+#lobby .slot i{font-style:normal;width:4vh;height:4vh;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:2.4vh}
+#lobby .slot.empty{opacity:.45;font-style:italic}#lobby .tm{font-size:2.2vh;color:#e0a020;margin:1vh 0 .8vh;font-weight:700}
+#lobby .st{margin-top:2vh;text-align:center;font-size:2.8vh;font-weight:700;color:#ffe08a}
+#lobby .chip{display:inline-block;padding:.4vh 1.8vh;border-radius:99px;background:#c9962e;color:#2a1600;font-weight:800;font-size:2.6vh;margin-left:1.4vh;vertical-align:middle}
+#tb.hold{animation:tbh .6s ease forwards}@keyframes tbh{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+#game{position:fixed;inset:0;background:#000;display:none}
+</style></head><body>
+<div id="lobby"><div class="cover"></div><div class="pn" id="p"></div></div>
+<div id="game"><div id="stage">
+<img id="bg" src="/truco/bg.jpg" alt="">
+<div id="deck"><div class="sh"></div>
+<div class="c" style="transform:translate(-4px,-4px)"><i></i></div><div class="c" style="transform:translate(-3px,-3px)"><i></i></div><div class="c" style="transform:translate(-2px,-2px)"><i></i></div><div class="c" style="transform:translate(-1px,-1px)"><i></i></div><div class="c"><i></i></div></div>
+<div id="chi" class="p" style="left:301px;width:468px"><img data-f="i3" src="/truco/chi_i3.png" alt="China" style="visibility:visible"><img data-f="i2" src="/truco/chi_i2.png" alt="China" style="visibility:hidden"><img data-f="i1" src="/truco/chi_i1.png" alt="China" style="visibility:hidden"><img data-f="i0" src="/truco/chi_i0.png" alt="China" style="visibility:hidden"><img data-f="r2" src="/truco/chi_r2.png" alt="China" style="visibility:hidden"><img data-f="r1" src="/truco/chi_r1.png" alt="China" style="visibility:hidden"><img data-f="x" src="/truco/chi_x.png" alt="China" style="visibility:hidden"></div><div id="gau" class="p" style="left:919px;width:449px"><img data-f="i3" src="/truco/gau_i3.png" alt="Gaucho" style="visibility:visible"><img data-f="i2" src="/truco/gau_i2.png" alt="Gaucho" style="visibility:hidden"><img data-f="i1" src="/truco/gau_i1.png" alt="Gaucho" style="visibility:hidden"><img data-f="i0" src="/truco/gau_i0.png" alt="Gaucho" style="visibility:hidden"><img data-f="r2" src="/truco/gau_r2.png" alt="Gaucho" style="visibility:hidden"><img data-f="r1" src="/truco/gau_r1.png" alt="Gaucho" style="visibility:hidden"><img data-f="x" src="/truco/gau_x.png" alt="Gaucho" style="visibility:hidden"></div>
+
+<img class="hud" id="h_sb" src="/truco/sb.png" style="left:494px;top:0px;width:692px;height:160px;" alt="">
+<img class="hud" id="h_aj" src="/truco/aj.png" style="left:1417px;top:17px;width:90px;height:92px;" alt="">
+<img class="hud" id="h_sa" src="/truco/sa.png" style="left:1538px;top:17px;width:90px;height:92px;" alt="">
+<img class="hud" id="h_ch" src="/truco/ch.png" style="left:1554px;top:561px;width:76px;height:78px;" alt="">
+<img class="hud" id="h_em" src="/truco/em.png" style="left:1554px;top:655px;width:76px;height:79px;" alt="">
+<img class="hud" id="h_c0" src="/truco/c0.png" style="left:40px;top:496px;width:113px;height:73px;" alt="">
+<img class="hud" id="h_c1" src="/truco/c1.png" style="left:40px;top:578px;width:113px;height:75px;" alt="">
+<img class="hud" id="h_c2" src="/truco/c2.png" style="left:40px;top:659px;width:113px;height:74px;" alt="">
+<div class="ht nm" id="n0" style="left:670px;top:40px" data-w=118></div>
+<div class="ht scr" id="s0" style="left:670px;top:91px"></div>
+<div class="ht nm" id="n1" style="left:1002px;top:40px" data-w=92></div>
+<div class="ht scr" id="s1" style="left:1002px;top:91px"></div>
+<div class="ht sm" id="tA" style="left:840px;top:47px"></div>
+<div class="ht md" id="tT" style="left:840px;top:87px"></div>
+<div class="ht xs" id="tP" style="left:840px;top:118px"></div>
+<div class="ht ct" id="k0" style="left:97px;top:550px"></div>
+<div class="ht ct" id="k1" style="left:97px;top:631px"></div>
+<div class="ht ct" id="k2" style="left:97px;top:712px"></div>
+<div class="np" id="np0" data-cx="436" style="top:333px"><i class="l" style="background-image:url(/truco/pill0L.png)"></i><i class="m" style="background-image:url(/truco/pill0M.png)"></i><i class="r" style="background-image:url(/truco/pill0R.png)"></i></div><div class="ht pt" id="pt0" style="left:436px;top:356px"></div>
+<div class="mc" id="mc0" style="left:366px;top:387px"></div>
+<img class="hud tu" id="tu0" src="/truco/tu.png" style="left:346px;top:271px;width:181px;height:56px;opacity:0" alt="">
+<div class="np" id="np1" data-cx="1160" style="top:333px"><i class="l" style="background-image:url(/truco/pill1L.png)"></i><i class="m" style="background-image:url(/truco/pill1M.png)"></i><i class="r" style="background-image:url(/truco/pill1R.png)"></i></div><div class="ht pt" id="pt1" style="left:1160px;top:356px"></div>
+<div class="mc" id="mc1" style="left:1093px;top:387px"></div>
+<img class="hud tu" id="tu1" src="/truco/tu.png" style="left:1070px;top:271px;width:181px;height:56px;opacity:0" alt="">
+<div id="tb"><b></b><s></s></div>
+<div id="cap" style="opacity:0"></div></div></div>
+<script src="/qr.js"></script><script src="/truco-host.js"></script><script>const $=i=>document.getElementById(i),SG=$('stage');
+const SLH=[[[{"cx": 696, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97578089, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 691.9, 640.8, 0, 1)"}, {"cx": 739, "cy": 658, "m": "matrix3d(0.32363636, 0, 0, 0, -0.98550391, -0.57209927, 0, -0.0011792129, 0, 0, 1, 0, 731, 640.8, 0, 1)"}, {"cx": 783, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97526807, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 770, 640.8, 0, 1)"}], [{"cx": 888, "cy": 658, "m": "matrix3d(0.32363636, 0, 0, 0, -0.98754971, -0.57209927, 0, -0.0011792129, 0, 0, 1, 0, 865.2, 640.8, 0, 1)"}, {"cx": 931, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97503497, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 904.2, 640.8, 0, 1)"}, {"cx": 974, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97508159, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 943.3, 640.8, 0, 1)"}]],[[608, 679], [1024, 616]]],SL=SLH[0],HAND=SLH[1];
+const PN={oro:'Oro',copa:'Copa',espada:'Espada',basto:'Basto'};
+const CALLN={truco:'¡TRUCO!',retruco:'¡RETRUCO!',valecuatro:'¡VALE CUATRO!',envido:'¡ENVIDO!',real:'¡REAL ENVIDO!',falta:'¡FALTA ENVIDO!'};
+const Es=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
+function fit(){const s=Math.min(innerWidth/1672,innerHeight/941);SG.style.transform=`translate(${(innerWidth-1672*s)/2}px,${(innerHeight-941*s)/2}px) scale(${s})`}addEventListener('resize',fit);fit();
+const qr0=(t)=>{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),m=4;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m},${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" shape-rendering="crispEdges" style="background:#fff;border-radius:12px"><path d="${d}" fill="#000"/></svg>`};
+const qr=t=>{try{return qr0(t)}catch(e){return '<div>QR no disponible</div>'}};
 let ip='127.0.0.1';try{ip=Android.ip()}catch(e){}
 urls=['http://'+ip+':3000/truco-play.html'];
-function slot(p,k,t2){return p?`<div class="slot me ${t2?'t2':''}"><i>${k}</i>${E(p.name)}</div>`:`<div class="slot empty"><i>${k}</i>Esperando jugador…</div>`}
-function view_(s){
- const host=new URL(s.urls[0]).host,P=s.players;let list='';
- if(s.mode==='2v2'){list=`<div class="tm">EQUIPO 1</div>${slot(P[0],1)}${slot(P[2],3)}<div class="tm">EQUIPO 2</div>${slot(P[1],2,1)}${slot(P[3],4,1)}`}
- else list=slot(P[0],1)+slot(P[1],2,1);
- const st=s.phase==='ready'?'¡Sala lista!':(P.length<s.need?`Esperando jugadores (${P.length}/${s.need})`:(P.length>s.need?'Sobran jugadores: elegí 2 vs 2':'Todos conectados · el anfitrión empieza desde su celular'));
- return `<h2>CÓDIGO DE SALA<span class="chip">${s.mode==='2v2'?'2 vs 2':'1 vs 1'}</span></h2><div class="code">${E(s.code)}</div>
- <div class="qrs"><div class="qb">${qr('unotv://'+host+'/sala?c='+s.code+'&g=truco',200)}<b>Con la app</b><small>abre Juegos TV al escanear</small></div>
- <div class="qb">${qr(s.urls[0]+'?c='+s.code,200)}<b>Sin la app</b><small>${E(new URL(s.urls[0]).hostname)}</small></div></div>
+let V=null,lastEv=-1,first=true,shown=[3,3],queue=[],busy=false,bt;
+/* ---------- lobby ---------- */
+function slot(p,k,t2){return p?`<div class="slot me ${t2?'t2':''}"><i>${k}</i>${Es(p.name)}</div>`:`<div class="slot empty"><i>${k}</i>Esperando jugador…</div>`}
+function lobby(s){const host=new URL(s.urls[0]).host,P=s.players;let list;
+ if(s.mode==='2v2')list=`<div class="tm">EQUIPO 1</div>${slot(P[0],1)}${slot(P[2],3)}<div class="tm">EQUIPO 2</div>${slot(P[1],2,1)}${slot(P[3],4,1)}`;else list=slot(P[0],1)+slot(P[1],2,1);
+ const st=s.mode==='2v2'?'2 vs 2: próximamente (por ahora se juega 1 vs 1)':(P.length<2?`Esperando jugadores (${P.length}/2)`:(P.length>2?'Sobran jugadores':'Todos conectados · el anfitrión empieza desde su celular'));
+ $('p').innerHTML=`<h2>CÓDIGO DE SALA<span class="chip">${s.mode==='2v2'?'2 vs 2':'1 vs 1'}</span><span class="chip">a ${s.target}</span></h2><div class="code">${Es(s.code)}</div>
+ <div class="qrs"><div class="qb">${qr('unotv://'+host+'/sala?c='+s.code+'&g=truco')}<b>Con la app</b><small>abre Juegos TV al escanear</small></div><div class="qb">${qr(s.urls[0]+'?c='+s.code)}<b>Sin la app</b><small>${Es(new URL(s.urls[0]).hostname)}</small></div></div>
  <div class="pl">${list}</div><div class="st">${st}</div>`}
-window.onChange=()=>{try{document.getElementById('p').innerHTML=view_(JSON.parse(hostView('')))}catch(e){document.getElementById('p').innerHTML='<pre style="color:#fff;background:#b00020;padding:2vh;font:2.2vh monospace;white-space:pre-wrap">Error en la pantalla de Truco:\n'+E(String(e&&e.stack||e))+'</pre>'}try{Android.changed()}catch(e){}};
+/* ---------- HUD ---------- */
+function fitTxt(){document.querySelectorAll('.ht[data-w]').forEach(e=>{e.style.transform='translate(-50%,-50%)';const k=+e.dataset.w/e.offsetWidth;e.style.transform=`translate(-50%,-50%) scaleX(${Math.min(1,k)})`})}
+function pills(){[0,1].forEach(p=>{const t=$('pt'+p),n=$('np'+p);t.textContent=nm(p);t.style.transform='translate(-50%,-50%)';const w=Math.min(260,Math.max(168,t.offsetWidth+64));n.style.width=w+'px';n.style.left=(+n.dataset.cx-w/2)+'px';n.style.transform='none';t.style.transform=`translate(-50%,-50%) scaleX(${Math.min(1,(w-60)/t.offsetWidth)})`})}
+const nm=p=>(V&&V.players[p]?V.players[p].name:'Jugador '+(p+1));
+function hud(){if(!V||!V.score)return;
+ $('n0').textContent=nm(0);$('n1').textContent=nm(1);$('s0').textContent=V.score[0];$('s1').textContent=V.score[1];$('tA').textContent='A';$('tT').textContent=V.target;$('tP').textContent='PUNTOS';
+ $('k0').textContent=V.hands;$('k1').textContent=V.envPot||0;$('k2').textContent=V.tval||1;
+ const t=V.over||V.ended?-1:(V.pend?1-V.pend.by:V.turn);[0,1].forEach(p=>{$('tu'+p).style.opacity=t===p?1:0;$('np'+p).classList.toggle('on',t===p);
+  const n=shown[p];$('mc'+p).innerHTML=Array.from({length:n},()=>'<i></i>').join('')+`<span>${n} carta${n==1?'':'s'}</span>`});fitTxt();pills()}
+function setFrame(p,f){document.querySelectorAll('#'+(p?'gau':'chi')+' img').forEach(m=>m.style.visibility=m.dataset.f==f?'visible':'hidden')}
+const idle=()=>[0,1].forEach(p=>setFrame(p,'i'+Math.max(0,Math.min(3,shown[p]))));
+/* ---------- cartas ---------- */
+function wrap(c,cls){const w=document.createElement('div');w.className=cls;const i=new Image();i.src='/cartas/'+c.s+'_'+c.n+'.png';i.draggable=false;w.append(i);return w}
+function placeStatic(p,t,c){const k=p+'_'+t;if(SG.querySelector('.sc[data-k="'+k+'"]'))return;const s=wrap(c,'sc');s.dataset.k=k;s.style.transform=SL[p][t].m;SG.insertBefore(s,$('chi'))}
+function clearTable(){SG.querySelectorAll('.sc,.big').forEach(n=>n.remove());$('cap').style.opacity=0}
+function big(c,p){SG.querySelectorAll('.big').forEach(b=>b.remove());const b=wrap(c,'big');b.style.transform='translate(781px,395px) scale(.85)';SG.append(b);const cap=$('cap');cap.textContent=`${nm(p)} tiró: ${c.n} de ${PN[c.s]}`;cap.style.opacity=1;clearTimeout(bt);bt=setTimeout(()=>{b.style.opacity=0;cap.style.opacity=0},2000)}
+function animPlay(e){const p=e.p,c=e.card,t=e.t,sl=SL[p][t],d=p?-1:1;
+ setFrame(p,shown[p]>=2?'r2':'r1');
+ const fly=()=>{const[x0,y0]=HAND[p],mx=(x0+sl.cx)/2,my=Math.min(y0,sl.cy)-200,T=(x,y,s,r)=>`translate(${x-55}px,${y-82}px) scale(${s}) rotate(${r}deg)`;
+  const kf=o=>[{transform:T(x0,y0,.5,0),opacity:o},{transform:T(mx,my,1.05,d*200),offset:.45,opacity:o},{transform:T(sl.cx,sl.cy,.33,d*360),opacity:o}],opt={duration:750,easing:'cubic-bezier(.3,.6,.4,1)',fill:'both'};
+  for(let i=3;i>=1;i--){const g=wrap(c,'fly');g.firstChild.style.filter='blur(2px)';SG.append(g);g.animate(kf(.28/i),{...opt,delay:i*45}).onfinish=()=>g.remove()}
+  const f=wrap(c,'fly');SG.append(f);f.animate(kf(1),opt).onfinish=()=>{f.remove();placeStatic(p,t,c);big(c,p)}};
+ setTimeout(()=>{setFrame(p,'x');fly()},220);
+ setTimeout(()=>{shown[p]=Math.max(0,shown[p]-1);setFrame(p,'i'+shown[p]);hud()},800)}
+/* ---------- carteles ---------- */
+function banner(title,sub,p,hold){const b=$('tb');b.className='p'+p;b.querySelector('b').textContent=title;b.querySelector('s').textContent=sub||'';void b.offsetWidth;b.classList.add(hold?'hold':'show')}
+function enqueue(fn,dur){queue.push([fn,dur]);if(!busy)run()}
+function run(){const x=queue.shift();if(!x){busy=false;return}busy=true;x[0]();setTimeout(run,x[1])}
+function handle(e){
+ if(e.type==='deal')enqueue(()=>{clearTable();$('tb').className='';shown=[3,3];idle();hud()},300);
+ else if(e.type==='play')enqueue(()=>animPlay(e),1050);
+ else if(e.type==='call')enqueue(()=>banner(CALLN[e.k],nm(e.p).toUpperCase()+' CANTA',e.p),1800);
+ else if(e.type==='resp')enqueue(()=>banner(e.r==='quiero'?'¡QUIERO!':'¡NO QUIERO!',nm(e.p).toUpperCase()+' RESPONDE',e.p),1500);
+ else if(e.type==='mazo')enqueue(()=>banner('¡AL MAZO!',nm(e.p).toUpperCase(),e.p),1600);
+ else if(e.type==='envido')enqueue(()=>{if(e.refused)banner('+'+e.pot,'ENVIDO PARA '+nm(e.w).toUpperCase(),e.w);else banner(e.pts[0]+' — '+e.pts[1],'ENVIDO PARA '+nm(e.w).toUpperCase()+' · +'+e.pot,e.w)},2400);
+ else if(e.type==='hand')enqueue(()=>banner('¡MANO PARA '+nm(e.w).toUpperCase()+'!','+'+e.pts+(e.pts==1?' PUNTO':' PUNTOS'),e.w),2600);
+ else if(e.type==='game')enqueue(()=>banner('¡GANÓ '+nm(e.w).toUpperCase()+'!','Revancha desde el celular',e.w,true),0)}
+/* ---------- render ---------- */
+function render(v){V=v;
+ if(v.phase==='lobby'){$('game').style.display='none';$('lobby').style.display='flex';lobby(v);first=true;queue=[];busy=false;return}
+ $('lobby').style.display='none';$('game').style.display='block';
+ if(first){first=false;lastEv=v.evId;shown=v.counts?v.counts.slice():[3,3];clearTable();$('tb').className='';(v.table||[]).forEach((row,p)=>row.forEach((c,t)=>c&&placeStatic(p,t,c)));idle();hud();
+  if(v.over)banner('¡GANÓ '+nm(v.over.winner).toUpperCase()+'!','Revancha desde el celular',v.over.winner,true);return}
+ v.events.filter(e=>e.id>lastEv).forEach(handle);lastEv=v.evId;hud()}
+window.onChange=()=>{try{render(JSON.parse(hostView('')))}catch(e){$('lobby').style.display='flex';$('p').innerHTML='<pre style="color:#fff;background:#b00020;padding:2vh;font:2.2vh monospace;white-space:pre-wrap">Error en la pantalla de Truco:\n'+Es(String(e&&e.stack||e))+'</pre>'}try{Android.changed()}catch(e){}};
+document.fonts.ready.then(()=>{if(V)hud()});
 onChange();
 </script></body></html>

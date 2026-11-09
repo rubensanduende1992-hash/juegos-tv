@@ -1,42 +1,150 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Truco</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%}
-body{background:#120a05 url(/bg-phone.jpg) center/cover fixed no-repeat;color:#fff;font-family:system-ui,Arial,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{height:100%;margin:0}
+body{background:#120a05 url(/bg-phone.jpg) center/cover fixed no-repeat;color:#fff;font-family:system-ui,Arial,sans-serif;overflow:hidden}
 .shade{position:fixed;inset:0;background:rgba(10,6,3,.72)}
-.pg{position:relative;max-width:480px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 18px 28px;text-align:center}
-.ico{width:120px;height:120px;border-radius:24px;box-shadow:0 8px 24px #000}
-h1{margin:10px 0 2px;font-size:30px;color:#ffe08a}p{color:#cfd6e6;margin:4px 0 14px}
-.box{background:rgba(24,14,8,.9);border:2px solid #c9962e;border-radius:18px;padding:18px;text-align:left}
-label{display:block;font-size:14px;color:#cfd6e6;margin:10px 0 4px}
-input{width:100%;padding:13px;border-radius:10px;border:2px solid #6b4a1a;background:#1a1008;color:#fff;font-size:20px}
-#cd{text-transform:uppercase;letter-spacing:6px;text-align:center;font-weight:800}
-button,.b{display:block;width:100%;margin-top:14px;padding:14px;border:0;border-radius:12px;background:linear-gradient(#ffd96a,#d9981a);color:#2a1600;font-weight:800;font-size:19px;text-align:center;text-decoration:none}
-button.g{background:#3a2a18;color:#fff}button:disabled{opacity:.4}
-.er{color:#ff8a8a;min-height:20px;margin-top:8px}
-.slot{display:flex;gap:10px;align-items:center;padding:10px 12px;margin:6px 0;border-radius:10px;background:rgba(255,255,255,.08);font-size:18px}
-.slot.empty{opacity:.45;font-style:italic}.slot.me{outline:2px solid #ffd96a}
-.code{font:900 40px "Arial Black",sans-serif;letter-spacing:8px;text-align:center;color:#ffe08a}
-.seg{display:flex;gap:8px;margin-top:8px}.seg button{margin:0;padding:11px;font-size:17px}.seg button.on{background:linear-gradient(#ffd96a,#d9981a);color:#2a1600}.seg button:not(.on){background:#3a2a18;color:#fff}
-</style></head><body><div class="shade"></div><div class="pg"><img class="ico" src="/games/truco.webp" alt=""><h1>TRUCO</h1><div id="app"><p>Conectando con la TV…</p></div></div>
+#rot{display:none;position:fixed;inset:0;z-index:9;background:#120a05;flex-direction:column;align-items:center;justify-content:center;gap:2vh;text-align:center;padding:20px}
+#rot .ri{font-size:90px;color:#ffe08a}#rot button{padding:12px 22px;border:0;border-radius:12px;background:linear-gradient(#ffd96a,#d9981a);font-weight:800;font-size:18px;color:#2a1600}
+@media (orientation:portrait){#rot{display:flex}}
+.pg{position:relative;height:100%;display:flex;align-items:center;justify-content:center;gap:3vw;padding:3vh 3vw}
+.side{width:30%;text-align:center}.ico{height:38vh;border-radius:5vh;box-shadow:0 1vh 3vh #000}
+.side h1{margin:1vh 0 0;font-size:7vh;color:#ffe08a;letter-spacing:.5vh}
+.code{font:900 11vh/1 "Arial Black",sans-serif;letter-spacing:1vh;color:#ffe08a}
+.main{width:64%;max-height:94vh;overflow:auto}
+.box{background:rgba(24,14,8,.92);border:.5vh solid #c9962e;border-radius:3vh;padding:3vh}
+label{display:block;font-size:3.4vh;color:#cfd6e6;margin:0 0 .6vh}
+input{width:100%;padding:1.8vh;border-radius:1.6vh;border:.4vh solid #6b4a1a;background:#1a1008;color:#fff;font-size:5vh}
+#cd{text-transform:uppercase;letter-spacing:1vh;text-align:center;font-weight:800}
+.two{display:flex;gap:2vw}.two>div{flex:1}
+button.b,.b{display:block;width:100%;margin-top:2.4vh;padding:2vh;border:0;border-radius:2vh;background:linear-gradient(#ffd96a,#d9981a);color:#2a1600;font-weight:800;font-size:5vh;text-align:center;text-decoration:none}
+button.g,.b.g{background:#3a2a18;color:#fff}button:disabled{opacity:.4}
+.er{color:#ff8a8a;min-height:3vh;font-size:3.2vh}
+.seg{display:flex;gap:1.5vw;margin-bottom:2vh}.seg button{flex:1;padding:1.8vh;border:0;border-radius:2vh;font-size:4.6vh;font-weight:800}
+.seg button.on{background:linear-gradient(#ffd96a,#d9981a);color:#2a1600}.seg button:not(.on){background:#3a2a18;color:#fff}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:1.4vh 1.5vw}
+.slot{display:flex;gap:1.2vw;align-items:center;padding:1.6vh 1.4vw;border-radius:1.6vh;background:rgba(255,255,255,.08);font-size:4.2vh;white-space:nowrap;overflow:hidden}
+.slot.empty{opacity:.45;font-style:italic}.slot.me{outline:.4vh solid #ffd96a}
+.row{display:flex;gap:1.5vw}.row>*{flex:1}
+
+#gm{display:none;position:fixed;inset:0;background:#000;z-index:3}
+#st{position:absolute;left:50%;top:50%;width:1672px;height:941px;transform-origin:0 0;background:url(/truco/plate.jpg) 0 0/100% 100%;overflow:hidden;font-family:system-ui,sans-serif}
+#st>*{position:absolute}
+.t{transform:translate(-50%,-50%);color:#fff;font:700 40px/1 "Roboto Condensed","Arial Narrow",Arial,sans-serif;white-space:nowrap;text-shadow:0 2px 3px rgba(0,0,0,.5)}
+.bk{pointer-events:none;width:72px;height:124px}
+.cd{position:absolute;filter:drop-shadow(0 4px 5px rgba(0,0,0,.55))}.cd img{display:block;width:100%;height:100%}
+.hc{cursor:pointer;transition:transform .18s,filter .18s;touch-action:manipulation}
+.hc.sel{transform:translateY(-34px);filter:drop-shadow(0 0 4px #5ab0ff) drop-shadow(0 0 18px #2f8cff)}
+.hc.dim{filter:brightness(.6) drop-shadow(0 4px 5px rgba(0,0,0,.55));pointer-events:none}
+.hs{width:144px;height:144px;border-radius:50%;border:0;background:transparent;cursor:pointer;transition:box-shadow .2s}
+.hs:active{background:radial-gradient(circle,rgba(255,255,255,.28),transparent 70%)}
+.hs.off{backdrop-filter:grayscale(.85) brightness(.55);-webkit-backdrop-filter:grayscale(.85) brightness(.55);pointer-events:none}
+.hs.pulse{animation:pu 1s ease-in-out infinite}
+@keyframes pu{0%,100%{box-shadow:0 0 10px 2px rgba(255,230,120,.5)}50%{box-shadow:0 0 38px 14px rgba(255,230,120,.95)}}
+.pill{display:flex;height:70px;pointer-events:none;transition:left .15s,width .15s}.pill i{display:block;height:70px}
+.pill .l{width:48px;background:url(/truco/pillL.png) 0 0/48px 70px}.pill .m{flex:1;background:url(/truco/pillM.png) 0 0/100% 70px}.pill .r{width:48px;background:url(/truco/pillR.png) 0 0/48px 70px}
+.pill.off{filter:grayscale(.8) brightness(.6)}
+.pt2{transform:translate(-50%,-50%);color:#fff;font:700 38px/1 "Roboto Condensed","Arial Narrow",Arial,sans-serif;white-space:nowrap;text-shadow:0 2px 3px #000;pointer-events:none}
+#mg{left:25px;top:790px;width:405px;height:125px;border-radius:34px;pointer-events:none;opacity:0;transition:opacity .3s}#mg.on{opacity:1;animation:pu 1.2s ease-in-out infinite}
+#mt{left:230px;top:766px;transform:translate(-50%,-50%);padding:4px 20px;border-radius:999px;background:linear-gradient(#ffe08a,#e0a020);color:#3a2200;font:700 28px/1 "Roboto Condensed","Arial Narrow",Arial,sans-serif;border:3px solid #fff3c0;box-shadow:0 3px 8px #000;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}#mt.on{opacity:1}
+#bn{left:836px;top:470px;transform:translate(-50%,-50%) scale(.5);opacity:0;min-width:620px;padding:16px 60px 18px;border-radius:30px;text-align:center;background:linear-gradient(#2c1c12,#140c07);border:7px solid #d9a441;box-shadow:0 0 60px 10px rgba(255,200,60,.55),0 10px 30px #000;pointer-events:none;z-index:5}
+#bn.call{border-color:#ff5a5a;box-shadow:0 0 60px 10px rgba(255,60,60,.6),0 10px 30px #000;background:linear-gradient(#4a1010,#1c0606)}
+#bn.me{border-color:#6aa8ff;box-shadow:0 0 60px 10px rgba(70,140,255,.55),0 10px 30px #000;background:linear-gradient(#10264a,#07101e)}
+#bn b{display:block;white-space:nowrap;font:700 100px/1.05 "Roboto Condensed","Arial Narrow",Arial,sans-serif;background:linear-gradient(#fff6c4,#f0b020);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 3px rgba(0,0,0,.7));letter-spacing:2px}
+#bn s{display:block;text-decoration:none;color:#fff;font:700 36px/1.1 "Roboto Condensed","Arial Narrow",Arial,sans-serif;margin-top:4px}
+#bn.show{animation:bn 2.5s ease forwards}#bn.hold{animation:bnh .5s ease forwards}
+@keyframes bn{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}12%{transform:translate(-50%,-50%) scale(1.1);opacity:1}20%{transform:translate(-50%,-50%) scale(1);opacity:1}85%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+@keyframes bnh{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+#end{display:none;left:0;top:0;width:1672px;height:941px;background:rgba(0,0,0,.55);z-index:6}
+#end .bx{position:absolute;left:836px;top:640px;transform:translateX(-50%);display:flex;gap:30px}
+#end button{padding:22px 46px;border:0;border-radius:22px;background:linear-gradient(#ffd96a,#d9981a);color:#2a1600;font:800 44px "Roboto Condensed",Arial,sans-serif}#end button.g{background:#3a2a18;color:#fff}
+#tst{left:836px;top:150px;transform:translate(-50%,0);padding:8px 28px;border-radius:99px;background:rgba(160,20,20,.92);color:#fff;font:700 32px "Roboto Condensed",Arial,sans-serif;opacity:0;transition:opacity .3s;pointer-events:none;z-index:7}
+</style></head><body><div id="gm"><div id="st">
+<div class="t" id="rn" data-w="150" style="left:308px;top:49px"></div><div class="t" id="sn" data-w="150" style="left:1481px;top:49px;color:#ffe08a"></div>
+<div id="rb" style="left:201px;top:72px"></div><div id="rb2" style="left:1385px;top:72px"></div>
+<div class="t" id="s0" data-w="72" style="left:705px;top:90px;font-size:84px"></div><div class="t" id="s1" data-w="72" style="left:966px;top:90px;font-size:84px"></div>
+<div class="t" id="me" data-w="186" style="left:280px;top:853px;font-size:50px"></div>
+<div id="rcs"></div><div id="mcs"></div><div id="hcs"></div>
+<button class="hs" id="mz" aria-label="Al mazo" style="left:120px;top:300px;width:230px;height:300px;border-radius:30px"></button>
+<div id="mg"></div><div id="mt">TU TURNO</div>
+<div class="pill" id="pEN" style="top:724px"><i class="l"></i><i class="m"></i><i class="r"></i></div><div class="pt2" id="tEN" style="top:762px">ENVIDO</div>
+<div class="pill" id="pTR" style="top:724px"><i class="l"></i><i class="m"></i><i class="r"></i></div><div class="pt2" id="tTR" style="top:762px">TRUCO</div>
+<button class="hs" id="bVer" aria-label="Ver" style="left:1436px;top:246px"></button>
+<button class="hs" id="bQ" aria-label="Quiero" style="left:1313px;top:406px"></button>
+<button class="hs" id="bN" aria-label="No quiero" style="left:1506px;top:406px"></button>
+<button class="hs" id="bEN" aria-label="Envido" style="left:1313px;top:598px"></button>
+<button class="hs" id="bTR" aria-label="Truco" style="left:1503px;top:598px"></button>
+<div id="bn"><b></b><s></s></div><div id="tst"></div>
+<div id="end"><div class="bx" id="ebx"></div></div></div></div><div class="shade"></div>
+<div id="rot"><div class="ri">↻</div><b style="font-size:24px">Girá el celular</b><span style="color:#cfd6e6">Truco se juega en horizontal</span><button onclick="goLand()">Pantalla completa</button></div>
+<div class="pg"><div class="side"><img class="ico" src="/games/truco.webp" alt=""><h1>TRUCO</h1><div class="code" id="sc"></div></div><div class="main" id="app"><div class="box"><b>Conectando con la TV…</b></div></div></div>
 <script>
 const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),$=s=>document.querySelector(s);
+try{AndroidPhone.landscape(true)}catch(e){}
+function goLand(){const e=document.documentElement;try{(e.requestFullscreen||e.webkitRequestFullscreen).call(e);setTimeout(()=>{try{screen.orientation.lock('landscape')}catch(x){}},300)}catch(x){}}
 let id=localStorage.truco_uid||'',s=null,last='';
 const qs=new URLSearchParams(location.search);
 const post=b=>fetch('/act',{method:'POST',body:JSON.stringify({id,...b})}).then(r=>r.json());
 function poll(){fetch('/state?id='+encodeURIComponent(id),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{const k=JSON.stringify(j);if(k!==last){last=k;s=j;show()}}).catch(()=>{if(!s)$('#app').innerHTML='<div class="box"><b>Conectando con la TV…</b><p>Revisá que la TV tenga Truco abierto y que estén en la misma Wi-Fi.</p></div>'})}
-function join(){const n=$('#nm').value.trim();if(!n){$('#er').textContent='Escribí tu nombre';return}
+function join(){const n=$('#nm').value.trim();if(!n){$('#er').textContent='Escribí tu nombre';return}localStorage.juegostv_name=n;
  post({t:'join',name:n,code:$('#cd').value}).then(r=>{if(r.err){$('#er').textContent=r.err;return}id=r.id;localStorage.truco_uid=id;last='';poll()})}
 const appUrl=()=>`intent://${location.host}/sala?c=${encodeURIComponent(qs.get('c')||'')}&g=truco#Intent;scheme=unotv;package=com.juegos.tv;S.browser_fallback_url=${encodeURIComponent(location.href)};end`;
-const appBtn=()=>(!window.AndroidPhone&&/Android/.test(navigator.userAgent))?`<a class="b g" href="${appUrl()}">Abrir en la app Juegos TV</a>`:'';
-function show(){const A=$('#app');
- if(s.me<0){if(!$('#jf'))A.innerHTML=`<div class="box" id="jf"><p style="margin-top:0">Escaneá el QR de la TV o escribí el código</p><label>Tu nombre</label><input id="nm" maxlength="12" autocomplete="off"><label>Código de sala</label><input id="cd" maxlength="4" value="${E((qs.get('c')||'').toUpperCase())}" autocomplete="off"><div class="er" id="er"></div><button onclick="join()">Entrar a la sala</button>${appBtn()}</div>`;return}
- const n=s.players.length,host=s.me===0,full=n===s.need;
+const appBtn=()=>(!window.AndroidPhone&&/Android/.test(navigator.userAgent))?`<a class="b g" href="${appUrl()}" style="font-size:3.6vh;margin-top:1.6vh">Abrir en la app Juegos TV</a>`:'';
+function show(){if(s.phase==='play'||s.phase==='over'){if(s.me>=0){showGame(s);return}}else{G('gm').style.display='none'}const A=$('#app');$('#sc').textContent=s.me>=0?s.code:'';
+ if(s.me<0){if(!$('#jf'))A.innerHTML=`<div class="box" id="jf"><div class="two"><div><label>Tu nombre</label><input id="nm" maxlength="12" autocomplete="off" value="${E(localStorage.juegostv_name||'')}"></div><div><label>Código de sala</label><input id="cd" maxlength="4" value="${E((qs.get('c')||s.code||'').toUpperCase())}" autocomplete="off"></div></div><div class="er" id="er"></div><button class="b" onclick="join()">Entrar a la sala</button>${appBtn()}</div>`;return}
+ const n=s.players.length,host=s.me===0,full=s.canStart;
  let rows='';for(let k=0;k<Math.max(s.need,n);k++){const p=s.players[k];rows+=p?`<div class="slot ${k===s.me?'me':''}"><b>${k+1}</b> ${E(p.name)}${k===s.me?' (vos)':''}</div>`:`<div class="slot empty"><b>${k+1}</b> Esperando jugador…</div>`}
- if(s.phase==='ready'){A.innerHTML=`<div class="box"><div class="code">${E(s.code)}</div><h2 style="text-align:center">¡Sala lista!</h2>${rows}${host?'<button class="g" onclick="post({t:\'back\'}).then(poll)">Volver a la sala</button>':''}</div>`;return}
- A.innerHTML=`<div class="box"><p style="margin:0;text-align:center">Código de sala</p><div class="code">${E(s.code)}</div>
- ${host?`<div class="seg"><button class="${s.mode==='1v1'?'on':''}" onclick="post({t:'mode',m:'1v1'}).then(poll)">1 vs 1</button><button class="${s.mode==='2v2'?'on':''}" onclick="post({t:'mode',m:'2v2'}).then(poll)">2 vs 2</button></div>`:`<p style="text-align:center;margin-top:8px">Modo: <b>${s.mode==='2v2'?'2 vs 2':'1 vs 1'}</b></p>`}
- <div style="margin-top:10px">${rows}</div>
- ${host?`<button ${full?'':'disabled'} onclick="post({t:'start'}).then(poll)">${full?'Empezar':'Faltan jugadores ('+n+'/'+s.need+')'}</button>`:`<p style="text-align:center">${full?'Esperando que el anfitrión empiece…':'Esperando jugadores…'}</p>`}
- <button class="g" onclick="post({t:'leave'}).then(()=>{localStorage.removeItem('truco_uid');id='';last='';poll()})">Salir de la sala</button></div>`}
+ if(s.phase==='ready'){A.innerHTML=`<div class="box"><h2 style="margin:0 0 1.4vh;font-size:6vh;color:#ffe08a">¡Sala lista!</h2><div class="slots">${rows}</div>${host?'<button class="b g" onclick="post({t:\'back\'}).then(poll)">Volver a la sala</button>':''}</div>`;return}
+ A.innerHTML=`<div class="box">${host?`<div class="seg"><button class="${s.mode==='1v1'?'on':''}" onclick="post({t:'mode',m:'1v1'}).then(poll)">1 vs 1</button><button class="${s.mode==='2v2'?'on':''}" onclick="post({t:'mode',m:'2v2'}).then(poll)">2 vs 2</button></div><div class="seg"><button class="${s.target===15?'on':''}" onclick="post({t:'target',v:15}).then(poll)">A 15 puntos</button><button class="${s.target===30?'on':''}" onclick="post({t:'target',v:30}).then(poll)">A 30 puntos</button></div>`:`<p style="margin:0 0 1.6vh;font-size:4vh">Modo: <b>${s.mode==='2v2'?'2 vs 2':'1 vs 1'}</b> · a ${s.target}</p>`}
+ <div class="slots">${rows}</div><div class="row">${host?`<button class="b" ${full?'':'disabled'} onclick="post({t:'start'}).then(poll)">${full?'Empezar':(s.mode==='2v2'?'2 vs 2: próximamente':'Faltan jugadores ('+n+'/2)')}</button>`:`<div style="align-self:end;text-align:center;font-size:3.6vh;padding-top:2vh">${full?'Esperando que el anfitrión empiece…':'Esperando jugadores…'}</div>`}<button class="b g" onclick="post({t:'leave'}).then(()=>{localStorage.removeItem('truco_uid');id='';last='';poll()})">Salir de la sala</button></div></div>`}
 poll();setInterval(poll,1000);
-</script></body></html>
+
+/* ================= partida ================= */
+const G=i=>document.getElementById(i),ST=G('st');
+function fitG(){const s=Math.min(innerWidth/1672,innerHeight/941);ST.style.transform=`translate(${-1672*s/2}px,${-941*s/2}px) scale(${s})`}addEventListener('resize',fitG);fitG();
+let hide=false,selK=-1,lastEv=-1,firstG=true,lastHandKey='';
+const TN={truco:'TRUCO',retruco:'RETRUCO',valecuatro:'VALE CUATRO',envido:'ENVIDO',real:'REAL ENVIDO',falta:'FALTA ENVIDO'};
+const ci=c=>'/cartas/'+c.s+'_'+c.n+'.png',BK='/truco/back.png';
+function cdiv(x,y,w,h,src,cls){return `<div class="cd ${cls||''}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"><img src="${src}" alt="" draggable="false"></div>`}
+function fitTxt(){document.querySelectorAll('#st .t[data-w]').forEach(e=>{e.style.transform='translate(-50%,-50%)';const k=+e.dataset.w/e.offsetWidth;e.style.transform=`translate(-50%,-50%) scaleX(${Math.min(1,k)})`})}
+function setPill(id,cx,text,off){const t=G('t'+id),p=G('p'+id);t.textContent=text;t.style.transform='translate(-50%,-50%)';t.style.left=cx+'px';const w=Math.min(188,Math.max(163,t.offsetWidth+64));p.style.width=w+'px';p.style.left=(cx-w/2)+'px';t.style.transform=`translate(-50%,-50%) scaleX(${Math.min(1,(w-60)/t.offsetWidth)})`;p.classList.toggle('off',off)}
+function toast(m){const t=G('tst');t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,1800)}
+function banner(title,sub,cls,hold){const b=G('bn');b.className=cls||'';b.querySelector('b').textContent=title;b.querySelector('s').textContent=sub||'';void b.offsetWidth;b.classList.add(hold?'hold':'show')}
+function sendP(b){return post(b).then(r=>{if(r&&r.err)toast(r.err);poll();return r})}
+function showGame(v){G('gm').style.display='block';const me=v.me,rv=1-me,nm=p=>v.players[p]?v.players[p].name:'';const a=v.act||{play:false,truco:{on:false,label:'TRUCO'},envido:{on:false,label:'ENVIDO'},quiero:false,mazo:false};
+ G('rn').textContent=nm(rv);G('me').textContent=nm(me);G('s0').textContent=v.score[me];G('s1').textContent=v.score[rv];
+ const myTurn=!v.over&&!v.ended&&(v.pend?v.pend.by!==me:v.turn===me);
+ G('sn').textContent=v.over?(v.over.winner===me?'¡GANASTE!':'FIN'):v.ended?'...':(v.pend&&v.pend.by!==me?'RESPONDÉ':myTurn?'TU TURNO':'ESPERÁ');
+ G('mg').classList.toggle('on',myTurn);G('mt').classList.toggle('on',myTurn);
+ const bks=n=>Array.from({length:n},(_,i)=>`<img class="bk" src="${BK}" alt="" style="position:absolute;left:${i*62.5-2}px;top:0">`).join('');
+ G('rb').innerHTML=bks(v.counts[rv]);G('rb2').innerHTML='';
+ // cartas jugadas (rival arriba, mías al medio)
+ G('rcs').innerHTML=v.table[rv].map((c,k)=>c?cdiv(836+(k-1)*195-56,203,112,177,ci(c)):'').join('');
+ G('mcs').innerHTML=v.table[me].map((c,k)=>c?cdiv(838+(k-1)*150-66,436,132,209,ci(c)):'').join('');
+ // mi mano
+ const mine=v.mine||[],n=mine.length;if(selK>=n)selK=-1;
+ G('hcs').innerHTML=mine.map((c,k)=>{const x=838+(k-(n-1)/2)*172-75;return `<div class="cd hc ${selK===k?'sel':''} ${a.play?'':'dim'}" data-k="${k}" style="left:${x}px;top:684px;width:150px;height:237px"><img src="${hide?BK:ci(c)}" alt="" draggable="false"></div>`}).join('');
+ document.querySelectorAll('.hc').forEach(el=>{const k=+el.dataset.k;let y0=null;
+  el.addEventListener('pointerdown',e=>{y0=e.clientY});
+  el.addEventListener('pointerup',e=>{const up=y0!==null&&y0-e.clientY>40;y0=null;if(!a.play){toast(v.pend?'Tenés que responder':'No es tu turno');return}
+   if(selK===k||up){selK=-1;sendP({t:'play',k})}else{selK=k;last='';showGame(v)}})});
+ setPill('TR',1576,a.truco.label,!a.truco.on);setPill('EN',1384,a.envido.label,!a.envido.on);
+ G('bTR').classList.toggle('off',!a.truco.on);G('bEN').classList.toggle('off',!a.envido.on);
+ G('bQ').classList.toggle('off',!a.quiero);G('bN').classList.toggle('off',!a.quiero);G('bQ').classList.toggle('pulse',a.quiero);G('bN').classList.toggle('pulse',a.quiero);
+ G('mz').classList.toggle('off',!a.mazo);
+ // eventos -> carteles
+ if(firstG){firstG=false;lastEv=v.evId}else v.events.filter(e=>e.id>lastEv).forEach(e=>evBanner(e,v,me,nm));lastEv=v.evId;
+ // fin de partida
+ const E2=G('end');if(v.over){E2.style.display='block';G('ebx').innerHTML=(me===0?'<button onclick="sendP({t:\'rematch\'})">REVANCHA</button><button class="g" onclick="sendP({t:\'lobby\'})">VOLVER A LA SALA</button>':'<span style="color:#fff;font:700 40px Arial">Esperando al anfitrión…</span>')}else E2.style.display='none';
+ fitTxt()}
+function evBanner(e,v,me,nm){
+ if(e.type==='deal'){G('bn').className='';selK=-1}
+ else if(e.type==='call'){const mine=e.p===me;banner('¡'+TN[e.k]+'!',mine?'Cantaste · esperando respuesta':nm(e.p).toUpperCase()+' te cantó · respondé',mine?'me':'call')}
+ else if(e.type==='resp')banner(e.r==='quiero'?'¡QUIERO!':'NO QUIERO',e.p===me?'Respondiste':nm(e.p).toUpperCase()+' responde',e.p===me?'me':'call');
+ else if(e.type==='mazo')banner('¡AL MAZO!',e.p===me?'Te fuiste al mazo':nm(e.p).toUpperCase()+' se fue al mazo',e.p===me?'me':'call');
+ else if(e.type==='envido')banner(e.refused?'+'+e.pot:e.pts[me]+' vs '+e.pts[1-me],(e.w===me?'Ganaste el envido':'Perdiste el envido')+' · '+(e.w===me?'+':'')+e.pot,e.w===me?'me':'call');
+ else if(e.type==='hand')banner(e.w===me?'¡GANASTE LA MANO!':'PERDISTE LA MANO',(e.w===me?'+':'')+e.pts+(e.pts==1?' punto':' puntos'),e.w===me?'me':'call');
+ else if(e.type==='game')banner(e.w===me?'¡GANASTE!':'PERDISTE','Fin de la partida',e.w===me?'me':'call',true)}
+G('bTR').onclick=()=>sendP({t:'truco'});G('bEN').onclick=()=>sendP({t:'envido'});G('bQ').onclick=()=>sendP({t:'quiero'});G('bN').onclick=()=>sendP({t:'noquiero'});
+G('bVer').onclick=()=>{hide=!hide;last='';if(s)showGame(s)};
+G('mz').onclick=()=>{if(confirm('¿Irte al mazo?'))sendP({t:'mazo'})};
+</script>

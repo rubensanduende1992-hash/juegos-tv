@@ -1,0 +1,44 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Control</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{height:100%;margin:0}
+body{background:#120a05 url(/bg-phone.jpg) center/cover fixed no-repeat;color:#fff;font-family:system-ui,Arial,sans-serif;overflow:hidden;user-select:none}
+.shade{position:fixed;inset:0;background:rgba(10,6,3,.7)}
+#rot{display:none;position:fixed;inset:0;z-index:9;background:#120a05;flex-direction:column;align-items:center;justify-content:center;gap:2vh;text-align:center;padding:20px}
+#rot .ri{font-size:90px;color:#ffe08a}#rot button{padding:12px 22px;border:0;border-radius:12px;background:linear-gradient(#ffd96a,#d9981a);font-weight:800;font-size:18px;color:#2a1600}
+@media (orientation:portrait){#rot{display:flex}}
+.pg{position:relative;height:100%;display:flex;align-items:center;justify-content:center;gap:3vw;padding:3vh 3vw}
+.btn{flex:1;max-width:28vw;height:78vh;border:0;border-radius:3vh;background:linear-gradient(#3a2a18,#1c1209);color:#ffe08a;font-size:18vh;font-weight:900;box-shadow:0 1vh 3vh #000,inset 0 .4vh 0 rgba(255,255,255,.18);border:.5vh solid #c9962e}
+.btn:active{transform:scale(.96);filter:brightness(1.3)}
+.mid{flex:1.2;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2vh}
+.mid .t{font-size:5vh;letter-spacing:.4vh;color:#cfd6e6}.mid img{height:34vh;border-radius:5vh;box-shadow:0 1vh 3vh #000}.mid .n{font-size:8vh;font-weight:900;color:#ffe08a;letter-spacing:.6vh}
+.ok{width:100%;max-width:34vw;padding:2.4vh;border:0;border-radius:3vh;background:linear-gradient(#ffd96a,#d9981a);font-size:8vh;font-weight:900;color:#2a1600;box-shadow:0 1vh 3vh #000}
+.ok:active{transform:scale(.96)}
+.box{background:rgba(24,14,8,.92);border:.5vh solid #c9962e;border-radius:3vh;padding:4vh;text-align:center;max-width:70vw}
+.box input{width:100%;padding:2vh;font-size:6vh;border-radius:2vh;border:.4vh solid #6b4a1a;background:#1a1008;color:#fff;text-align:center;margin:2vh 0}
+.box .ok{max-width:none;font-size:6vh}
+#ov{display:none;position:fixed;inset:0;z-index:5;place-items:center;background:rgba(0,0,0,.7);color:#ffe08a;font:900 12vh "Arial Black",sans-serif}
+</style></head><body><div class="shade"></div>
+<div id="rot"><div class="ri">↻</div><b style="font-size:24px">Girá el celular</b><span style="color:#cfd6e6">El control se usa en horizontal</span><button onclick="goLand()">Pantalla completa</button></div>
+<div class="pg" id="app"><div class="box"><b>Conectando con la TV…</b></div></div><div id="ov"></div>
+<script>
+const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),$=s=>document.querySelector(s);
+try{AndroidPhone.landscape(true)}catch(e){}
+function goLand(){const e=document.documentElement;try{(e.requestFullscreen||e.webkitRequestFullscreen).call(e);setTimeout(()=>{try{screen.orientation.lock('landscape')}catch(x){}},300)}catch(x){}}
+let id=localStorage.juegostv_cid||'',name=localStorage.juegostv_name||'',s=null,last='',joining=false;
+const post=b=>fetch('/act',{method:'POST',body:JSON.stringify({id,...b})}).then(r=>r.json());
+function join(){if(joining)return;joining=true;post({t:'join',name}).then(r=>{joining=false;if(r.id){id=r.id;localStorage.juegostv_cid=id;poll()}}).catch(()=>{joining=false})}
+function poll(){fetch('/state?id='+encodeURIComponent(id),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{
+ if(j.game==='truco'){location.replace('/truco-play.html?c='+j.code);return}
+ if(j.game!=='home'){location.replace('/play.html?c='+j.code);return}
+ const k=JSON.stringify(j);if(k===last)return;last=k;s=j;show()}).catch(()=>{if(!s)$('#app').innerHTML='<div class="box"><b>Conectando con la TV…</b><p>Revisá que la TV esté en la pantalla de selección y en la misma Wi-Fi.</p></div>'})}
+function show(){const A=$('#app');
+ if(!name){if(!$('#nm'))A.innerHTML='<div class="box"><div style="font-size:5vh">¿Cómo te llamás?</div><input id="nm" maxlength="12" autocomplete="off"><button class="ok" onclick="setName()">Entrar</button></div>';return}
+ if(s.me<0){join();return}
+ $('#ov').style.display=s.launching?'grid':'none';$('#ov').textContent=s.launching?'Abriendo '+(s.launching==='truco'?'TRUCO':'UNO')+'…':'';
+ const g=s.sel===0?['TRUCO','/games/truco.webp']:['UNO','/games/uno.webp'];
+ A.innerHTML=`<button class="btn" onclick="mv(-1)">◀</button><div class="mid"><div class="t">ELEGÍ EL JUEGO</div><img src="${g[1]}" alt=""><div class="n">${g[0]}</div><button class="ok" onclick="ok()">OK</button></div><button class="btn" onclick="mv(1)">▶</button>`}
+function setName(){const v=$('#nm').value.trim();if(!v)return;name=v;localStorage.juegostv_name=v;last='';poll()}
+const buzz=()=>{try{navigator.vibrate(30)}catch(e){}};
+function mv(d){buzz();post({t:'move',d}).then(poll)}function ok(){buzz();post({t:'ok'}).then(poll)}
+poll();setInterval(poll,700);
+</script></body></html>
