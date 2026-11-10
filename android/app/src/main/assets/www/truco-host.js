@@ -26,9 +26,9 @@ function endHand(w,pts,reason){const H=S.H;H.ended=true;H.pend=null;H.stack=null
 function falta(){return Math.max(1,S.target-Math.max(S.score[0],S.score[1]))}
 function pot(calls){if(calls.includes(3))return falta();return calls.reduce((a,l)=>a+(l===1?2:3),0)}
 function popStack(H){H.pend=H.stack;H.stack=null}
-function resolveEnvido(H){const c=H.ev.calls,p=pot(c),pts=[envidoPts(H.dealt[0]),envidoPts(H.dealt[1])];
+function resolveEnvido(H,auto){const c=H.ev.calls,p=pot(c),pts=[envidoPts(H.dealt[0]),envidoPts(H.dealt[1])];
  const w=pts[0]>pts[1]?0:pts[1]>pts[0]?1:H.mano;H.ev.done=true;H.pend=null;if(H.stack)popStack(H);
- E('envido',{w,pot:p,pts});addScore(w,p)}
+ E('envido',{w,pot:p,pts,mano:H.mano,auto:!!auto});addScore(w,p)}
 function act(b,i){
  const H=S.H;
  if(b.t==='join'){
@@ -73,7 +73,9 @@ function act(b,i){
   else{const pts=H.ev.calls.length?pot(H.ev.calls):1;H.ev.done=true;H.pend=null;if(H.stack)popStack(H);addScore(P.by,pts);E('envido',{w:P.by,pot:pts,refused:1})}}
  else if(b.t==='mazo'){
   if(!((H.turn===i&&!P)||resp))return{err:'No podés irte al mazo ahora'};
-  E('mazo',{p:i});endHand(opp(i),(P&&P.kind==='truco')?TREF[P.lvl-1]:tval(),'mazo')}
+  E('mazo',{p:i});
+  if(P&&P.kind==='envido'){H.ev.calls.push(P.lvl);resolveEnvido(H,1);if(S.over)return{}}
+  const P2=H.pend;endHand(opp(i),(P2&&P2.kind==='truco')?TREF[P2.lvl-1]:tval(),'mazo')}
  return{}}
 function actions(i){const H=S.H;const off={on:false};
  if(S.phase!=='play'||!H||H.ended||i<0)return{play:false,truco:{on:false,label:'TRUCO'},envido:{on:false,label:'ENVIDO'},quiero:false,mazo:false};

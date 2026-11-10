@@ -64,11 +64,11 @@ button.g,.b.g{background:#3a2a18;color:#fff}button:disabled{opacity:.4}
 <div class="t" id="s0" data-w="72" style="left:705px;top:90px;font-size:84px"></div><div class="t" id="s1" data-w="72" style="left:966px;top:90px;font-size:84px"></div>
 <div class="t" id="me" data-w="186" style="left:280px;top:853px;font-size:50px"></div>
 <div id="rcs"></div><div id="mcs"></div><div id="hcs"></div>
-<button class="hs" id="mz" aria-label="Al mazo" style="left:120px;top:300px;width:230px;height:300px;border-radius:30px"></button>
 <div id="mg"></div><div id="mt">TU TURNO</div>
 <div class="pill" id="pEN" style="top:724px"><i class="l"></i><i class="m"></i><i class="r"></i></div><div class="pt2" id="tEN" style="top:762px">ENVIDO</div>
 <div class="pill" id="pTR" style="top:724px"><i class="l"></i><i class="m"></i><i class="r"></i></div><div class="pt2" id="tTR" style="top:762px">TRUCO</div>
-<button class="hs" id="bVer" aria-label="Ver" style="left:1436px;top:246px"></button>
+<svg id="mzi" viewBox="0 0 84 58" style="left:1466px;top:289px;width:84px;height:58px;pointer-events:none"><g transform="rotate(-10 30 30)"><rect x="8" y="6" width="32" height="44" rx="4" fill="#fff" stroke="#0a2a6a" stroke-width="3"/></g><g transform="rotate(8 46 30)"><rect x="30" y="6" width="32" height="44" rx="4" fill="#fff" stroke="#0a2a6a" stroke-width="3"/><path d="M46 16v22M37 30l9 10 9-10" fill="none" stroke="#c01e24" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g></svg><div class="t" id="mzt" data-w="104" style="left:1508px;top:383px;font-size:34px">AL MAZO</div>
+<button class="hs" id="bMz" aria-label="Ir al mazo" style="left:1436px;top:246px;height:170px"></button>
 <button class="hs" id="bQ" aria-label="Quiero" style="left:1313px;top:406px"></button>
 <button class="hs" id="bN" aria-label="No quiero" style="left:1506px;top:406px"></button>
 <button class="hs" id="bEN" aria-label="Envido" style="left:1313px;top:598px"></button>
@@ -77,7 +77,7 @@ button.g,.b.g{background:#3a2a18;color:#fff}button:disabled{opacity:.4}
 <div id="end"><div class="bx" id="ebx"></div></div></div></div><div class="shade"></div>
 <div id="rot"><div class="ri">↻</div><b style="font-size:24px">Girá el celular</b><span style="color:#cfd6e6">Truco se juega en horizontal</span><button onclick="goLand()">Pantalla completa</button></div>
 <div class="pg"><div class="side"><img class="ico" src="/games/truco.webp" alt=""><h1>TRUCO</h1><div class="code" id="sc"></div></div><div class="main" id="app"><div class="box"><b>Conectando con la TV…</b></div></div></div>
-<script>
+<script src="/sonido.js"></script><script>
 const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),$=s=>document.querySelector(s);
 try{AndroidPhone.landscape(true)}catch(e){}
 function goLand(){const e=document.documentElement;try{(e.requestFullscreen||e.webkitRequestFullscreen).call(e);setTimeout(()=>{try{screen.orientation.lock('landscape')}catch(x){}},300)}catch(x){}}
@@ -122,7 +122,7 @@ function showGame(v){G('gm').style.display='block';const me=v.me,rv=1-me,nm=p=>v
  G('mcs').innerHTML=v.table[me].map((c,k)=>c?cdiv(838+(k-1)*150-66,436,132,209,ci(c)):'').join('');
  // mi mano
  const mine=v.mine||[],n=mine.length;if(selK>=n)selK=-1;
- G('hcs').innerHTML=mine.map((c,k)=>{const x=838+(k-(n-1)/2)*172-75;return `<div class="cd hc ${selK===k?'sel':''} ${a.play?'':'dim'}" data-k="${k}" style="left:${x}px;top:684px;width:150px;height:237px"><img src="${hide?BK:ci(c)}" alt="" draggable="false"></div>`}).join('');
+ G('hcs').innerHTML=mine.map((c,k)=>{const x=838+(k-(n-1)/2)*172-75;return `<div class="cd hc ${selK===k?'sel':''} ${a.play?'':'dim'}" data-k="${k}" style="left:${x}px;top:684px;width:150px;height:237px"><img src="${ci(c)}" alt="" draggable="false"></div>`}).join('');
  document.querySelectorAll('.hc').forEach(el=>{const k=+el.dataset.k;let y0=null;
   el.addEventListener('pointerdown',e=>{y0=e.clientY});
   el.addEventListener('pointerup',e=>{const up=y0!==null&&y0-e.clientY>40;y0=null;if(!a.play){toast(v.pend?'Tenés que responder':'No es tu turno');return}
@@ -130,7 +130,7 @@ function showGame(v){G('gm').style.display='block';const me=v.me,rv=1-me,nm=p=>v
  setPill('TR',1576,a.truco.label,!a.truco.on);setPill('EN',1384,a.envido.label,!a.envido.on);
  G('bTR').classList.toggle('off',!a.truco.on);G('bEN').classList.toggle('off',!a.envido.on);
  G('bQ').classList.toggle('off',!a.quiero);G('bN').classList.toggle('off',!a.quiero);G('bQ').classList.toggle('pulse',a.quiero);G('bN').classList.toggle('pulse',a.quiero);
- G('mz').classList.toggle('off',!a.mazo);
+ G('bMz').classList.toggle('off',!a.mazo);if(!a.mazo)resetMz();
  // eventos -> carteles
  if(firstG){firstG=false;lastEv=v.evId}else v.events.filter(e=>e.id>lastEv).forEach(e=>evBanner(e,v,me,nm));lastEv=v.evId;
  // fin de partida
@@ -143,8 +143,8 @@ function evBanner(e,v,me,nm){
  else if(e.type==='mazo')banner('¡AL MAZO!',e.p===me?'Te fuiste al mazo':nm(e.p).toUpperCase()+' se fue al mazo',e.p===me?'me':'call');
  else if(e.type==='envido')banner(e.refused?'+'+e.pot:e.pts[me]+' vs '+e.pts[1-me],(e.w===me?'Ganaste el envido':'Perdiste el envido')+' · '+(e.w===me?'+':'')+e.pot,e.w===me?'me':'call');
  else if(e.type==='hand')banner(e.w===me?'¡GANASTE LA MANO!':'PERDISTE LA MANO',(e.w===me?'+':'')+e.pts+(e.pts==1?' punto':' puntos'),e.w===me?'me':'call');
- else if(e.type==='game')banner(e.w===me?'¡GANASTE!':'PERDISTE','Fin de la partida',e.w===me?'me':'call',true)}
+ else if(e.type==='game'){SND.play(e.w===me?'/sonidos/winner.mp3':'/sonidos/loser.mp3',1);banner(e.w===me?'¡GANASTE!':'PERDISTE','Fin de la partida',e.w===me?'me':'call',true)}}
 G('bTR').onclick=()=>sendP({t:'truco'});G('bEN').onclick=()=>sendP({t:'envido'});G('bQ').onclick=()=>sendP({t:'quiero'});G('bN').onclick=()=>sendP({t:'noquiero'});
-G('bVer').onclick=()=>{hide=!hide;last='';if(s)showGame(s)};
-G('mz').onclick=()=>{if(confirm('¿Irte al mazo?'))sendP({t:'mazo'})};
+let mzArm=0,mzT;function resetMz(){mzArm=0;clearTimeout(mzT);G('mzt').textContent='AL MAZO';G('bMz').classList.remove('pulse');fitTxt()}
+G('bMz').onclick=()=>{if(!(s&&s.act&&s.act.mazo))return;if(!mzArm){mzArm=1;G('mzt').textContent='¿SEGURO?';G('bMz').classList.add('pulse');fitTxt();mzT=setTimeout(resetMz,2500)}else{resetMz();sendP({t:'mazo'})}};
 </script>

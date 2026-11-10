@@ -117,6 +117,7 @@ class MainActivity : Activity() {
         val w = WebView(this)
         w.settings.javaScriptEnabled = true
         w.settings.domStorageEnabled = true
+        w.settings.mediaPlaybackRequiresUserGesture = false
         w.setBackgroundColor(0xFF0E1117.toInt())
         w.webViewClient = object : WebViewClient() {
             override fun onReceivedError(v: WebView, req: WebResourceRequest, err: WebResourceError) {
