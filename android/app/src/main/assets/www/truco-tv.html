@@ -129,13 +129,15 @@ function setFrame(p,f){document.querySelectorAll('#'+(p?'gau':'chi')+' img').for
 const idle=()=>[0,1].forEach(p=>setFrame(p,'i'+Math.max(0,Math.min(3,shown[p]))));
 /* ---------- cartas ---------- */
 function wrap(c,cls){const w=document.createElement('div');w.className=cls;const i=new Image();i.src='/cartas/'+c.s+'_'+c.n+'.png';i.draggable=false;w.append(i);return w}
-function placeStatic(p,t,c){const k=p+'_'+t;if(SG.querySelector('.sc[data-k="'+k+'"]'))return;const s=wrap(c,'sc');s.dataset.k=k;s.style.transform=SL[p][t].m;SG.insertBefore(s,$('chi'))}
+const SLOT=(p,t)=>({cx:p?1032-60*t:640+60*t,cy:649});
+function placeStatic(p,t,c){const k=p+'_'+t;if(SG.querySelector('.sc[data-k="'+k+'"]'))return;const o=SLOT(p,t),s=wrap(c,'sc');s.dataset.k=k;
+ s.style.cssText=`left:${o.cx-36}px;top:${o.cy-57}px;width:72px;height:114px;transform-origin:50% 100%;transform:perspective(300px) rotateX(34deg) rotate(${p?3:-3}deg);z-index:${t+1}`;SG.insertBefore(s,$('chi'))}
 function clearTable(){SG.querySelectorAll('.sc,.big').forEach(n=>n.remove());$('cap').style.opacity=0}
 function big(c,p){SG.querySelectorAll('.big').forEach(b=>b.remove());const b=wrap(c,'big');b.style.transform='translate(781px,395px) scale(.85)';SG.append(b);const cap=$('cap');cap.textContent=`${nm(p)} tiró: ${c.n} de ${PN[c.s]}`;cap.style.opacity=1;clearTimeout(bt);bt=setTimeout(()=>{b.style.opacity=0;cap.style.opacity=0},2000)}
-function animPlay(e){const p=e.p,c=e.card,t=e.t,sl=SL[p][t],d=p?-1:1;
+function animPlay(e){const p=e.p,c=e.card,t=e.t,sl=SLOT(p,t),d=p?-1:1;
  setFrame(p,shown[p]>=2?'r2':'r1');
  const fly=()=>{const[x0,y0]=HAND[p],mx=(x0+sl.cx)/2,my=Math.min(y0,sl.cy)-200,T=(x,y,s,r)=>`translate(${x-55}px,${y-82}px) scale(${s}) rotate(${r}deg)`;
-  const kf=o=>[{transform:T(x0,y0,.5,0),opacity:o},{transform:T(mx,my,1.05,d*200),offset:.45,opacity:o},{transform:T(sl.cx,sl.cy,.33,d*360),opacity:o}],opt={duration:750,easing:'cubic-bezier(.3,.6,.4,1)',fill:'both'};
+  const kf=o=>[{transform:T(x0,y0,.5,0),opacity:o},{transform:T(mx,my,1.05,d*200),offset:.45,opacity:o},{transform:T(sl.cx,sl.cy,.66,d*360),opacity:o}],opt={duration:750,easing:'cubic-bezier(.3,.6,.4,1)',fill:'both'};
   for(let i=3;i>=1;i--){const g=wrap(c,'fly');g.firstChild.style.filter='blur(2px)';SG.append(g);g.animate(kf(.28/i),{...opt,delay:i*45}).onfinish=()=>g.remove()}
   const f=wrap(c,'fly');SG.append(f);f.animate(kf(1),opt).onfinish=()=>{f.remove();placeStatic(p,t,c);big(c,p)}};
  setTimeout(()=>{setFrame(p,'x');fly()},220);
