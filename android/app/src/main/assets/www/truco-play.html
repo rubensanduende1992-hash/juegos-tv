@@ -54,8 +54,25 @@ button.g,.b.g{background:#3a2a18;color:#fff}button:disabled{opacity:.4}
 #bn.show{animation:bn 2.5s ease forwards}#bn.hold{animation:bnh .5s ease forwards}
 @keyframes bn{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}12%{transform:translate(-50%,-50%) scale(1.1);opacity:1}20%{transform:translate(-50%,-50%) scale(1);opacity:1}85%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
 @keyframes bnh{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
-#end{display:none;left:0;top:0;width:1672px;height:941px;background:rgba(0,0,0,.55);z-index:6}
-#end .bx{position:absolute;left:836px;top:640px;transform:translateX(-50%);display:flex;gap:30px}
+#end{display:none;left:0;top:0;width:1672px;height:941px;z-index:6;overflow:hidden}
+#end.win{background:radial-gradient(circle at 50% 45%,rgba(255,220,100,.5),rgba(50,25,0,.9))}
+#end.lose{background:radial-gradient(circle at 50% 45%,rgba(110,10,10,.55),rgba(4,4,18,.94))}
+#end .rays{position:absolute;left:50%;top:45%;width:2600px;height:2600px;margin:-1300px 0 0 -1300px;background:repeating-conic-gradient(from 0deg,rgba(255,235,150,.32) 0 8deg,transparent 8deg 20deg);animation:spin 14s linear infinite;display:none}
+#end.win .rays{display:block}@keyframes spin{to{transform:rotate(360deg)}}
+#end .lights{position:absolute;inset:0;display:none}
+#end.win .lights{display:block;border:26px dotted #ffe08a;animation:blink .55s steps(2) infinite}
+@keyframes blink{0%{border-color:#ffe08a;box-shadow:inset 0 0 90px rgba(255,200,60,.7)}50%{border-color:#ff7a00;box-shadow:inset 0 0 40px rgba(255,120,0,.4)}}
+#end.lose .lights{display:block;background:radial-gradient(circle at 0% 50%,rgba(255,40,40,.75),transparent 38%),radial-gradient(circle at 100% 50%,rgba(40,90,255,.75),transparent 38%);animation:flash .7s steps(2) infinite}
+@keyframes flash{0%{opacity:1}50%{opacity:.12}}
+#conf{position:absolute;inset:0}#end.lose #conf{display:none}
+#conf i{position:absolute;top:-40px;width:18px;height:30px;border-radius:3px;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(1000px) rotate(720deg)}}
+#etx{position:absolute;left:0;right:0;top:230px;text-align:center;font:900 250px/1 "Roboto Condensed","Arial Black",Impact,sans-serif;letter-spacing:12px}
+#end.win #etx{background:linear-gradient(#fff6c4,#f0a810);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(255,200,60,.95)) drop-shadow(0 8px 4px #000);animation:pulse 1s ease-in-out infinite}
+#end.lose #etx{color:#ff4a4a;text-shadow:0 0 40px #f00,0 8px 4px #000;animation:shake .5s linear infinite}
+@keyframes pulse{50%{transform:scale(1.07)}}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#esb{position:absolute;left:0;right:0;top:500px;text-align:center;color:#fff;font:700 58px "Roboto Condensed",Arial,sans-serif;text-shadow:0 3px 6px #000}
+#end .bx{position:absolute;left:836px;top:650px;transform:translateX(-50%);display:flex;gap:30px}
 #end button{padding:22px 46px;border:0;border-radius:22px;background:linear-gradient(#ffd96a,#d9981a);color:#2a1600;font:800 44px "Roboto Condensed",Arial,sans-serif}#end button.g{background:#3a2a18;color:#fff}
 #tst{left:836px;top:150px;transform:translate(-50%,0);padding:8px 28px;border-radius:99px;background:rgba(160,20,20,.92);color:#fff;font:700 32px "Roboto Condensed",Arial,sans-serif;opacity:0;transition:opacity .3s;pointer-events:none;z-index:7}
 </style></head><body><div id="gm"><div id="st">
@@ -74,7 +91,7 @@ button.g,.b.g{background:#3a2a18;color:#fff}button:disabled{opacity:.4}
 <button class="hs" id="bEN" aria-label="Envido" style="left:1313px;top:598px"></button>
 <button class="hs" id="bTR" aria-label="Truco" style="left:1503px;top:598px"></button>
 <div id="bn"><b></b><s></s></div><div id="tst"></div>
-<div id="end"><div class="bx" id="ebx"></div></div></div></div><div class="shade"></div>
+<div id="end"><div class="rays"></div><div class="lights"></div><div id="conf"></div><div id="etx"></div><div id="esb"></div><div class="bx" id="ebx"></div></div></div></div><div class="shade"></div>
 <div id="rot"><div class="ri">↻</div><b style="font-size:24px">Girá el celular</b><span style="color:#cfd6e6">Truco se juega en horizontal</span><button onclick="goLand()">Pantalla completa</button></div>
 <div class="pg"><div class="side"><img class="ico" src="/games/truco.webp" alt=""><h1>TRUCO</h1><div class="code" id="sc"></div></div><div class="main" id="app"><div class="box"><b>Conectando con la TV…</b></div></div></div>
 <script src="/sonido.js"></script><script>
@@ -108,13 +125,14 @@ function cdiv(x,y,w,h,src,cls){return `<div class="cd ${cls||''}" style="left:${
 function fitTxt(){document.querySelectorAll('#st .t[data-w]').forEach(e=>{e.style.transform='translate(-50%,-50%)';const k=+e.dataset.w/e.offsetWidth;e.style.transform=`translate(-50%,-50%) scaleX(${Math.min(1,k)})`})}
 function setPill(id,cx,text,off){const t=G('t'+id),p=G('p'+id);t.textContent=text;t.style.transform='translate(-50%,-50%)';t.style.left=cx+'px';const w=Math.min(188,Math.max(163,t.offsetWidth+64));p.style.width=w+'px';p.style.left=(cx-w/2)+'px';t.style.transform=`translate(-50%,-50%) scaleX(${Math.min(1,(w-60)/t.offsetWidth)})`;p.classList.toggle('off',off)}
 function toast(m){const t=G('tst');t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,1800)}
-function banner(title,sub,cls,hold){const b=G('bn');b.className=cls||'';b.querySelector('b').textContent=title;b.querySelector('s').textContent=sub||'';void b.offsetWidth;b.classList.add(hold?'hold':'show')}
+let bannerUntil=0,prevPT=false;function banner(title,sub,cls,hold){bannerUntil=Date.now()+(hold?1e9:2600);const b=G('bn');b.className=cls||'';b.querySelector('b').textContent=title;b.querySelector('s').textContent=sub||'';void b.offsetWidth;b.classList.add(hold?'hold':'show')}
 function sendP(b){return post(b).then(r=>{if(r&&r.err)toast(r.err);poll();return r})}
 function showGame(v){G('gm').style.display='block';const me=v.me,rv=1-me,nm=p=>v.players[p]?v.players[p].name:'';const a=v.act||{play:false,truco:{on:false,label:'TRUCO'},envido:{on:false,label:'ENVIDO'},quiero:false,mazo:false};
  G('rn').textContent=nm(rv);G('me').textContent=nm(me);G('s0').textContent=v.score[me];G('s1').textContent=v.score[rv];
  const myTurn=!v.over&&!v.ended&&(v.pend?v.pend.by!==me:v.turn===me);
  G('sn').textContent=v.over?(v.over.winner===me?'¡GANASTE!':'FIN'):v.ended?'...':(v.pend&&v.pend.by!==me?'RESPONDÉ':myTurn?'TU TURNO':'ESPERÁ');
  G('mg').classList.toggle('on',myTurn);G('mt').classList.toggle('on',myTurn);
+ const pt=!v.over&&!v.ended&&!v.pend&&v.turn===me;if(pt&&!prevPT)setTimeout(()=>{if(prevPT)banner('¡TU TURNO!','Elegí una carta o cantá','')},Math.max(0,bannerUntil-Date.now())+150);prevPT=pt;
  const bks=n=>Array.from({length:n},(_,i)=>`<img class="bk" src="${BK}" alt="" style="position:absolute;left:${i*62.5-2}px;top:0">`).join('');
  G('rb').innerHTML=bks(v.counts[rv]);G('rb2').innerHTML='';
  // cartas jugadas (rival arriba, mías al medio)
@@ -134,7 +152,9 @@ function showGame(v){G('gm').style.display='block';const me=v.me,rv=1-me,nm=p=>v
  // eventos -> carteles
  if(firstG){firstG=false;lastEv=v.evId}else v.events.filter(e=>e.id>lastEv).forEach(e=>evBanner(e,v,me,nm));lastEv=v.evId;
  // fin de partida
- const E2=G('end');if(v.over){E2.style.display='block';G('ebx').innerHTML=(me===0?'<button onclick="sendP({t:\'rematch\'})">REVANCHA</button><button class="g" onclick="sendP({t:\'lobby\'})">VOLVER A LA SALA</button>':'<span style="color:#fff;font:700 40px Arial">Esperando al anfitrión…</span>')}else E2.style.display='none';
+ const E2=G('end');if(v.over){const win=v.over.winner===me;E2.className=win?'win':'lose';E2.style.display='block';G('etx').textContent=win?'WINNER':'LOSER';G('esb').textContent=(win?'¡Ganaste la partida! ':'Perdiste la partida · ')+v.score[me]+' - '+v.score[rv];
+  if(!G('conf').children.length){const cs=['#ffd24a','#ff4a4a','#4ab0ff','#5ad25a','#fff'];for(let i=0;i<46;i++){const c=document.createElement('i');c.style.left=(Math.random()*1672|0)+'px';c.style.background=cs[i%5];c.style.animationDuration=(3+Math.random()*3)+'s';c.style.animationDelay=(-Math.random()*5)+'s';G('conf').append(c)}}
+  G('ebx').innerHTML=(me===0?'<button onclick="sendP({t:\'rematch\'})">REVANCHA</button><button class="g" onclick="sendP({t:\'lobby\'})">VOLVER A LA SALA</button>':'<span style="color:#fff;font:700 40px Arial">Esperando al anfitrión…</span>')}else E2.style.display='none';
  fitTxt()}
 function evBanner(e,v,me,nm){
  if(e.type==='deal'){G('bn').className='';selK=-1}
@@ -143,7 +163,7 @@ function evBanner(e,v,me,nm){
  else if(e.type==='mazo')banner('¡AL MAZO!',e.p===me?'Te fuiste al mazo':nm(e.p).toUpperCase()+' se fue al mazo',e.p===me?'me':'call');
  else if(e.type==='envido')banner(e.refused?'+'+e.pot:e.pts[me]+' vs '+e.pts[1-me],(e.w===me?'Ganaste el envido':'Perdiste el envido')+' · '+(e.w===me?'+':'')+e.pot,e.w===me?'me':'call');
  else if(e.type==='hand')banner(e.w===me?'¡GANASTE LA MANO!':'PERDISTE LA MANO',(e.w===me?'+':'')+e.pts+(e.pts==1?' punto':' puntos'),e.w===me?'me':'call');
- else if(e.type==='game'){SND.play(e.w===me?'/sonidos/winner.mp3':'/sonidos/loser.mp3',1);banner(e.w===me?'¡GANASTE!':'PERDISTE','Fin de la partida',e.w===me?'me':'call',true)}}
+ else if(e.type==='game'){SND.play(e.w===me?'/sonidos/winner.mp3':'/sonidos/loser.mp3',1);}}
 G('bTR').onclick=()=>sendP({t:'truco'});G('bEN').onclick=()=>sendP({t:'envido'});G('bQ').onclick=()=>sendP({t:'quiero'});G('bN').onclick=()=>sendP({t:'noquiero'});
 let mzArm=0,mzT;function resetMz(){mzArm=0;clearTimeout(mzT);G('mzt').textContent='AL MAZO';G('bMz').classList.remove('pulse');fitTxt()}
 G('bMz').onclick=()=>{if(!(s&&s.act&&s.act.mazo))return;if(!mzArm){mzArm=1;G('mzt').textContent='¿SEGURO?';G('bMz').classList.add('pulse');fitTxt();mzT=setTimeout(resetMz,2500)}else{resetMz();sendP({t:'mazo'})}};
