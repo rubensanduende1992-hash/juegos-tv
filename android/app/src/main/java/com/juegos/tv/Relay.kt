@@ -69,7 +69,7 @@ class Relay(private val ctx: Context, private val host: WebView) : NanoHTTPD(300
             val r = unq(js("hostAct(${JSONObject.quote(body)})")) ?: "{\"err\":\"Error\"}"
             return newFixedLengthResponse(Response.Status.OK, "application/json", r)
         }
-        val f = when (p) { "/" -> "home.html"; "/uno" -> "tv-app.html"; "/truco" -> "truco-tv.html"; else -> p.trimStart('/') }
+        val f = when (p) { "/" -> "home.html"; "/uno" -> "tv-app.html"; "/truco" -> "truco-tv.html"; "/domino" -> "domino-tv.html"; else -> p.trimStart('/') }
         if (f == "play.html") {
             val h = ctx.assets.open("www/$f").bufferedReader().readText().replace("</head>", "<link rel=\"stylesheet\" href=\"/skin.css\"></head>")
             return newFixedLengthResponse(Response.Status.OK, "text/html; charset=utf-8", h)

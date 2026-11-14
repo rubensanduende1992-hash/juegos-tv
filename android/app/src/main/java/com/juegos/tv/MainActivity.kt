@@ -59,12 +59,12 @@ class MainActivity : Activity() {
         val u = try { android.net.Uri.parse(text ?: return false) } catch (e: Exception) { return false }
         val host = u.host ?: return false
         val pth = u.path ?: ""
-        val ok = u.scheme == "unotv" || (u.scheme == "http" && (pth.startsWith("/play") || pth.startsWith("/truco-play") || pth.startsWith("/control")))
+        val ok = u.scheme == "unotv" || (u.scheme == "http" && (pth.startsWith("/play") || pth.startsWith("/truco-play") || pth.startsWith("/domino-play") || pth.startsWith("/control")))
         if (!ok) return false
         val port = if (u.port > 0) u.port else 3000
         val code = u.getQueryParameter("c") ?: ""
         val g = u.getQueryParameter("g")
-        val page = if (g == "truco" || pth.startsWith("/truco-play")) "truco-play.html" else if (g == "home" || pth.startsWith("/control")) "control.html" else "play.html"
+        val page = if (g == "domino" || pth.startsWith("/domino-play")) "domino-play.html" else if (g == "truco" || pth.startsWith("/truco-play")) "truco-play.html" else if (g == "home" || pth.startsWith("/control")) "control.html" else "play.html"
         openPhone("http://$host:$port/$page" + if (code.isNotEmpty()) "?c=$code" else "")
         return true
     }
