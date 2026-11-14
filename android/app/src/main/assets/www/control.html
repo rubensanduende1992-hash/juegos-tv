@@ -29,13 +29,14 @@ const post=b=>fetch('/act',{method:'POST',body:JSON.stringify({id,...b})}).then(
 function join(){if(joining)return;joining=true;post({t:'join',name}).then(r=>{joining=false;if(r.id){id=r.id;localStorage.juegostv_cid=id;poll()}}).catch(()=>{joining=false})}
 function poll(){fetch('/state?id='+encodeURIComponent(id),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{
  if(j.game==='truco'){location.replace('/truco-play.html?c='+j.code);return}
+ if(j.game==='domino'){location.replace('/domino-play.html?c='+j.code);return}
  if(j.game!=='home'){location.replace('/play.html?c='+j.code);return}
  const k=JSON.stringify(j);if(k===last)return;last=k;s=j;show()}).catch(()=>{if(!s)$('#app').innerHTML='<div class="box"><b>Conectando con la TV…</b><p>Revisá que la TV esté en la pantalla de selección y en la misma Wi-Fi.</p></div>'})}
 function show(){const A=$('#app');
  if(!name){if(!$('#nm'))A.innerHTML='<div class="box"><div style="font-size:5vh">¿Cómo te llamás?</div><input id="nm" maxlength="12" autocomplete="off"><button class="ok" onclick="setName()">Entrar</button></div>';return}
  if(s.me<0){join();return}
- $('#ov').style.display=s.launching?'grid':'none';$('#ov').textContent=s.launching?'Abriendo '+(s.launching==='truco'?'TRUCO':'UNO')+'…':'';
- const g=s.sel===0?['TRUCO','/games/truco.webp']:['UNO','/games/uno.webp'];
+ $('#ov').style.display=s.launching?'grid':'none';$('#ov').textContent=s.launching?'Abriendo '+({truco:'TRUCO',uno:'UNO',domino:'DOMINÓ'}[s.launching])+'…':'';
+ const g=[['TRUCO','/games/truco.webp'],['UNO','/games/uno.webp'],['DOMINÓ','/domino/ic.jpg']][s.sel]||['UNO','/games/uno.webp'];
  A.innerHTML=`<button class="btn" onclick="mv(-1)">◀</button><div class="mid"><div class="t">ELEGÍ EL JUEGO</div><img src="${g[1]}" alt=""><div class="n">${g[0]}</div><button class="ok" onclick="ok()">OK</button></div><button class="btn" onclick="mv(1)">▶</button>`}
 function setName(){const v=$('#nm').value.trim();if(!v)return;name=v;localStorage.juegostv_name=v;last='';poll()}
 const buzz=()=>{try{navigator.vibrate(30)}catch(e){}};
