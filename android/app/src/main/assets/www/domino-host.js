@@ -20,7 +20,8 @@ function auto(i){const p=S.pl[i];for(;;){const o=p.hand.filter(t=>canPlay(t,S.ch
 function sched(){clearTimeout(S.bt);const p=S.pl[S.turn];if(S.ph=='play'&&p&&p.bot){const i=S.turn;S.bt=setTimeout(()=>{if(S.ph=='play'&&S.turn==i)auto(i)},1200+Math.random()*1000)}}
 function endR(w){clearTimeout(S.bt);if(w<0){let m=1e9;S.pl.forEach((p,i)=>{const s=sum(p.hand);if(s<m){m=s;w=i}})}
 const pts=S.pl.reduce((s,p,i)=>s+(i==w?0:sum(p.hand)),0);S.pl[w].score+=pts;S.msg={w:S.pl[w].pid,name:S.pl[w].name,pts};S.prev=w;
-if(S.pl[w].score>=S.target){S.ph='end';S.votes=[];snd('w')}else{S.ph='round';setTimeout(()=>{if(S.ph=='round')deal()},6500)}pub()}
+S.ph='end';S.votes=[];pub()}
+function rematch(){S.mesa=Math.random()<.5?'g':'r';S.votes=[];deal()}
 
 const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');var urls=[];
 function send(){window.onChange&&window.onChange()}
@@ -36,7 +37,7 @@ if(S.ph=='lobby'){
  else if(b.t=='start'&&i==0)start();
  return{}}
 if(S.ph=='play'){if(i!=S.turn)return{err:'No es tu turno'};if(b.t=='play')play(i,b.tile,b.side);else if(b.t=='draw')draw(i);else if(b.t=='pass')pass(i)}
-else if(S.ph=='end'&&b.t=='again'){if(!S.votes.includes(p.pid))S.votes.push(p.pid);if(i==0||S.votes.length>=S.pl.filter(q=>!q.bot).length)start();else pub()}
+else if(S.ph=='end'&&b.t=='again'){if(!S.votes.includes(p.pid))S.votes.push(p.pid);if(i==0||S.votes.length>=S.pl.filter(q=>!q.bot).length)rematch();else pub()}
 return{}}
 function view(id){const me=S.pl.findIndex(p=>p.pid===id),m=S.msg;
 return{game:'domino',phase:S.ph,code,urls,target:S.target,mesa:S.mesa,me,pl:S.pl.map(p=>({name:p.name,char:p.char,bot:p.bot,score:p.score,n:p.hand.length})),hand:me>=0?S.pl[me].hand:[],chain:S.chain,pozo:S.pozo.length,turn:S.turn,left:S.left,msg:m?{w:S.pl.findIndex(p=>p.pid===m.w),name:m.name,pts:m.pts}:null,votes:S.votes.map(v=>S.pl.findIndex(p=>p.pid===v))}}
