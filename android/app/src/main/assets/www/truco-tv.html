@@ -69,6 +69,8 @@
 <img id="bg" src="/truco/bg.jpg" alt="">
 <div id="deck"><div class="sh"></div>
 <div class="c" style="transform:translate(-4px,-4px)"><i></i></div><div class="c" style="transform:translate(-3px,-3px)"><i></i></div><div class="c" style="transform:translate(-2px,-2px)"><i></i></div><div class="c" style="transform:translate(-1px,-1px)"><i></i></div><div class="c"><i></i></div></div>
+<div id="gor" class="p" style="left:274.5px;top:505px;width:355.2px;height:300px;display:none"><img data-f="i3" src="/truco/cap_i3.png" style="visibility:visible" alt=""><img data-f="i2" src="/truco/cap_i2.png" style="visibility:hidden" alt=""><img data-f="i1" src="/truco/cap_i1.png" style="visibility:hidden" alt=""><img data-f="i0" src="/truco/cap_i0.png" style="visibility:hidden" alt=""><img data-f="r2" src="/truco/cap_r2.png" style="visibility:hidden" alt=""><img data-f="r1" src="/truco/cap_r1.png" style="visibility:hidden" alt=""><img data-f="x" src="/truco/cap_x.png" style="visibility:hidden" alt=""></div>
+<div id="phn" class="p" style="left:1075.5px;top:505px;width:356.7px;height:300px;display:none"><img data-f="i3" src="/truco/phn_i3.png" style="visibility:visible" alt=""><img data-f="i2" src="/truco/phn_i2.png" style="visibility:hidden" alt=""><img data-f="i1" src="/truco/phn_i1.png" style="visibility:hidden" alt=""><img data-f="i0" src="/truco/phn_i0.png" style="visibility:hidden" alt=""><img data-f="r2" src="/truco/phn_r2.png" style="visibility:hidden" alt=""><img data-f="r1" src="/truco/phn_r1.png" style="visibility:hidden" alt=""><img data-f="x" src="/truco/phn_x.png" style="visibility:hidden" alt=""></div>
 <div id="chi" class="p" style="left:301px;width:468px"><img data-f="i3" src="/truco/chi_i3.png" alt="China" style="visibility:visible"><img data-f="i2" src="/truco/chi_i2.png" alt="China" style="visibility:hidden"><img data-f="i1" src="/truco/chi_i1.png" alt="China" style="visibility:hidden"><img data-f="i0" src="/truco/chi_i0.png" alt="China" style="visibility:hidden"><img data-f="r2" src="/truco/chi_r2.png" alt="China" style="visibility:hidden"><img data-f="r1" src="/truco/chi_r1.png" alt="China" style="visibility:hidden"><img data-f="x" src="/truco/chi_x.png" alt="China" style="visibility:hidden"></div><div id="gau" class="p" style="left:919px;width:449px"><img data-f="i3" src="/truco/gau_i3.png" alt="Gaucho" style="visibility:visible"><img data-f="i2" src="/truco/gau_i2.png" alt="Gaucho" style="visibility:hidden"><img data-f="i1" src="/truco/gau_i1.png" alt="Gaucho" style="visibility:hidden"><img data-f="i0" src="/truco/gau_i0.png" alt="Gaucho" style="visibility:hidden"><img data-f="r2" src="/truco/gau_r2.png" alt="Gaucho" style="visibility:hidden"><img data-f="r1" src="/truco/gau_r1.png" alt="Gaucho" style="visibility:hidden"><img data-f="x" src="/truco/gau_x.png" alt="Gaucho" style="visibility:hidden"></div>
 
 <img class="hud" id="h_sb" src="/truco/sb.png" style="left:494px;top:0px;width:692px;height:160px;" alt="">
@@ -95,10 +97,17 @@
 <div class="np" id="np1" data-cx="1160" style="top:333px"><i class="l" style="background-image:url(/truco/pill1L.png)"></i><i class="m" style="background-image:url(/truco/pill1M.png)"></i><i class="r" style="background-image:url(/truco/pill1R.png)"></i></div><div class="ht pt" id="pt1" style="left:1160px;top:356px"></div>
 <div class="mc" id="mc1" style="left:1093px;top:387px"></div>
 <img class="hud tu" id="tu1" src="/truco/tu.png" style="left:1070px;top:271px;width:181px;height:56px;opacity:0" alt="">
+<div class="np" id="np2" data-cx="436" style="top:333px"><i class="l" style="background-image:url(/truco/pill0L.png)"></i><i class="m" style="background-image:url(/truco/pill0M.png)"></i><i class="r" style="background-image:url(/truco/pill0R.png)"></i></div><div class="ht pt" id="pt2" style="left:436px;top:356px"></div>
+<div class="mc" id="mc2" style="left:366px;top:387px"></div>
+<img class="hud tu" id="tu2" src="/truco/tu.png" style="left:346px;top:271px;width:181px;height:56px;opacity:0" alt="">
+<div class="np" id="np3" data-cx="1160" style="top:333px"><i class="l" style="background-image:url(/truco/pill1L.png)"></i><i class="m" style="background-image:url(/truco/pill1M.png)"></i><i class="r" style="background-image:url(/truco/pill1R.png)"></i></div><div class="ht pt" id="pt3" style="left:1160px;top:356px"></div>
+<div class="mc" id="mc3" style="left:1093px;top:387px"></div>
+<img class="hud tu" id="tu3" src="/truco/tu.png" style="left:1070px;top:271px;width:181px;height:56px;opacity:0" alt="">
 <div id="tb"><b></b><s></s></div>
 <div id="cap" style="opacity:0"></div></div></div>
 <script src="/qr.js"></script><script src="/sonido.js"></script><script src="/truco-host.js"></script><script>const $=i=>document.getElementById(i),SG=$('stage');
-const SLH=[[[{"cx": 696, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97578089, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 691.9, 640.8, 0, 1)"}, {"cx": 739, "cy": 658, "m": "matrix3d(0.32363636, 0, 0, 0, -0.98550391, -0.57209927, 0, -0.0011792129, 0, 0, 1, 0, 731, 640.8, 0, 1)"}, {"cx": 783, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97526807, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 770, 640.8, 0, 1)"}], [{"cx": 888, "cy": 658, "m": "matrix3d(0.32363636, 0, 0, 0, -0.98754971, -0.57209927, 0, -0.0011792129, 0, 0, 1, 0, 865.2, 640.8, 0, 1)"}, {"cx": 931, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97503497, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 904.2, 640.8, 0, 1)"}, {"cx": 974, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97508159, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 943.3, 640.8, 0, 1)"}]],[[608, 679], [1024, 616]]],SL=SLH[0],HAND=SLH[1];
+const SLH=[[[{"cx": 696, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97578089, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 691.9, 640.8, 0, 1)"}, {"cx": 739, "cy": 658, "m": "matrix3d(0.32363636, 0, 0, 0, -0.98550391, -0.57209927, 0, -0.0011792129, 0, 0, 1, 0, 731, 640.8, 0, 1)"}, {"cx": 783, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97526807, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 770, 640.8, 0, 1)"}], [{"cx": 888, "cy": 658, "m": "matrix3d(0.32363636, 0, 0, 0, -0.98754971, -0.57209927, 0, -0.0011792129, 0, 0, 1, 0, 865.2, 640.8, 0, 1)"}, {"cx": 931, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97503497, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 904.2, 640.8, 0, 1)"}, {"cx": 974, "cy": 658, "m": "matrix3d(0.32454545, 0, 0, 0, -0.97508159, -0.5627972, 0, -0.0011655012, 0, 0, 1, 0, 943.3, 640.8, 0, 1)"}]],[[608, 679], [1024, 616]]],HAND=SLH[1].concat([[583.3,591.9],[1179,564.6]]);
+const CH=['chi','gau','gor','phn'],SEX=['f','m','m','m'];
 const PN={oro:'Oro',copa:'Copa',espada:'Espada',basto:'Basto'};
 const CALLN={truco:'¡TRUCO!',retruco:'¡RETRUCO!',valecuatro:'¡VALE CUATRO!',envido:'¡ENVIDO!',real:'¡REAL ENVIDO!',falta:'¡FALTA ENVIDO!'};
 const Es=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
@@ -107,34 +116,37 @@ const qr0=(t)=>{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(t);q.make();con
 const qr=t=>{try{return qr0(t)}catch(e){return '<div>QR no disponible</div>'}};
 let ip='127.0.0.1';try{ip=Android.ip()}catch(e){}
 urls=['http://'+ip+':3000/truco-play.html'];
-let V=null,lastEv=-1,first=true,shown=[3,3],queue=[],busy=false,bt;
+let V=null,lastEv=-1,first=true,shown=[3,3,3,3],queue=[],busy=false,bt;
+const NP=()=>V&&V.n?V.n:2,TEAM=p=>p%2;
 /* ---------- lobby ---------- */
 function slot(p,k,t2){return p?`<div class="slot me ${t2?'t2':''}"><i>${k}</i>${Es(p.name)}</div>`:`<div class="slot empty"><i>${k}</i>Esperando jugador…</div>`}
 function lobby(s){const host=new URL(s.urls[0]).host,P=s.players;let list;
  if(s.mode==='2v2')list=`<div class="tm">EQUIPO 1</div>${slot(P[0],1)}${slot(P[2],3)}<div class="tm">EQUIPO 2</div>${slot(P[1],2,1)}${slot(P[3],4,1)}`;else list=slot(P[0],1)+slot(P[1],2,1);
- const st=s.mode==='2v2'?'2 vs 2: próximamente (por ahora se juega 1 vs 1)':(P.length<2?`Esperando jugadores (${P.length}/2)`:(P.length>2?'Sobran jugadores':'Todos conectados · el anfitrión empieza desde su celular'));
+ const nd=s.mode==='2v2'?4:2,st=P.length<nd?`Esperando jugadores (${P.length}/${nd})`:(P.length>nd?'Sobran jugadores: elegí 2 vs 2':'Todos conectados · el anfitrión empieza desde su celular');
  $('p').innerHTML=`<h2>CÓDIGO DE SALA<span class="chip">${s.mode==='2v2'?'2 vs 2':'1 vs 1'}</span><span class="chip">a ${s.target}</span></h2><div class="code">${Es(s.code)}</div>
  <div class="qrs"><div class="qb">${qr('unotv://'+host+'/sala?c='+s.code+'&g=truco')}<b>Con la app</b><small>abre Juegos TV al escanear</small></div><div class="qb">${qr(s.urls[0]+'?c='+s.code)}<b>Sin la app</b><small>${Es(new URL(s.urls[0]).hostname)}</small></div></div>
  <div class="pl">${list}</div><div class="st">${st}</div>`}
 /* ---------- HUD ---------- */
 function fitTxt(){document.querySelectorAll('.ht[data-w]').forEach(e=>{e.style.transform='translate(-50%,-50%)';const k=+e.dataset.w/e.offsetWidth;e.style.transform=`translate(-50%,-50%) scaleX(${Math.min(1,k)})`})}
-function pills(){[0,1].forEach(p=>{const t=$('pt'+p),n=$('np'+p);t.textContent=nm(p);t.style.transform='translate(-50%,-50%)';const w=Math.min(260,Math.max(168,t.offsetWidth+64));n.style.width=w+'px';n.style.left=(+n.dataset.cx-w/2)+'px';n.style.transform='none';t.style.transform=`translate(-50%,-50%) scaleX(${Math.min(1,(w-60)/t.offsetWidth)})`})}
+const CX1=[436,1160],CX2=[475,1130,300,1300];
+function pills(){[0,1,2,3].forEach(p=>{if(p>=NP())return;const t=$('pt'+p),n=$('np'+p);n.dataset.cx=(NP()===4?CX2:CX1)[p];t.style.left=n.dataset.cx+'px';$('mc'+p).style.left=(+n.dataset.cx-70)+'px';$('tu'+p).style.left=(+n.dataset.cx-90)+'px';t.textContent=nm(p);t.style.transform='translate(-50%,-50%)';const w=Math.min(260,Math.max(168,t.offsetWidth+64));n.style.width=w+'px';n.style.left=(+n.dataset.cx-w/2)+'px';n.style.transform='none';t.style.transform=`translate(-50%,-50%) scaleX(${Math.min(1,(w-60)/t.offsetWidth)})`})}
 const nm=p=>(V&&V.players[p]?V.players[p].name:'Jugador '+(p+1));
+const tn=t=>NP()===2?nm(t):'Equipo '+(t+1);
 function hud(){if(!V||!V.score)return;
- $('n0').textContent=nm(0);$('n1').textContent=nm(1);$('s0').textContent=V.score[0];$('s1').textContent=V.score[1];$('tA').textContent='A';$('tT').textContent=V.target;$('tP').textContent='PUNTOS';
+ $('n0').textContent=tn(0);$('n1').textContent=tn(1);$('s0').textContent=V.score[0];$('s1').textContent=V.score[1];$('tA').textContent='A';$('tT').textContent=V.target;$('tP').textContent='PUNTOS';
  $('k0').textContent=V.hands;$('k1').textContent=V.envPot||0;$('k2').textContent=V.tval||1;
- const t=V.over||V.ended?-1:(V.pend?1-V.pend.by:V.turn);[0,1].forEach(p=>{$('tu'+p).style.opacity=t===p?1:0;$('np'+p).classList.toggle('on',t===p);
+ const t=V.over||V.ended?-1:(V.pend?-1:V.turn);[0,1,2,3].forEach(p=>{const on=p<NP();$('tu'+p).style.opacity=on&&t===p?1:0;$('np'+p).style.display=on?'flex':'none';$('pt'+p).style.display=on?'':'none';$('mc'+p).style.display=on?'flex':'none';$('np'+p).classList.toggle('on',on&&(t===p||(V.pend&&TEAM(p)!==V.pend.team&&!V.over&&!V.ended)));
   const n=shown[p];$('mc'+p).innerHTML=Array.from({length:n},()=>'<i></i>').join('')+`<span>${n} carta${n==1?'':'s'}</span>`});fitTxt();pills()}
-function setFrame(p,f){document.querySelectorAll('#'+(p?'gau':'chi')+' img').forEach(m=>m.style.visibility=m.dataset.f==f?'visible':'hidden')}
-const idle=()=>[0,1].forEach(p=>setFrame(p,'i'+Math.max(0,Math.min(3,shown[p]))));
+function setFrame(p,f){document.querySelectorAll('#'+CH[p]+' img').forEach(m=>m.style.visibility=m.dataset.f==f?'visible':'hidden')}
+const idle=()=>{[0,1,2,3].forEach(p=>{if(p<NP())setFrame(p,'i'+Math.max(0,Math.min(3,shown[p])))});[2,3].forEach(p=>{$(CH[p]).style.display=NP()===4?'block':'none'})};
 /* ---------- cartas ---------- */
 function wrap(c,cls){const w=document.createElement('div');w.className=cls;const i=new Image();i.src='/cartas/'+c.s+'_'+c.n+'.png';i.draggable=false;w.append(i);return w}
-const SLOT=(p,t)=>({cx:p?1032-60*t:640+60*t,cy:649});
+const SLOT=(p,t)=>{const r=p>=2;return {cx:(p%2?1032-60*t:640+60*t)+(r?(p%2?-30:30):0),cy:r?585:649}};
 function placeStatic(p,t,c){const k=p+'_'+t;if(SG.querySelector('.sc[data-k="'+k+'"]'))return;const o=SLOT(p,t),s=wrap(c,'sc');s.dataset.k=k;
- s.style.cssText=`left:${o.cx-36}px;top:${o.cy-57}px;width:72px;height:114px;transform-origin:50% 100%;transform:perspective(300px) rotateX(34deg) rotate(${p?3:-3}deg);z-index:${t+1}`;SG.insertBefore(s,$('chi'))}
+ s.style.cssText=`left:${o.cx-36}px;top:${o.cy-57}px;width:72px;height:114px;transform-origin:50% 100%;transform:perspective(300px) rotateX(34deg) rotate(${p%2?3:-3}deg);z-index:${(p>=2?0:10)+t+1}`;SG.insertBefore(s,$('chi'))}
 function clearTable(){SG.querySelectorAll('.sc,.big').forEach(n=>n.remove());$('cap').style.opacity=0}
 function big(c,p){SG.querySelectorAll('.big').forEach(b=>b.remove());const b=wrap(c,'big');b.style.transform='translate(781px,395px) scale(.85)';SG.append(b);const cap=$('cap');cap.textContent=`${nm(p)} tiró: ${c.n} de ${PN[c.s]}`;cap.style.opacity=1;clearTimeout(bt);bt=setTimeout(()=>{b.style.opacity=0;cap.style.opacity=0},2000)}
-function animPlay(e){const p=e.p,c=e.card,t=e.t,sl=SLOT(p,t),d=p?-1:1;
+function animPlay(e){const p=e.p,c=e.card,t=e.t,sl=SLOT(p,t),d=p%2?-1:1;
  setFrame(p,shown[p]>=2?'r2':'r1');
  const fly=()=>{const[x0,y0]=HAND[p],mx=(x0+sl.cx)/2,my=Math.min(y0,sl.cy)-200,T=(x,y,s,r)=>`translate(${x-55}px,${y-82}px) scale(${s}) rotate(${r}deg)`;
   const kf=o=>[{transform:T(x0,y0,.5,0),opacity:o},{transform:T(mx,my,1.05,d*200),offset:.45,opacity:o},{transform:T(sl.cx,sl.cy,.66,d*360),opacity:o}],opt={duration:750,easing:'cubic-bezier(.3,.6,.4,1)',fill:'both'};
@@ -147,29 +159,30 @@ function banner(title,sub,p,hold){const b=$('tb');b.className='p'+p;b.querySelec
 function enqueue(fn,dur){queue.push([fn,dur]);if(!busy)run()}
 function run(){const x=queue.shift();if(!x){busy=false;return}busy=true;let r;try{r=x[0]()}catch(e){}Promise.all([new Promise(res=>setTimeout(res,x[1])),r&&r.then?r:0]).then(run,run)}
 function handle(e){
- if(e.type==='deal')enqueue(()=>{clearTable();$('tb').className='';shown=[3,3];idle();hud()},300);
+ if(e.type==='deal')enqueue(()=>{clearTable();$('tb').className='';shown=[3,3,3,3];idle();hud()},300);
  else if(e.type==='play')enqueue(()=>animPlay(e),1050);
- else if(e.type==='call')enqueue(()=>{banner(CALLN[e.k],nm(e.p).toUpperCase()+' CANTA',e.p);return SND.say(SEX[e.p],e.k)},1500);
- else if(e.type==='resp')enqueue(()=>{banner(e.r==='quiero'?'¡QUIERO!':'¡NO QUIERO!',nm(e.p).toUpperCase()+' RESPONDE',e.p);return SND.say(SEX[e.p],e.r)},1300);
- else if(e.type==='mazo')enqueue(()=>{banner('¡AL MAZO!',nm(e.p).toUpperCase(),e.p);return SND.say(SEX[e.p],'mazo')},1400);
+ else if(e.type==='call')enqueue(()=>{banner(CALLN[e.k],nm(e.p).toUpperCase()+' CANTA',TEAM(e.p));return SND.say(SEX[e.p],e.k)},1500);
+ else if(e.type==='resp')enqueue(()=>{banner(e.r==='quiero'?'¡QUIERO!':'¡NO QUIERO!',nm(e.p).toUpperCase()+' RESPONDE',TEAM(e.p));return SND.say(SEX[e.p],e.r)},1300);
+ else if(e.type==='mazo')enqueue(()=>{banner('¡AL MAZO!',nm(e.p).toUpperCase(),TEAM(e.p));return SND.say(SEX[e.p],'mazo')},1400);
  else if(e.type==='envido')enqueue(()=>envidoSeq(e),300);
- else if(e.type==='hand')enqueue(()=>banner('¡MANO PARA '+nm(e.w).toUpperCase()+'!','+'+e.pts+(e.pts==1?' PUNTO':' PUNTOS'),e.w),2600);
- else if(e.type==='game')enqueue(()=>{banner('¡GANÓ '+nm(e.w).toUpperCase()+'!','Revancha desde el celular',e.w,true);return SND.play('/sonidos/winner.mp3',1)},0)}
-const SEX=['f','m'];
-async function envidoSeq(e){const m=e.mano,o=1-m,wait=ms=>new Promise(r=>setTimeout(r,ms));
- if(e.refused){banner('+'+e.pot,'ENVIDO PARA '+nm(e.w).toUpperCase(),e.w);await wait(2000);return}
- const sum=()=>banner(e.pts[0]+' — '+e.pts[1],'ENVIDO PARA '+nm(e.w).toUpperCase()+' · +'+e.pot,e.w);
+ else if(e.type==='hand')enqueue(()=>banner('¡MANO PARA '+tn(e.w).toUpperCase()+'!','+'+e.pts+(e.pts==1?' PUNTO':' PUNTOS'),e.w),2600);
+ else if(e.type==='game')enqueue(()=>{banner('¡GANÓ '+tn(e.w).toUpperCase()+'!','Revancha desde el celular',e.w,true);return SND.play('/sonidos/winner.mp3',1)},0)}
+async function envidoSeq(e){const n=NP(),wait=ms=>new Promise(r=>setTimeout(r,ms));
+ if(e.refused){banner('+'+e.pot,'ENVIDO PARA '+tn(e.w).toUpperCase(),e.w);await wait(2000);return}
+ const tb=[0,0];e.pts.forEach((v,i)=>{tb[i%2]=Math.max(tb[i%2],v)});
+ const sum=()=>banner(tb[0]+' — '+tb[1],'ENVIDO PARA '+tn(e.w).toUpperCase()+' · +'+e.pot,e.w);
  if(e.auto){sum();await wait(2800);return}
- banner(String(e.pts[m]),nm(m).toUpperCase(),m);await SND.say(SEX[m],SND.num(e.pts[m]));await wait(250);
- if(e.w===o){banner(String(e.pts[o]),nm(o).toUpperCase(),o);await SND.say(SEX[o],SND.num(e.pts[o]));await wait(150);banner('LAS MÍAS SON MEJORES',nm(o).toUpperCase(),o);await SND.say(SEX[o],'mejores')}
- else{banner('SON BUENAS',nm(o).toUpperCase(),o);await SND.say(SEX[o],'buenas')}
+ const mt=e.mano%2,ot=1-mt,holder=t=>{let h=-1;for(let q=0;q<n;q++){const s=(e.mano+q)%n;if(s%2===t&&(h<0||e.pts[s]>e.pts[h]))h=s}return h};
+ const a=holder(mt);banner(String(e.pts[a]),nm(a).toUpperCase(),mt);await SND.say(SEX[a],SND.num(e.pts[a]));await wait(250);
+ if(e.w===ot){const b=holder(ot);banner(String(e.pts[b]),nm(b).toUpperCase(),ot);await SND.say(SEX[b],SND.num(e.pts[b]));await wait(150);banner('LAS MÍAS SON MEJORES',nm(b).toUpperCase(),ot);await SND.say(SEX[b],'mejores')}
+ else{let b=(e.mano+1)%n;banner('SON BUENAS',nm(b).toUpperCase(),ot);await SND.say(SEX[b],'buenas')}
  await wait(300);sum();await wait(2200)}
 /* ---------- render ---------- */
 function render(v){V=v;
  if(v.phase==='lobby'){$('game').style.display='none';$('lobby').style.display='flex';lobby(v);first=true;queue=[];busy=false;return}
  $('lobby').style.display='none';$('game').style.display='block';
- if(first){first=false;lastEv=v.evId;shown=v.counts?v.counts.slice():[3,3];clearTable();$('tb').className='';(v.table||[]).forEach((row,p)=>row.forEach((c,t)=>c&&placeStatic(p,t,c)));idle();hud();
-  if(v.over)banner('¡GANÓ '+nm(v.over.winner).toUpperCase()+'!','Revancha desde el celular',v.over.winner,true);return}
+ if(first){first=false;lastEv=v.evId;shown=(v.counts||[3,3]).concat([3,3,3,3]).slice(0,4);clearTable();$('tb').className='';(v.table||[]).forEach((row,p)=>row.forEach((c,t)=>c&&placeStatic(p,t,c)));idle();hud();
+  if(v.over)banner('¡GANÓ '+tn(v.over.winner).toUpperCase()+'!','Revancha desde el celular',v.over.winner,true);return}
  v.events.filter(e=>e.id>lastEv).forEach(handle);lastEv=v.evId;hud()}
 window.onChange=()=>{try{render(JSON.parse(hostView('')))}catch(e){$('lobby').style.display='flex';$('p').innerHTML='<pre style="color:#fff;background:#b00020;padding:2vh;font:2.2vh monospace;white-space:pre-wrap">Error en la pantalla de Truco:\n'+Es(String(e&&e.stack||e))+'</pre>'}try{Android.changed()}catch(e){}};
 document.fonts.ready.then(()=>{if(V)hud()});
