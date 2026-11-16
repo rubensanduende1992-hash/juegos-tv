@@ -1,6 +1,6 @@
 /* TRUCO - sala y partida (1 vs 1 y 2 vs 2). Corre en la página de la TV; el relé le pasa las acciones de los celulares. */
 const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');var urls=[];
-function send(){window.onChange&&window.onChange()}
+function send(){window.onChange&&window.onChange();botKick()}
 const PALOS=['espada','basto','copa','oro'],NUMS=[1,2,3,4,5,6,7,10,11,12];
 const RANK={espada1:14,basto1:13,espada7:12,oro7:11,3:10,2:9,copa1:8,oro1:8,12:7,11:6,10:5,copa7:4,basto7:4,6:3,5:2,4:1};
 const rank=c=>RANK[c.s+c.n]!==undefined?RANK[c.s+c.n]:RANK[c.n];
@@ -42,10 +42,10 @@ function act(b,i){
   if(b.t==='mode'&&i===0)S.mode=b.m==='2v2'?'2v2':'1v1';
   else if(b.t==='target'&&i===0)S.target=b.v===30?30:15;
   else if(b.t==='leave'){S.pl.splice(i,1)}
-  else if(b.t==='start'&&i===0&&S.pl.length===need()){S.n=S.pl.length;S.score=[0,0];S.hands=0;S.over=null;S.ev=[];S.phase='play';startHand()}
+  else if(b.t==='start'&&i===0&&S.pl.length>=1&&S.pl.length<=need()){addBots();S.n=S.pl.length;S.score=[0,0];S.hands=0;S.over=null;S.ev=[];S.phase='play';startHand()}
   return{}}
- if(b.t==='leave'){S.pl.splice(i,1);S.phase='lobby';S.H=null;S.over=null;return{}}
- if(S.phase==='over'){if(b.t==='rematch'&&i===0){S.score=[0,0];S.hands=0;S.over=null;S.ev=[];S.phase='play';startHand()}else if(b.t==='lobby'&&i===0){S.phase='lobby';S.H=null;S.over=null}return{}}
+ if(b.t==='leave'){S.pl.splice(i,1);dropBots();S.phase='lobby';S.H=null;S.over=null;return{}}
+ if(S.phase==='over'){if(b.t==='rematch'&&i===0){S.score=[0,0];S.hands=0;S.over=null;S.ev=[];S.phase='play';startHand()}else if(b.t==='lobby'&&i===0){dropBots();S.phase='lobby';S.H=null;S.over=null}return{}}
  if(!H||H.ended)return{err:'Esperá la próxima mano'};
  const n=H.n,P=H.pend,resp=P&&P.team!==tm(i);
  if(b.t==='play'){
@@ -94,10 +94,45 @@ function actions(i){const H=S.H;
   else if(!P&&H.turn===i)en={on:true,label:'ENVIDO'}}
  return{play:!P&&H.turn===i,truco:tr,envido:en,quiero:!!resp,mazo:(H.turn===i&&!P)||!!resp}}
 function view(id){const i=S.pl.findIndex(p=>p.id===id),H=S.H;
- const v={game:'truco',phase:S.phase,code,urls,mode:S.mode,need:need(),n:S.n,target:S.target,players:S.pl.map(q=>({name:q.name})),me:i,score:S.score,hands:S.hands,over:S.over,evId:S.evId,events:S.ev.slice(-16),canStart:S.pl.length===need()};
+ const v={game:'truco',phase:S.phase,code,urls,mode:S.mode,need:need(),n:S.n,target:S.target,players:S.pl.map(q=>({name:q.name,bot:!!q.bot})),me:i,score:S.score,hands:S.hands,over:S.over,evId:S.evId,events:S.ev.slice(-16),canStart:S.pl.length>=1&&S.pl.length<=need()};
  if(H&&S.phase!=='lobby'){v.counts=H.cards.map(c=>c.length);v.turn=H.turn;v.mano=H.mano;v.trick=H.trick;v.table=H.table.map(t=>[0,1,2].map(k=>t[k]||null));v.tw=H.tw;v.tval=tval();v.ended=H.ended;
   v.pend=H.pend?{kind:H.pend.kind,by:H.pend.by,team:H.pend.team,lvl:H.pend.lvl}:null;v.envPot=H.ev.done?0:(H.pend&&H.pend.kind==='envido'?pot(H.ev.calls.concat(H.pend.lvl)):(H.ev.calls.length?pot(H.ev.calls):0));
   if(i>=0){v.mine=H.cards[i];v.act=actions(i)}}
  return v}
+
+/* ---------- bots: completan la sala hasta 2 o 4 jugadores ---------- */
+const BOTN=['Tano','Lola','Pipo','Nico'];
+function addBots(){let k=0;while(S.pl.length<need())S.pl.push({id:'bot'+Math.random().toString(36).slice(2),name:'Bot '+BOTN[k++%BOTN.length],bot:true})}
+function dropBots(){S.pl=S.pl.filter(p=>!p.bot)}
+function strength(s){const H=S.H,r=H.cards[s].map(rank).sort((a,b)=>b-a),w=[1,.7,.4];let a=0,b=0;r.forEach((x,i)=>{a+=w[i]*x;b+=w[i]*14});return b?a/b:0}
+function chooseCard(s){const H=S.H,hand=H.cards[s],t=H.trick;
+ const cur=[];for(let q=0;q<H.n;q++){const c=H.table[q][t];if(c)cur.push({q,r:rank(c)})}
+ const opp=cur.filter(x=>tm(x.q)!==tm(s)),mate=cur.filter(x=>tm(x.q)===tm(s)&&x.q!==s);
+ const bo=opp.length?Math.max(...opp.map(x=>x.r)):0,bm=mate.length?Math.max(...mate.map(x=>x.r)):0;
+ const idx=hand.map((c,i)=>i).sort((a,b)=>rank(hand[a])-rank(hand[b]));
+ if(!cur.length)return t===0?idx[Math.floor((idx.length-1)/2)+(idx.length>2&&Math.random()<.4?1:0)]:idx[idx.length-1];
+ if(bm>bo)return idx[0];
+ for(const i of idx)if(rank(hand[i])>bo)return i;
+ return idx[0]}
+function botResp(s,P){const H=S.H,id=S.pl[s].id,st=strength(s),r=Math.random();
+ if(P.kind==='truco'){const th=[0,.42,.58,.68][P.lvl];
+  if(P.lvl<3&&st>=.8&&r<.45)return{t:'truco',id};
+  return(st>=th||r<.12)?{t:'quiero',id}:{t:'noquiero',id}}
+ const e=envidoPts(H.dealt[s]);
+ if(P.lvl===1&&e>=30&&r<.55)return{t:'envido',id};
+ const th=[0,25,28,31][P.lvl];return(e>=th||r<.07)?{t:'quiero',id}:{t:'noquiero',id}}
+function botTurn(s){const H=S.H,id=S.pl[s].id,st=strength(s),r=Math.random(),first=H.trick===0&&H.table[s][0]===undefined;
+ const e=envidoPts(H.dealt[s]);
+ if(first&&!H.ev.done&&e>=28&&r<.6)return{t:'envido',id};
+ if(H.T.lvl<3&&H.T.tc!==tm(s)){const th=H.T.lvl===0?.62:.78;if((st>=th&&r<.45)||r<.03)return{t:'truco',id}}
+ if(first&&st<.2&&e<10&&r<.15)return{t:'mazo',id};
+ return{t:'play',k:chooseCard(s),id}}
+function botNext(){const H=S.H;if(!H||H.ended||S.phase!=='play')return null;const P=H.pend;
+ if(P){const rs=[];for(let s=0;s<H.n;s++)if(tm(s)!==P.team)rs.push(s);if(rs.some(s=>!S.pl[s].bot))return null;return botResp(rs[0],P)}
+ return S.pl[H.turn].bot?botTurn(H.turn):null}
+let botT=null;
+function botKick(){if(botT||S.phase!=='play'||!S.H||S.H.ended||!botNext())return;
+ botT=setTimeout(()=>{botT=null;const m=botNext();if(!m)return;let r=JSON.parse(hostAct(JSON.stringify(m)));
+  if(r.err){S.botErr=(S.botErr||0)+1;const H=S.H,P=H&&H.pend;if(H&&!H.ended){const s=P?[0,1,2,3].find(q=>q<H.n&&tm(q)!==P.team):H.turn,id=S.pl[s].id;hostAct(JSON.stringify(P?{t:'noquiero',id}:{t:'play',k:0,id}))}}},1300+Math.random()*900)}
 function hostAct(s){let r;try{const b=JSON.parse(s);r=act(b,S.pl.findIndex(p=>p.id===b.id))}catch(e){r={err:'Error: '+e.message}}send();return JSON.stringify(r)}
 function hostView(id){return JSON.stringify(view(id))}

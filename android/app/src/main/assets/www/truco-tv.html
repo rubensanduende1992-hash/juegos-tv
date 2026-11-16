@@ -119,10 +119,10 @@ urls=['http://'+ip+':3000/truco-play.html'];
 let V=null,lastEv=-1,first=true,shown=[3,3,3,3],queue=[],busy=false,bt;
 const NP=()=>V&&V.n?V.n:2,TEAM=p=>p%2;
 /* ---------- lobby ---------- */
-function slot(p,k,t2){return p?`<div class="slot me ${t2?'t2':''}"><i>${k}</i>${Es(p.name)}</div>`:`<div class="slot empty"><i>${k}</i>Esperando jugador…</div>`}
+function slot(p,k,t2){return p?`<div class="slot me ${t2?'t2':''}"><i>${k}</i>${Es(p.name)}</div>`:`<div class="slot empty"><i>${k}</i>🤖 Bot (completa la sala)</div>`}
 function lobby(s){const host=new URL(s.urls[0]).host,P=s.players;let list;
  if(s.mode==='2v2')list=`<div class="tm">EQUIPO 1</div>${slot(P[0],1)}${slot(P[2],3)}<div class="tm">EQUIPO 2</div>${slot(P[1],2,1)}${slot(P[3],4,1)}`;else list=slot(P[0],1)+slot(P[1],2,1);
- const nd=s.mode==='2v2'?4:2,st=P.length<nd?`Esperando jugadores (${P.length}/${nd})`:(P.length>nd?'Sobran jugadores: elegí 2 vs 2':'Todos conectados · el anfitrión empieza desde su celular');
+ const nd=s.mode==='2v2'?4:2,st=P.length===0?'Esperando jugadores':(P.length>nd?'Sobran jugadores: elegí 2 vs 2':(P.length<nd?`${P.length} jugador${P.length>1?'es':''} · los bots completan la sala`:'Todos conectados · el anfitrión empieza desde su celular'));
  $('p').innerHTML=`<h2>CÓDIGO DE SALA<span class="chip">${s.mode==='2v2'?'2 vs 2':'1 vs 1'}</span><span class="chip">a ${s.target}</span></h2><div class="code">${Es(s.code)}</div>
  <div class="qrs"><div class="qb">${qr('unotv://'+host+'/sala?c='+s.code+'&g=truco')}<b>Con la app</b><small>abre Juegos TV al escanear</small></div><div class="qb">${qr(s.urls[0]+'?c='+s.code)}<b>Sin la app</b><small>${Es(new URL(s.urls[0]).hostname)}</small></div></div>
  <div class="pl">${list}</div><div class="st">${st}</div>`}
