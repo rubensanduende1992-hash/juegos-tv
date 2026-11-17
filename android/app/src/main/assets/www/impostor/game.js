@@ -5,7 +5,7 @@ const CHARS=['policia','medica','delincuente','empresaria','profesor','periodist
 const ROLES=['impostor','policia','medico','ninguno','ninguno','ninguno','ninguno','ninguno'];
 const ACT={impostor:'kill',policia:'investigate',medico:'protect'};
 const SCENES=['mansion','pueblo','hotel','bosque','crucero','hospital'];
-const T={night:30,day:180,vote:45};
+const T={night:30,day:60,vote:35};
 const shuffle=(a,r)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 class Game{
   constructor(seats,rnd=Math.random){

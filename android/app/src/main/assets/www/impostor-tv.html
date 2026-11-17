@@ -3,21 +3,21 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Barlow+Condensed:wght@500;700&display=swap">
 <style>
 html,body{margin:0;height:100%;background:#000;color:#ece4d2;font:500 30.7px 'Barlow Condensed',system-ui,sans-serif;overflow:hidden}
-#fit{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#000}#s{position:relative;overflow:hidden;width:1280px;height:720px;flex:none;background:#06040c;font-size:31px}.qq{width:300px;text-align:center;font-size:28px}.qq div{width:270px;margin:0 auto 6px}.qq small{display:block;font-size:20px;color:#9c95a8}
-#s>*{position:absolute}.bg{inset:0;width:100%;height:100%;object-fit:cover;transition:filter 1s}.sh{inset:0;background:#0a1030;opacity:0;transition:opacity 1.2s;mix-blend-mode:multiply}
+#fit{position:fixed;top:0;right:0;bottom:0;left:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#000}#s{position:relative;overflow:hidden;width:1280px;height:720px;flex:none;background:#06040c;font-size:31px}.qq{margin-right:20px;width:300px;text-align:center;font-size:28px}.qq div{width:270px;margin:0 auto 6px}.qq small{display:block;font-size:20px;color:#9c95a8}
+#s>*{position:absolute}#st{top:0;left:0;width:100%;height:100%}#tmr{top:14px;right:24px;font:700 34px 'Barlow Condensed',system-ui,sans-serif;text-shadow:0 2px 6px #000;z-index:300}.bg{top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:cover;transition:filter 1s}.sh{top:0;right:0;bottom:0;left:0;background:#0a1030;opacity:0;transition:opacity 1.2s;mix-blend-mode:multiply}
 .night .sh{opacity:.55}.night .sp img{filter:brightness(.62) saturate(.8)}.day .bg{filter:brightness(1.45) saturate(.75)}
 .sp{transform:translateX(-50%);text-align:center;transition:opacity .8s}.sp img{display:block;margin:0 auto;transform-origin:bottom}.br img{animation:br 3.2s ease-in-out infinite}@keyframes br{50%{transform:scaleY(1.02)}}
 .nm{font-size:15.8px;text-shadow:0 1px 3px #000;white-space:nowrap}.dd .nm{text-decoration:line-through;color:#d99}.cand .nm{color:#ffd36b;font-weight:700}
-#bn{inset:0;display:grid;place-items:center;text-align:center;padding:51.2px;font:400 79.4px/1.1 'Special Elite',serif;text-shadow:0 .51.2px 25.6px #000;opacity:0;pointer-events:none}
+#bn{top:0;right:0;bottom:0;left:0;display:grid;place-items:center;text-align:center;padding:51.2px;font:400 79.4px/1.1 'Special Elite',serif;text-shadow:0 .51.2px 25.6px #000;opacity:0;pointer-events:none}
 #bn.on{animation:bn 3.6s forwards}@keyframes bn{0%{opacity:0;transform:scale(.96)}15%,78%{opacity:1;transform:scale(1)}100%{opacity:0}}
-#fl{inset:0;opacity:0;pointer-events:none}#fl.on{animation:fl .55s 3}@keyframes fl{50%{opacity:.55}}
-.pn{inset:5%;background:#0b0912ee;border:1px solid #3a3552;display:flex;gap:38.4px;padding:38.4px;align-items:center;font-size:33.3px}.pn[hidden]{display:none}
+#fl{top:0;right:0;bottom:0;left:0;opacity:0;pointer-events:none}#fl.on{animation:fl .55s 3}@keyframes fl{50%{opacity:.55}}
+.pn{top:5%;right:5%;bottom:5%;left:5%;background:#0b0912ee;border:1px solid #3a3552;display:flex;gap:38.4px;padding:38.4px;align-items:center;font-size:33.3px}.pn[hidden]{display:none}
 .qr{width:332.8px;height:332.8px;background:#fff}.cod{font:400 89.6px 'Special Elite';letter-spacing:.102.4px}.sl{display:grid;grid-template-columns:1fr 1fr;gap:12.8px;margin-top:19.2px}.sl i{font-style:normal;border:1px solid #3a3552;padding:.76.8px 15.4px;border-radius:6px}
 #vt{left:10%;right:10%;bottom:4%;background:#000a;padding:15.4px;text-align:center}#vt b{display:block;height:15.4px;background:#2d2842;margin-top:.102.4px}#vt i{display:block;height:100%;background:#c6283a;transition:width .6s}
-#ov{inset:0;background:radial-gradient(circle,#0003 15%,#000d 80%);display:flex;align-items:center;justify-content:center;gap:38.4px;text-align:center}#ov[hidden]{display:none}#ov img{height:576.0px}#ov p{font:400 53.8px/1.2 'Special Elite';margin:0;max-width:512.0px}
-#go{inset:0;background:#000d;display:grid;place-items:center;font:400 64.0px 'Special Elite';cursor:pointer}
+#ov{top:0;right:0;bottom:0;left:0;background:radial-gradient(circle,#0003 15%,#000d 80%);display:flex;align-items:center;justify-content:center;gap:38.4px;text-align:center}#ov[hidden]{display:none}#ov img{height:576.0px}#ov p{font:400 53.8px/1.2 'Special Elite';margin:0;max-width:512.0px}
+#go{top:0;right:0;bottom:0;left:0;background:#000d;display:grid;place-items:center;font:400 64.0px 'Special Elite';cursor:pointer}
 </style></head><body><div id="fit"><div id="s">
-<img class="bg" id="bg" alt=""><div class="sh"></div><div id="st"></div>
+<img class="bg" id="bg" alt=""><div class="sh"></div><div id="st"></div><div id="tmr"></div>
 <div class="pn" id="lb" hidden><div class="qq"><div id="q1"></div>Con la app</div><div class="qq"><div id="q2"></div>Sin la app<small id="ipt"></small></div><div><div>Entrá con tu celular. Código:</div><div class="cod" id="cd">····</div><div class="sl" id="sl"></div><p id="hint">El 1.º en entrar empieza desde su celu, o presioná OK en el control remoto.</p></div></div>
 <div id="vt" hidden>Votación en curso <span id="vc"></span><b><i id="vb" style="width:0"></i></b></div>
 <div id="ov" hidden></div><div id="bn"></div><div id="fl"></div></div></div>
@@ -28,9 +28,11 @@ let M,S={},tick=0,fall={},built='',tmr=0,endDone=0;
 const pos=i=>i%2?{x:10+23*((i-1)/2),b:20,k:.78}:{x:21+23*(i/2),b:3,k:.9};
 let ip='127.0.0.1';try{ip=Android.ip()}catch(e){}const HOST=ip+':3000';
 const qr=x=>{try{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(x);q.make();const n=q.getModuleCount(),m=3;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m},${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" shape-rendering="crispEdges" style="background:#fff;border-radius:10px"><path d="${d}" fill="#000"/></svg>`}catch(e){return ''}};
+const fm=t=>Math.floor(t/60)+':'+String(t%60).padStart(2,'0');
+setInterval(()=>{const e=$('#tmr');if(!e)return;const t=Math.ceil((S.left||0)-(Date.now()-(S.t0||0))/1000),n={night:'Noche',day:'Debate',vote:'Votación'}[S.phase];e.textContent=n&&t>0?n+' · '+fm(t):''},500);
 function fit(){$('#s').style.transform='scale('+Math.min(innerWidth/1280,innerHeight/720)+')'}addEventListener('resize',fit);fit();
 fetch('/impostor/manifest.json').then(r=>r.json()).then(m=>{M=m;A.preload(M.audio);A.unlock();onChange()});
-window.onChange=()=>{if(!M)return;try{S=JSON.parse(hostView(''));render()}catch(e){document.body.innerHTML='<pre style="color:#fff;background:#b00020;padding:2vh;white-space:pre-wrap">Error en El juego del impostor:\n'+String(e&&e.stack||e)+'</pre>'}try{Android.changed()}catch(e){}};
+window.onChange=()=>{if(!M)return;try{S=JSON.parse(hostView(''));S.t0=Date.now();render()}catch(e){document.body.innerHTML='<pre style="color:#fff;background:#b00020;padding:2vh;white-space:pre-wrap">Error en El juego del impostor:\n'+String(e&&e.stack||e)+'</pre>'}try{Android.changed()}catch(e){}};
 window.onEv=m=>{if(!m.to)ev(m)};
 document.addEventListener('keydown',e=>{A.unlock();if((e.key==='Enter'||e.keyCode===23||e.keyCode===66)&&S.phase==='lobby'&&S.players&&S.players.length)start()});
 function banner(t,c){const b=$('#bn');b.textContent=t;b.style.color=c||'#ece4d2';b.className='';void b.offsetWidth;b.className='on'}

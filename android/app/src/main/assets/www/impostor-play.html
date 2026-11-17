@@ -4,7 +4,7 @@
 <style>
 :root{--blood:#c6283a;--brass:#d0a64a;--dim:#9c95a8}*{box-sizing:border-box}
 html,body{margin:0;height:100%;background:#050508;color:#ece4d2;font:500 5.5vh 'Barlow Condensed',system-ui,sans-serif;overflow:hidden;touch-action:manipulation}
-#app{position:fixed;inset:0;display:grid;grid-template-rows:auto 1fr auto;font-size:6vh;background:linear-gradient(160deg,#050b26,#0a1a5a 55%,#050b26);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#app{position:fixed;top:0;right:0;bottom:0;left:0;display:grid;grid-template-rows:auto 1fr auto;font-size:6vh;background:linear-gradient(160deg,#050b26,#0a1a5a 55%,#050b26);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 #app.full{grid-template-rows:1fr;padding:0}
 button,input{font:inherit;color:inherit}
 .pb,.ft{display:flex;justify-content:space-between;align-items:center;gap:3vw;padding:2vh 4vw;background:#050a1ecc}.ft{font-size:5.5vh;color:var(--dim)}
@@ -15,15 +15,15 @@ button,input{font:inherit;color:inherit}
 .side{display:flex;flex-direction:column;justify-content:center;gap:2vh;width:30vw;text-align:center;font-size:7vh}
 .bt{font:700 9vh 'Barlow Condensed';padding:1.4vh 3vw;border:0;border-radius:12px;background:#b32a50;color:#f3dfe8}.bt.cf{background:var(--brass);color:#1a1200}.bt:disabled{opacity:.35}
 .jn{display:flex;flex-direction:column;gap:2.5vh;margin:auto;width:60vw}.jn input{background:#0a1030;border:2px solid #1e6bff;border-radius:10px;padding:1.5vh 2vw;font-size:8vh;text-transform:none}
-.cw{position:relative;width:100%;height:100vh;background:#000;overflow:hidden;display:grid;place-items:center}.cwb{position:absolute;inset:-5%;width:110%;height:110%;object-fit:cover;filter:blur(22px) brightness(.55)}
-.cwi{position:relative;height:100%;aspect-ratio:16/9;max-width:100%}.cwi>img{position:absolute;inset:0;width:100%;height:100%}
+.cw{position:relative;width:100%;height:100vh;background:#000;overflow:hidden;display:grid;place-items:center}.cwb{position:absolute;top:-5%;right:-5%;bottom:-5%;left:-5%;width:110%;height:110%;object-fit:cover;filter:blur(22px) brightness(.55)}
+.cwi{position:relative;height:100%;aspect-ratio:16/9;max-width:100%}.cwi>img{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%}
 .hit{position:absolute;left:22.7%;top:63.8%;width:54.4%;height:22.3%;background:none;border:0;border-radius:12%;cursor:pointer;padding:0}.hit:focus-visible{outline:3px solid #fff}
-.sbox{position:absolute;left:30%;top:10%;width:40%;height:54%;display:grid;place-items:end center}.halo{position:absolute;inset:-8% -10% 0;background:radial-gradient(ellipse at 50% 55%,#2e72ff99,#0000 68%)}
+.sbox{position:absolute;left:30%;top:10%;width:40%;height:54%;display:grid;place-items:end center}.halo{position:absolute;top:-8%;right:-10%;bottom:0;left:-10%;background:radial-gradient(ellipse at 50% 55%,#2e72ff99,#0000 68%)}
 .sbox .sil{position:relative;max-height:100%;max-width:100%;filter:drop-shadow(0 0 1.4vh #4aa8ff)}.rv{animation:rv .8s ease-out}@keyframes rv{0%{filter:brightness(4);transform:scale(.94)}100%{filter:none;transform:none}}
-#fl{position:fixed;inset:0;opacity:0;pointer-events:none;z-index:9}#fl.on{animation:fl .55s 3}@keyframes fl{50%{opacity:.55}}
-#nt{position:fixed;inset:0;z-index:8;background:#050510e6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh;text-align:center;font:400 8vh/1.1 'Special Elite',serif;padding:0 5vw}#nt[hidden]{display:none}#nt img{max-height:34vh;max-width:70vw;object-fit:contain}
+#fl{position:fixed;top:0;right:0;bottom:0;left:0;opacity:0;pointer-events:none;z-index:9}#fl.on{animation:fl .55s 3}@keyframes fl{50%{opacity:.55}}
+#nt{position:fixed;top:0;right:0;bottom:0;left:0;z-index:8;background:#050510e6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh;text-align:center;font:400 8vh/1.1 'Special Elite',serif;padding:0 5vw}#nt[hidden]{display:none}#nt img{max-height:34vh;max-width:70vw;object-fit:contain}
 .buzz{animation:bz .4s 3}@keyframes bz{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-#rot{display:none;position:fixed;inset:0;z-index:20;background:#050508;place-items:center;text-align:center;font:400 6vw 'Special Elite';padding:8vw}@media(orientation:portrait){#rot{display:grid}}
+#rot{display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:20;background:#050508;place-items:center;text-align:center;font:400 6vw 'Special Elite';padding:8vw}@media(orientation:portrait){#rot{display:grid}}
 @media(prefers-reduced-motion:reduce){#fl.on,.buzz,.rv{animation:none}}
 </style></head><body><div id="app"></div><div id="fl"></div><div id="nt" hidden></div><div id="rot">Girá el celular en horizontal para jugar</div>
 <script src="/impostor/audio.js"></script>
@@ -77,7 +77,7 @@ function render(){
     if(!L)b=ctr('Es de noche. Dormís.<br><span class="dim">Esperá al amanecer.</span>');
     else if(acted)b=ctr(res?(res.impostor?'<span class="red">'+P(res.target).name+': ES EL IMPOSTOR</span>':P(res.target).name+': NO es el impostor'):'Acción enviada. Esperá al amanecer.');
     else b=`<div class="bd"><div class="row">${tiles()}</div><div class="side">${sel?P(sel).name:'Elegí a un jugador'}<button class="bt${step?' cf':''}" data-a="act" ${sel?'':'disabled'}>${step?'CONFIRMAR':L}</button></div></div>`}
-  else if(S.phase==='day')b=ctr('Debate en curso<br><span class="dim">Acusá y defendete en voz alta</span>');
+  else if(S.phase==='day')b=ctr('Debate en curso<br><span class="dim">Acusá y defendete en voz alta</span>'+(S.ready?'<span class="gold">Esperando a los demás…</span>':'<button class="bt cf" data-a="ready">LISTO PARA VOTAR</button>'));
   else b=voted?ctr('Voto enviado. Esperando al resto…'):`<div class="bd"><div class="row">${tiles()}</div><div class="side">${sel?P(sel).name:'¿A quién expulsás?'}<button class="bt${step?' cf':''}" data-a="vote" ${sel?'':'disabled'}>${step?'¿SEGURO?':'CONFIRMAR VOTO'}</button></div></div>`;
   app.innerHTML=bar(lab,S.phase!=='end')+b+foot()}
 function spin(){if(spun)return;spun=1;A.unlock();A.sfx('pick');const az=$('#az'),azb=$('#azb'),sil=$('#sil'),hl=$('.halo'),fin=SM[S.you.card],N=18;
@@ -87,6 +87,7 @@ function spin(){if(spun)return;spun=1;A.unlock();A.sfx('pick');const az=$('#az')
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;A.unlock();
   if(b.dataset.id){sel=b.dataset.id;step=0;A.sfx('emit');render()}
   else if(b.dataset.a==='join'){nameV=$('#nm').value.trim()||'Jugador';code=$('#cd').value.trim().toUpperCase();err='';try{localStorage.juegostv_name=nameV}catch(x){}A.sfx('press');doJoin()}
+  else if(b.dataset.a==='ready')post({t:'ready'}).then(poll);
   else if(b.dataset.a==='start')post({t:'start'}).then(poll);
   else if(b.dataset.a==='spin')spin();
   else if(b.dataset.a==='act'){if(!step){step=1;render()}else post({t:'act',target:sel}).then(r=>{if(r.err){step=0;render();return}res=r.result||null;acted=1;render()})}
