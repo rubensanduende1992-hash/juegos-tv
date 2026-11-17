@@ -12,11 +12,11 @@
 .chips span{background:rgba(20,10,4,.75);border:.12em solid #c9962e;border-radius:99px;padding:.1em .8em}
 #ov{position:absolute;inset:0;display:none;place-items:center;background:rgba(0,0,0,.6);color:#ffe08a;font:900 6em "Arial Black",Impact,sans-serif;text-shadow:0 .08em .2em #000}
 body.q .qp{display:block}.hint{position:absolute;right:2%;bottom:2%;color:#fff;font:700 1.5em system-ui,Arial,sans-serif;background:rgba(0,0,0,.45);border-radius:99px;padding:.2em .9em;cursor:pointer}</style></head><body><div id="st">
-<div class="bgi" style="background-image:url(/domino/bg-truco.jpg)"></div><div class="bgi" style="background-image:url(/domino/bg-uno.jpg)"></div><div class="bgi" style="background-image:url(/domino/ps-bg.jpg)"></div>
+<div class="bgi" style="background-image:url(/domino/bg-truco.jpg)"></div><div class="bgi" style="background-image:url(/domino/bg-uno.jpg)"></div><div class="bgi" style="background-image:url(/domino/ps-bg.jpg)"></div><div class="bgi" style="background-image:url(/impostor/bg.jpg)"></div>
 <div class="ttl">SELECCIONA UN JUEGO</div>
-<div class="tile" data-i="0" style="left:15%;width:17%;background-image:url(/domino/ic-truco.jpg)" aria-label="Truco"></div>
-<div class="tile" data-i="1" style="left:41.5%;width:17%;background-image:url(/domino/ic-uno.jpg)" aria-label="UNO"></div>
-<div class="tile" data-i="2" style="left:68%;width:17%;background-image:url(/domino/ic.jpg)" aria-label="Dominó"></div>
+<div class="tile" data-i="0" style="left:6.4%;width:17%;background-image:url(/domino/ic-truco.jpg)" aria-label="Truco"></div>
+<div class="tile" data-i="1" style="left:29.8%;width:17%;background-image:url(/domino/ic-uno.jpg)" aria-label="UNO"></div>
+<div class="tile" data-i="2" style="left:53.2%;width:17%;background-image:url(/domino/ic.jpg)" aria-label="Dominó"></div><div class="tile" data-i="3" style="left:76.6%;width:17%;background-image:url(/impostor/ic.jpg)" aria-label="El juego del impostor"></div>
 <div class="nm" id="nm"></div><div class="hint" id="hint">▲ Conectar celular</div>
 <div class="qp" id="q1" style="left:1.2%"></div><div class="qp" id="q2" style="right:1.2%"></div>
 <div class="chips" id="ch"></div><div id="ov"></div></div>
@@ -25,9 +25,9 @@ const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
 const qr=(t)=>{try{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),m=3;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m},${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" shape-rendering="crispEdges" style="background:#fff;border-radius:.6em"><path d="${d}" fill="#000"/></svg>`}catch(e){return ''}};
 const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');
 let ip='127.0.0.1';try{ip=Android.ip()}catch(e){}
-const GAMES=[{k:'truco',url:'/truco',n:'TRUCO'},{k:'uno',url:'/uno',n:'UNO'},{k:'domino',url:'/domino',n:'DOMINÓ'}],S={sel:0,launching:'',pl:[]},T=[...document.querySelectorAll('.tile')];
+const GAMES=[{k:'truco',url:'/truco',n:'TRUCO'},{k:'uno',url:'/uno',n:'UNO'},{k:'domino',url:'/domino',n:'DOMINÓ'},{k:'impostor',url:'/impostor',n:'EL IMPOSTOR'}],S={sel:0,launching:'',pl:[]},T=[...document.querySelectorAll('.tile')];
 function hostView(id){const i=S.pl.findIndex(p=>p.id===id);return JSON.stringify({game:'home',sel:S.sel,launching:S.launching,code,urls:['http://'+ip+':3000/control.html'],players:S.pl.map(p=>p.name),me:i})}
-function setSel(n){if(S.launching)return;S.sel=((n%3)+3)%3;render()}
+function setSel(n){if(S.launching)return;S.sel=((n%4)+4)%4;render()}
 function launch(){if(S.launching)return;const g=GAMES[S.sel];S.launching=g.k;render();setTimeout(()=>{location.href=g.url},1400)}
 function hostAct(s){let r={};try{const b=JSON.parse(s),i=S.pl.findIndex(p=>p.id===b.id);
  if(b.t==='join'){const id=Math.random().toString(36).slice(2);S.pl.push({id,name:String(b.name||'Jugador').trim().slice(0,12)||'Jugador'});r={id}}
