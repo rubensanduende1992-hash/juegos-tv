@@ -48,9 +48,12 @@ class Game{
     return this.phase==='end';
   }
   startVote(){this.phase='vote';this.stage=1;this.cands=null;this.votes={};this.botVotes()}
-  botVotes(){
-    for(const x of this.alive())if(x.bot)
-      this.vote(x.id,this.pick(this.alive().filter(y=>y.id!==x.id&&(!this.cands||this.cands.includes(y.id)))).id);
+  botVotes(){ // los bots votan (casi siempre) a quien acusaron; a veces se equivocan y votan al azar
+    for(const x of this.alive())if(x.bot){
+      const ok=y=>y.alive&&y.id!==x.id&&(!this.cands||this.cands.includes(y.id)),s=x.suspect&&this.get(x.suspect);
+      const t=(s&&ok(s)&&this.rnd()<.8)?s:this.pick(this.alive().filter(ok));
+      this.vote(x.id,t.id);
+    }
   }
   vote(id,target){
     const x=this.get(id),y=this.get(target);
