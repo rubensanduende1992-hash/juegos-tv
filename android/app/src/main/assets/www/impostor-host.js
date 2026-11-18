@@ -34,11 +34,13 @@ function close(){if(R.g.phase!=='vote')return;ev('endvote');const r=R.g.closeVot
  ev('none');later(4,night);send()}
 function end(){const g=R.g;ev('end',{kind:g.kind,winners:g.winners});R.seats.forEach(s=>ev(g.winners.includes(s.id)?'winner':'loser',{},s.id));send()}
 function act(b){
- if(b.t==='join'){if(R.g)return{err:'La partida ya empezó'};if(String(b.code||'').toUpperCase()!==code)return{err:'Código incorrecto'};if(R.seats.length>=8)return{err:'Sala llena'};
-  const id=Math.random().toString(36).slice(2);R.seats.push({id,name:String(b.name||'Jugador').replace(/[<>&"'`]/g,'').trim().slice(0,12)||'Jugador'});return{id}}
+ if(b.t==='join'){if(String(b.code||'').toUpperCase()!==code)return{err:'Código incorrecto'};
+  const ex=b.cid&&R.seats.find(x=>x.cid===b.cid);if(ex)return{id:ex.id}; // el mismo celular que vuelve a entrar no se duplica
+  if(R.g)return{err:'La partida ya empezó'};if(R.seats.length>=8)return{err:'Sala llena'};
+  const id=Math.random().toString(36).slice(2);R.seats.push({id,cid:b.cid||'',name:String(b.name||'Jugador').replace(/[<>&"'`]/g,'').trim().slice(0,12)||'Jugador'});return{id}}
  const s=R.seats.find(x=>x.id===b.id);if(!s)return{err:'Jugador desconocido'};
  if(b.t==='leave'){if(!R.g)R.seats.splice(R.seats.indexOf(s),1);return{}}
- if(b.t==='start'&&R.seats[0]===s){start();return{}}
+ if(b.t==='start'){start();return{}}
  if(!R.g)return{};
  if(b.t==='ready'){if(R.g.phase==='day'){R.ready[s.id]=1;if(R.seats.every(x=>!R.g.get(x.id).alive||R.ready[x.id]))later(.5,vote)}return{}}
  if(b.t==='roll'){R.rolled[s.id]=1;if(R.g.phase==='lobby'&&R.seats.every(x=>R.rolled[x.id]))later(5,night)}
@@ -47,7 +49,7 @@ function act(b){
  return{}}
 function view(id){const g=R.g,i=R.seats.findIndex(s=>s.id===id),left=Math.max(0,Math.round((R.until-Date.now())/1000));
  const base={game:'impostor',code,urls,me:i,left,en:R.en,ready:!!R.ready[id],chat:R.chat.slice(-3),phase:g?({lobby:'roll',resolve:'night',expel:'vote'}[g.phase]||g.phase):'lobby'};
- if(!g)return Object.assign(base,{players:R.seats.map(s=>({id:s.id,name:s.name})),first:i===0});
+ if(!g)return Object.assign(base,{players:R.seats.map(s=>({id:s.id,name:s.name})),first:i>=0});
  const p=g.pub();return Object.assign(base,{round:p.round,scene:p.scene,voted:p.voted,cands:p.cands,winners:p.winners,kind:p.kind,players:p.players,you:i>=0?g.priv(id):null,evs:R.evs.filter(e=>!e.to||e.to===id).slice(-12)})}
 function hostAct(s){let r;try{r=act(JSON.parse(s))}catch(e){r={err:'Error: '+e.message}}send();return JSON.stringify(r)}
 function hostView(id){return JSON.stringify(view(id))}

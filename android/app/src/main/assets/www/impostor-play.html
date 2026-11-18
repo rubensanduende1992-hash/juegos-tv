@@ -30,12 +30,13 @@ button,input{font:inherit;color:inherit}
 <script>
 function setU(){document.documentElement.style.setProperty('--u',(innerHeight/100)+'px')}setU();addEventListener('resize',setU);addEventListener('orientationchange',function(){setTimeout(setU,250)});
 const $=s=>document.querySelector(s),Q=new URLSearchParams(location.search),SM={policia:0,medica:1,desconocida:2,empresaria:3,profesor:4,periodista:5,bombero:6,delincuente:2};
-let M,id=localStorage.imp_uid||'',me=null,code=(Q.get('c')||'').toUpperCase(),nameV=localStorage.juegostv_name||'',S={},dl=0,okc=0,last='',lastN=-1,sel='',step=0,acted=0,voted=0,res=null,key='',spun=0,err='',ntT=0,joining=0;
+let M,id=localStorage.imp_uid||'',me=null,code=(Q.get('c')||'').toUpperCase(),nameV=localStorage.juegostv_name||'',S={},dl=0,okc=0,last='',lastN=-1,sel='',step=0,acted=0,voted=0,res=null,key='',spun=0,err='',ntT=0,joining=0,gen=0;
+const cid=(function(){try{let c=localStorage.imp_cid;if(!c){c=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.imp_cid=c}return c}catch(e){return Math.random().toString(36).slice(2)}})();
 const P=pid=>(S.players||[]).find(x=>x.id===pid)||{},vib=v=>{try{navigator.vibrate&&navigator.vibrate(v)}catch(e){}},sy=(i,k)=>A.say(i,k);
 const post=b=>fetch('/act',{method:'POST',body:JSON.stringify(Object.assign({id},b))}).then(r=>r.json());
 try{AndroidPhone.landscape(true)}catch(e){}
 fetch('/impostor/manifest.json').then(r=>r.json()).then(m=>{M=m;A.preload(['join','press','pick','role','hasmuerto','expme','disc','winner','loser','emit','confirm']);poll();setInterval(poll,600);render()});
-function poll(){fetch('/state?id='+encodeURIComponent(id),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{okc=1;
+function poll(){const g=gen;fetch('/state?id='+encodeURIComponent(id),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{if(g!==gen)return;okc=1;
   if(j.game==='home'){location.replace('/control.html');return}if(j.game==='truco'){location.replace('/truco-play.html?c='+j.code);return}if(j.game==='domino'){location.replace('/domino-play.html?c='+j.code);return}if(j.game!=='impostor'){location.replace('/play.html?c='+j.code);return}
   dl=Date.now()+j.left*1000;const k=JSON.stringify(Object.assign({},j,{left:0}));if(k===last)return;last=k;apply(j)}).catch(()=>{okc=0;render()})}
 function apply(j){S=j;me=j.me>=0?id:null;
@@ -43,7 +44,7 @@ function apply(j){S=j;me=j.me>=0?id:null;
  if(j.me<0&&code&&nameV&&!joining&&!err)return doJoin();
  const k=j.phase+j.round+(j.cands||'');if(k!==key){key=k;sel='';step=0;acted=0;voted=0;res=null}
  if(lastN<0)lastN=j.en;(j.evs||[]).forEach(e=>{if(e.n>lastN){lastN=e.n;ev(e)}});render()}
-function doJoin(){joining=1;post({t:'join',code,name:nameV}).then(r=>{joining=0;if(r.err){err=r.err;render();return}id=r.id;try{localStorage.imp_uid=id}catch(e){}A.sfx('join');last='';poll()}).catch(()=>{joining=0})}
+function doJoin(){if(joining)return;joining=1;post({t:'join',code,name:nameV,cid}).then(r=>{joining=0;gen++;if(r.err){err=r.err;render();return}id=r.id;try{localStorage.imp_uid=id}catch(e){}A.sfx('join');last='';poll()}).catch(()=>{joining=0})}
 function fx(c,p){const f=$('#fl');f.style.background=c;f.className='';void f.offsetWidth;f.className='on';vib(p);const a=$('#app');a.classList.remove('buzz');void a.offsetWidth;a.classList.add('buzz')}
 function show(h,c,p,ms=5000){const n=$('#nt');n.innerHTML=h;n.hidden=false;fx(c,p);clearTimeout(ntT);ntT=setTimeout(()=>n.hidden=true,ms)}
 const lay=pid=>`<img src="/impostor/${M.chars[P(pid).char].dead.f}" alt="">`;
