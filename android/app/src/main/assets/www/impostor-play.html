@@ -4,14 +4,14 @@
 <style>
 :root{--u:1vh;--blood:#c6283a;--brass:#d0a64a;--dim:#9c95a8}*{box-sizing:border-box}
 html,body{margin:0;height:100%;background:#050508;color:#ece4d2;font:500 calc(var(--u)*5.5) 'Barlow Condensed',system-ui,sans-serif;overflow:hidden;touch-action:manipulation}
-#app{position:fixed;top:0;right:0;bottom:0;left:0;display:grid;grid-template-rows:auto 1fr auto;font-size:calc(var(--u)*6);background:linear-gradient(160deg,#050b26,#0a1a5a 55%,#050b26);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#app{grid-template-columns:minmax(0,1fr);position:fixed;top:0;right:0;bottom:0;left:0;display:grid;grid-template-rows:auto 1fr auto;font-size:calc(var(--u)*6);background:linear-gradient(160deg,#050b26,#0a1a5a 55%,#050b26);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 #app.full{grid-template-rows:1fr;padding:0}
 button,input{font:inherit;color:inherit}
 .pb,.ft{display:flex;justify-content:space-between;align-items:center;gap:3vw;padding:calc(var(--u)*2) 4vw;background:#050a1ecc}.ft{font-size:calc(var(--u)*5.5);color:var(--dim)}
 .chip{background:var(--brass);color:#1a1200;padding:0 2vw;border-radius:4px;font-weight:700}.dot{display:inline-block;width:calc(var(--u)*2);height:calc(var(--u)*2);border-radius:50%;background:#5fbf8f;margin-right:1vw}.dot.off{background:#c6283a}
 .ctr{margin:auto;text-align:center;font-size:calc(var(--u)*8);display:flex;flex-direction:column;gap:calc(var(--u)*2);align-items:center;padding:0 4vw}.big{font:400 calc(var(--u)*28)/1 'Special Elite'}.red{color:#ff5566}.gold{color:var(--brass)}.dim{color:var(--dim)}
 .bd{display:flex;gap:2vw;padding:calc(var(--u)*2) 3vw;min-height:0;align-items:stretch}.row{display:flex;gap:1.2vw;flex:1;min-width:0}
-.pt{flex:1;min-width:0;display:flex;padding:0;border:0;border-radius:10px;background:none;overflow:hidden}.pt img{width:100%;height:100%;object-fit:contain}.pt.sel{box-shadow:0 0 0 3px #fff,0 0 16px 4px #ff3b5c}
+.pt{position:relative;align-items:center;justify-content:center;flex:1;min-width:0;display:flex;padding:0;border:0;border-radius:10px;background:none;overflow:hidden}.pt img{width:100%;height:100%;object-fit:contain}.pt.sel{box-shadow:0 0 0 3px #fff,0 0 16px 4px #ff3b5c}
 .side{display:flex;flex-direction:column;justify-content:center;gap:calc(var(--u)*2);width:30vw;text-align:center;font-size:calc(var(--u)*7)}
 .bt{font:700 calc(var(--u)*9) 'Barlow Condensed';padding:calc(var(--u)*1.4) 3vw;border:0;border-radius:12px;background:#b32a50;color:#f3dfe8}.bt.cf{background:var(--brass);color:#1a1200}.bt:disabled{opacity:.35}
 .jn{display:flex;flex-direction:column;gap:calc(var(--u)*2.5);margin:auto;width:60vw}.jn input{background:#0a1030;border:2px solid #1e6bff;border-radius:10px;padding:calc(var(--u)*1.5) 2vw;font-size:calc(var(--u)*8);text-transform:none}
@@ -25,12 +25,15 @@ button,input{font:inherit;color:inherit}
 .buzz{animation:bz .4s 3}@keyframes bz{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 #rot{display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:20;background:#050508;place-items:center;text-align:center;font:400 6vw 'Special Elite';padding:8vw}@media(orientation:portrait){#rot{display:grid}}
 @media(prefers-reduced-motion:reduce){#fl.on,.buzz,.rv{animation:none}}
+.tw{position:relative;height:100%;aspect-ratio:162/610;max-width:100%}.tw img{display:block;width:100%;height:100%}
+.nl{position:absolute;left:4%;right:4%;bottom:1.8%;height:13.5%;background:#070a1c;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',system-ui,sans-serif;font-weight:700;line-height:1;white-space:nowrap;overflow:hidden;border-radius:0 0 8px 8px}
+.bd,.pb,.ft{min-width:0}
 </style></head><body><div id="app"></div><div id="fl"></div><div id="nt" hidden></div><div id="rot">Girá el celular en horizontal para jugar</div>
 <script src="/impostor/audio.js"></script>
 <script>
 function setU(){document.documentElement.style.setProperty('--u',(innerHeight/100)+'px')}setU();addEventListener('resize',setU);addEventListener('orientationchange',function(){setTimeout(setU,250)});
 const $=s=>document.querySelector(s),Q=new URLSearchParams(location.search),SM={policia:0,medica:1,desconocida:2,empresaria:3,profesor:4,periodista:5,bombero:6,delincuente:2};
-let M,id=localStorage.imp_uid||'',me=null,code=(Q.get('c')||'').toUpperCase(),nameV=localStorage.juegostv_name||'',S={},dl=0,okc=0,last='',lastN=-1,sel='',step=0,acted=0,voted=0,res=null,key='',spun=0,err='',ntT=0,joining=0,gen=0;
+let M,id=localStorage.imp_uid||'',me=null,code=(Q.get('c')||'').toUpperCase(),nameV=localStorage.juegostv_name||'',S={},dl=0,okc=0,last='',lastN=-1,sel='',step=0,acted=0,voted=0,res=null,key='',spun=0,err='',ntT=0,joining=0,gen=0,curCode='';
 const cid=(function(){try{let c=localStorage.imp_cid;if(!c){c=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.imp_cid=c}return c}catch(e){return Math.random().toString(36).slice(2)}})();
 const P=pid=>(S.players||[]).find(x=>x.id===pid)||{},vib=v=>{try{navigator.vibrate&&navigator.vibrate(v)}catch(e){}},sy=(i,k)=>A.say(i,k);
 const post=b=>fetch('/act',{method:'POST',body:JSON.stringify(Object.assign({id},b))}).then(r=>r.json());
@@ -39,7 +42,8 @@ fetch('/impostor/manifest.json').then(r=>r.json()).then(m=>{M=m;A.preload(['join
 function poll(){const g=gen;fetch('/state?id='+encodeURIComponent(id),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{if(g!==gen)return;okc=1;
   if(j.game==='home'){location.replace('/control.html');return}if(j.game==='truco'){location.replace('/truco-play.html?c='+j.code);return}if(j.game==='domino'){location.replace('/domino-play.html?c='+j.code);return}if(j.game!=='impostor'){location.replace('/play.html?c='+j.code);return}
   dl=Date.now()+j.left*1000;const k=JSON.stringify(Object.assign({},j,{left:0}));if(k===last)return;last=k;apply(j)}).catch(()=>{okc=0;render()})}
-function apply(j){S=j;me=j.me>=0?id:null;
+function apply(j){S=j;if(j.code!==curCode){curCode=j.code;spun=0;lastN=-1} // sala nueva: se vuelve a sortear
+ me=j.me>=0?id:null;
  if(j.me<0&&id&&!joining){id='';try{localStorage.imp_uid=''}catch(e){}}
  if(j.me<0&&code&&nameV&&!joining&&!err)return doJoin();
  const k=j.phase+j.round+(j.cands||'');if(k!==key){key=k;sel='';step=0;acted=0;voted=0;res=null}
@@ -63,7 +67,7 @@ const bar=(l,tm)=>`<div class="pb"><span class="chip">${l}</span><span><i class=
 const foot=()=>`<div class="ft"><span>Sin avisos</span><span>EL JUEGO DEL IMPOSTOR</span></div>`;
 const ctr=h=>`<div class="ctr">${h}</div>`;
 function tiles(){const y=S.you||{};return (S.players||[]).filter(p=>p.alive&&(p.id!==me||(S.phase==='night'&&y.role==='medico'&&!y.selfUsed))&&(!S.cands||S.cands.includes(p.id)))
-  .map(p=>`<button class="pt${sel===p.id?' sel':''}" data-id="${p.id}" aria-label="${p.name}"><img src="/impostor/tiles/${p.char}.webp" alt=""></button>`).join('')}
+  .map(p=>`<button class="pt${sel===p.id?' sel':''}" data-id="${p.id}" aria-label="${p.name}"><div class="tw"><img src="/impostor/tiles/${p.char}.webp" alt=""><span class="nl" style="font-size:calc(var(--u)*${p.name.length>7?3.3:4.6})">${p.name}</span></div></button>`).join('')}
 function render(){
   const app=$('#app');if(!M)return;
   if(!me){app.className='';app.innerHTML=`<div></div><div class="jn"><div class="ctr" style="font-size:calc(var(--u)*9)">El juego del impostor</div><input id="nm" placeholder="Tu nombre" maxlength="14" value="${nameV}" autocomplete="off"><input id="cd" placeholder="Código de sala" maxlength="4" value="${code}" autocapitalize="characters" autocomplete="off"><button class="bt cf" data-a="join">ENTRAR</button><div class="red">${err}</div></div><div></div>`;return}

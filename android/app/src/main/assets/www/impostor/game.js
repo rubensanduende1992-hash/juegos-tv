@@ -79,7 +79,7 @@ class Game{
   pub(){ // vista pública (TV): nunca incluye roles secretos
     const end=this.phase==='end';
     return{phase:this.phase,round:this.round,scene:this.scene,voted:Object.keys(this.votes).length,cands:this.cands,winners:this.winners,kind:this.kind,
-      players:this.p.map(x=>({id:x.id,name:x.name,char:x.char,alive:x.alive,...((end||this.revealed[x.id])?{role:x.role}:{})}))};
+      players:this.p.map(x=>({id:x.id,name:x.name,char:x.char,alive:x.alive,...((end||this.revealed[x.id])?{role:x.role}:{}),...(this.revealed[x.id]?{exp:1}:{})}))};
   }
   priv(id){const x=this.get(id);return{id,char:x.char,role:x.role,card:x.card,selfUsed:x.selfUsed}}
 }
