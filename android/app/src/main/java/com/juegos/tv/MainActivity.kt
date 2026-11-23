@@ -8,7 +8,9 @@ import com.google.zxing.integration.android.IntentIntegrator
 import android.graphics.Color
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
@@ -26,6 +28,7 @@ class MainActivity : Activity() {
     private var relay: Relay? = null
     private var inWeb = false
     private var curWeb: WebView? = null
+    private var diagShown = false
 
     inner class Bridge {
         @JavascriptInterface fun ip(): String = localIp()
@@ -82,32 +85,68 @@ class MainActivity : Activity() {
 
     private fun menu() {
         inWeb = false
+        val dm = resources.displayMetrics
+        // Todo el menú se mide contra el tamaño real de la pantalla (1920 px de ancho = 1.0),
+        // así se ve igual en cualquier TV box sin importar la densidad que informe.
+        val wpx = maxOf(dm.widthPixels, dm.heightPixels)
+        val hpx = minOf(dm.widthPixels, dm.heightPixels)
+        val u = (minOf(wpx.toFloat(), hpx * 16f / 9f) / 1920f).coerceAtLeast(0.3f)
+        fun px(v: Float) = (v * u).toInt()
+        fun btn(b: Button) {
+            b.setTextSize(TypedValue.COMPLEX_UNIT_PX, 34f * u)
+            b.setPadding(px(40f), px(22f), px(40f), px(22f))
+            b.isAllCaps = false
+        }
+        fun lpv() = LinearLayout.LayoutParams(-1, -2).apply { setMargins(0, px(14f), 0, px(14f)) }
+
         val root = FrameLayout(this)
         root.addView(ImageView(this).apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
             try { setImageBitmap(BitmapFactory.decodeStream(assets.open("www/bg-tv.jpg"))) } catch (e: Exception) { }
         }, FrameLayout.LayoutParams(-1, -1))
-        val l = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(60, 40, 60, 40); gravity = Gravity.CENTER; setBackgroundColor(0xB0000000.toInt()) }
-        val t = TextView(this).apply { text = "JUEGOS TV  v" + version(); textSize = 32f; gravity = Gravity.CENTER; setTextColor(Color.WHITE) }
-        val bt = Button(this).apply { text = "Modo TV (mesa)"; setOnClickListener { startTv() } }
-        val ip = EditText(this).apply { hint = "Dirección de la TV, ej: 192.168.1.20"; setSingleLine(); setTextColor(Color.WHITE); setHintTextColor(Color.LTGRAY) }
-        val bp = Button(this).apply { text = "Modo celular (control)"; setOnClickListener { startPhone(ip.text.toString().trim()) } }
+        val l = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(px(60f), px(40f), px(60f), px(40f))
+            gravity = Gravity.CENTER
+            setBackgroundColor(0xB0000000.toInt())
+        }
+        val t = TextView(this).apply {
+            text = "JUEGOS TV  v" + version()
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, 64f * u)
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+        }
+        val bt = Button(this).apply { text = "Modo TV (mesa)"; btn(this); setOnClickListener { startTv() } }
+        val ip = EditText(this).apply {
+            hint = "Dirección de la TV, ej: 192.168.1.20"
+            setSingleLine()
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, 30f * u)
+            setTextColor(Color.WHITE)
+            setHintTextColor(Color.LTGRAY)
+        }
+        val bp = Button(this).apply { text = "Modo celular (control)"; btn(this); setOnClickListener { startPhone(ip.text.toString().trim()) } }
         val bs = Button(this).apply {
             text = "Escanear QR de la TV"
+            btn(this)
             setOnClickListener {
                 IntentIntegrator(this@MainActivity).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
                     .setPrompt("Apuntá al QR de la TV").setBeepEnabled(false).setOrientationLocked(false).initiateScan()
             }
         }
-        l.orientation = LinearLayout.HORIZONTAL
         val left = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
         val right = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
-        left.addView(t); left.addView(bt)
-        right.addView(bs); right.addView(ip); right.addView(bp)
-        l.addView(left, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(20, 0, 20, 0) })
-        l.addView(right, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(20, 0, 20, 0) })
-        val lp = FrameLayout.LayoutParams(-1, -2, Gravity.CENTER).apply { setMargins(120, 0, 120, 0) }
-        root.addView(l, lp)
+        left.addView(t, lpv()); left.addView(bt, lpv())
+        right.addView(bs, lpv()); right.addView(ip, lpv()); right.addView(bp, lpv())
+        l.addView(left, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(px(20f), 0, px(20f), 0) })
+        l.addView(right, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(px(20f), 0, px(20f), 0) })
+        root.addView(l, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER).apply { setMargins(px(120f), 0, px(120f), 0) })
+
+        // Línea de datos del aparato (útil para saber por qué una caja se ve distinto a otra)
+        root.addView(TextView(this).apply {
+            text = "${dm.widthPixels}x${dm.heightPixels} · ${dm.densityDpi} dpi · Android ${Build.VERSION.RELEASE} · ${Build.SUPPORTED_ABIS.firstOrNull() ?: "?"}"
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, 22f * u)
+            setTextColor(Color.LTGRAY)
+        }, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL).apply { bottomMargin = px(24f) })
         setContentView(root)
         bt.requestFocus()
     }
@@ -118,8 +157,19 @@ class MainActivity : Activity() {
         w.settings.javaScriptEnabled = true
         w.settings.domStorageEnabled = true
         w.settings.mediaPlaybackRequiresUserGesture = false
+        w.settings.useWideViewPort = true
+        w.settings.loadWithOverviewMode = true
         w.setBackgroundColor(0xFF0E1117.toInt())
         w.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(v: WebView, url: String?) {
+                // Solo en Modo TV y una vez: muestra el tamaño que ve la página, para detectar cajas con escala rara
+                if (relay != null && !diagShown) {
+                    diagShown = true
+                    v.evaluateJavascript("innerWidth+'x'+innerHeight+' dpr '+devicePixelRatio") { r ->
+                        android.widget.Toast.makeText(this@MainActivity, "Web " + (r ?: "?") + "  |  pantalla " + resources.displayMetrics.widthPixels + "x" + resources.displayMetrics.heightPixels, android.widget.Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
             override fun onReceivedError(v: WebView, req: WebResourceRequest, err: WebResourceError) {
                 if (req.isForMainFrame) v.loadDataWithBaseURL(null,
                     "<body style='background:#0e1117;color:#fff;font:20px sans-serif;padding:24px'><h2>No se pudo abrir la sala</h2><p>${err.description}</p><p>Revisá que la TV tenga la app abierta en Modo TV y que estén en la misma Wi-Fi. Apretá Atrás para volver al menú.</p><p><a style='color:#6ec1ff' href='${req.url}'>Reintentar</a></p></body>",
