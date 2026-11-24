@@ -74,6 +74,13 @@ class Relay(private val ctx: Context, private val host: WebView) : NanoHTTPD(300
             val h = ctx.assets.open("www/$f").bufferedReader().readText().replace("</head>", "<link rel=\"stylesheet\" href=\"/skin.css\"></head>")
             return newFixedLengthResponse(Response.Status.OK, "text/html; charset=utf-8", h)
         }
+        if (f in setOf("home.html", "tv-app.html", "truco-tv.html", "domino-tv.html", "impostor-tv.html")) {
+            // Páginas de la TV: se les agrega compat.js, que adapta el CSS para WebView viejos (Chrome < 88)
+            val raw = ctx.assets.open("www/$f").bufferedReader().readText()
+            val tag = "<script src=\"/compat.js\"></script>"
+            val h = if (raw.contains("</head>")) raw.replaceFirst("</head>", tag + "</head>") else tag + raw
+            return newFixedLengthResponse(Response.Status.OK, "text/html; charset=utf-8", h)
+        }
         val mime = when (f.substringAfterLast('.')) { "html" -> "text/html"; "js" -> "text/javascript"; "css" -> "text/css"; "webp" -> "image/webp"; "jpg" -> "image/jpeg"; "png" -> "image/png"; else -> "application/octet-stream" }
         return try {
             newChunkedResponse(Response.Status.OK, "$mime; charset=utf-8", ctx.assets.open("www/$f"))
