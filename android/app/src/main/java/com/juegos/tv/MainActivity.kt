@@ -133,10 +133,11 @@ class MainActivity : Activity() {
                     .setPrompt("Apuntá al QR de la TV").setBeepEnabled(false).setOrientationLocked(false).initiateScan()
             }
         }
+        val bd = Button(this).apply { text = "Diagnóstico (si algo se ve mal)"; btn(this); setOnClickListener { openDiag() } }
         val left = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
         val right = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
         left.addView(t, lpv()); left.addView(bt, lpv())
-        right.addView(bs, lpv()); right.addView(ip, lpv()); right.addView(bp, lpv())
+        right.addView(bs, lpv()); right.addView(ip, lpv()); right.addView(bp, lpv()); right.addView(bd, lpv())
         l.addView(left, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(px(20f), 0, px(20f), 0) })
         l.addView(right, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(px(20f), 0, px(20f), 0) })
         root.addView(l, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER).apply { setMargins(px(120f), 0, px(120f), 0) })
@@ -190,6 +191,11 @@ class MainActivity : Activity() {
             android.widget.Toast.makeText(this, "No se pudo iniciar la sala: " + e.message, android.widget.Toast.LENGTH_LONG).show()
         }
         w.loadUrl("http://127.0.0.1:3000/")
+    }
+
+    private fun openDiag() {
+        val w = web()
+        w.loadUrl("file:///android_asset/www/diag.html")
     }
 
     private fun startPhone(ip: String) {
