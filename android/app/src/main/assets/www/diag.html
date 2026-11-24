@@ -1,0 +1,30 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Diagnóstico</title>
+<style>html,body{margin:0;background:#0e1117;color:#fff;font:34px/1.35 monospace}body{padding:30px 50px}h1{font:900 46px Arial,sans-serif;margin:0 0 14px}
+.r{margin:4px 0}.ok{color:#5be37d}.no{color:#ff5a5a;font-weight:bold}.h{color:#6ec1ff;margin-top:18px}.foto{margin-top:22px;background:#222a3a;padding:12px 18px;border-radius:12px;font-size:30px}</style></head>
+<body><h1>Diagnóstico de la caja</h1><div id="o"></div>
+<div class="foto">Sacale una foto a esta pantalla y mandásela a Claude. Apretá Atrás para volver al menú.</div>
+<script>
+var o=document.getElementById('o');
+function add(t,ok){var d=document.createElement('div');d.className='r '+(ok===true?'ok':ok===false?'no':'');d.textContent=(ok===true?'[OK]  ':ok===false?'[FALLA]  ':'')+t;o.appendChild(d)}
+function head(t){var d=document.createElement('div');d.className='r h';d.textContent=t;o.appendChild(d)}
+window.onerror=function(m,u,l){add('Error de código: '+m+' ('+l+')',false)};
+head('Pantalla y navegador');
+var m=(navigator.userAgent.match(/Chrome\/(\d+)/)||[])[1];
+add('Navegador interno (WebView): Chrome '+(m||'?')+'   (hace falta 88 o más)',m?+m>=88:false);
+add('Ventana: '+innerWidth+' x '+innerHeight+'   dpr '+devicePixelRatio);
+add('Pantalla: '+screen.width+' x '+screen.height);
+head('CSS que usa la pantalla de inicio');
+function css(n,p,v){var r=false;try{r=!!(window.CSS&&CSS.supports&&CSS.supports(p,v))}catch(e){}add(n,r)}
+css('aspect-ratio','aspect-ratio','1/1');
+css('min() max() clamp()','width','min(1px,2px)');
+css('inset','inset','0');
+var g=document.createElement('div');g.style.cssText='position:absolute;left:-999px;display:flex;gap:10px';
+g.innerHTML='<i style="width:10px;height:5px;flex:none"></i><i style="width:10px;height:5px;flex:none"></i>';document.body.appendChild(g);
+add('gap en flex',g.offsetWidth===30);document.body.removeChild(g);
+head('JavaScript');
+function js(n,c){var r=false;try{r=!!new Function(c)()}catch(e){}add(n,r)}
+js('?. (optional chaining)','var a={};return a?.b===undefined');
+js('?? (nullish)','return (null??1)===1');
+js('replaceAll','return "aa".replaceAll("a","b")==="bb"');
+js('fetch / EventSource','return window.fetch&&window.EventSource');
+</script></body></html>
