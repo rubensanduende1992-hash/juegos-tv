@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Juegos TV</title>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><title>Juegos TV</title>
 <script>window.onerror=function(m,u,l,c){var d=document.getElementById("err");if(!d){d=document.createElement("pre");d.id="err";d.style.cssText="position:fixed;left:0;top:0;right:0;z-index:99;margin:0;padding:16px;background:#b00020;color:#fff;font:28px monospace;white-space:pre-wrap";(document.body||document.documentElement).appendChild(d)}d.textContent+=m+" ("+String(u||"").split("/").pop()+":"+l+":"+c+")\n"}</script>
 <style>
 *{box-sizing:border-box}html,body{height:100%;margin:0;background:#000;overflow:hidden;font-family:system-ui,Arial,sans-serif}
@@ -22,7 +22,7 @@ body.q .qp{display:block}.hint{position:absolute;right:2%;bottom:2%;color:#fff;f
 <div class="qp" id="q1" style="left:1.2%"></div><div class="qp" id="q2" style="right:1.2%"></div>
 <div class="chips" id="ch"></div><div id="ov"></div></div>
 <script src="/qr.js"></script><script>
-function fit(){var st=document.getElementById('st'),k=Math.min(innerWidth/1672,innerHeight/941);st.style.transform='translate('+(innerWidth-1672*k)/2+'px,'+(innerHeight-941*k)/2+'px) scale('+k+')'}addEventListener('resize',fit);fit();
+function fit(){var st=document.getElementById('st'),vv=window.visualViewport,W=innerWidth,H=innerHeight;if(vv&&vv.width>0){W=Math.min(W,vv.width);H=Math.min(H,vv.height)}var k=Math.min(W/1672,H/941);st.style.transform='translate('+(W-1672*k)/2+'px,'+(H-941*k)/2+'px) scale('+k+')'}addEventListener('resize',fit);addEventListener('load',fit);setTimeout(fit,400);fit();
 const E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
 const qr=(t)=>{try{const q=new __QR.QRCode(-1,__QR.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),m=3;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m},${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" shape-rendering="crispEdges" style="background:#fff;border-radius:.6em"><path d="${d}" fill="#000"/></svg>`}catch(e){return ''}};
 const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');

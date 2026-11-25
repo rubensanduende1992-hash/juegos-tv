@@ -141,6 +141,22 @@
   if (typeof module !== 'undefined' && module.exports) module.exports = compatCSS;
   if (typeof document === 'undefined' || !document.documentElement || typeof module !== 'undefined') return;
 
+  // Algunas cajas agrandan el área de la página hasta el ancho del contenido: usamos el área realmente visible
+  try {
+    ['innerWidth', 'innerHeight'].forEach(function (name) {
+      var d = Object.getOwnPropertyDescriptor(root, name);
+      if (!d || !d.get || !d.configurable) return;
+      var g = d.get, isW = name === 'innerWidth';
+      Object.defineProperty(root, name, {
+        configurable: true,
+        get: function () {
+          var r = g.call(root), v = root.visualViewport, vs = v && (isW ? v.width : v.height);
+          return vs > 0 && vs < r - 1 ? Math.round(vs) : r;
+        }
+      });
+    });
+  } catch (e) { }
+
   var sup = root.CSS && root.CSS.supports;
   var modern = sup && root.CSS.supports('width', 'min(1px,2px)') && root.CSS.supports('inset', '0') && root.CSS.supports('aspect-ratio', '1/1');
   if (modern) return;
