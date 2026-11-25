@@ -312,8 +312,8 @@ html.hands-img .myfan{visibility:visible!important}
 /* ---- lobby de la TV con posiciones fijas (siempre se ve el QR, el código y la dirección) ---- */
 .sel{position:fixed;top:0;left:0;width:100vw;height:100vh;display:block;padding:0}
 .sel .ptitle{position:absolute;top:1.5vh;left:50%;transform:translateX(-50%);white-space:nowrap}
-.sel .selgrid{position:absolute;top:11vh;bottom:25vh;left:3vw;right:3vw;width:auto;padding:0}
-.sel .selfoot{position:absolute;left:3vw;right:3vw;bottom:1.5vh;height:21vh;width:auto;box-sizing:border-box}
+.sel .selgrid{position:absolute;top:11vh;bottom:33vh;left:3vw;right:3vw;width:auto;padding:0}
+.sel .selfoot{position:absolute;left:3vw;right:3vw;bottom:1.5vh;height:30vh;width:auto;box-sizing:border-box}
 .qrfail{width:150px;font:14px monospace;color:#fff;background:#b00020;padding:6px;border-radius:8px}
 /* ---- cartas del centro apoyadas sobre la mesa ---- */
 .ctr2{transform:translate(-50%,-50%) perspective(1000px) rotateX(52deg);transform-style:preserve-3d;gap:2.6vw}
@@ -324,9 +324,9 @@ html.scene-img .card.cd{width:7vw;height:10.5vw;font-size:3.4vw;border-width:.3v
 #dtop{display:inline-block;transform:rotate(-7deg)}
 .card.lz{position:absolute;left:0;top:0;box-shadow:none!important}
 .lz1{transform:translateZ(.35vw)}.lz2{transform:translateZ(.7vw)}.lz3{transform:translateZ(1.05vw)}
-.selfoot .qrb svg{width:17vh;height:17vh}
-.selfoot .qrb+.qrb svg{width:12vh;height:12vh}
-.selfoot .qrfail{width:17vh;font-size:max(10px,1.6vh)}
+.selfoot .qrb svg{width:22vh;height:22vh;flex:none}
+.selfoot .qrb+.qrb svg{width:22vh;height:22vh;flex:none}
+.selfoot .qrfail{width:25vh;font-size:max(10px,1.6vh)}
 /* ---- cartas del centro: en el medio del paño, bien centradas ---- */
 .ctr2{gap:2.2vw}
 html.scene-img .ctr2{top:59%}
