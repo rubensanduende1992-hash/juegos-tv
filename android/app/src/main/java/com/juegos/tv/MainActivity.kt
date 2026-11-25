@@ -29,6 +29,7 @@ class MainActivity : Activity() {
     private var inWeb = false
     private var curWeb: WebView? = null
     private var diagShown = false
+    private val dbgHandler = android.os.Handler(android.os.Looper.getMainLooper())
 
     inner class Bridge {
         @JavascriptInterface fun ip(): String = localIp()
@@ -158,8 +159,6 @@ class MainActivity : Activity() {
         w.settings.javaScriptEnabled = true
         w.settings.domStorageEnabled = true
         w.settings.mediaPlaybackRequiresUserGesture = false
-        w.settings.useWideViewPort = true
-        w.settings.loadWithOverviewMode = true
         w.setBackgroundColor(0xFF0E1117.toInt())
         w.webViewClient = object : WebViewClient() {
             override fun onPageFinished(v: WebView, url: String?) {
@@ -191,6 +190,34 @@ class MainActivity : Activity() {
             android.widget.Toast.makeText(this, "No se pudo iniciar la sala: " + e.message, android.widget.Toast.LENGTH_LONG).show()
         }
         w.loadUrl("http://127.0.0.1:3000/")
+        startDbg(w)
+    }
+
+    // Línea de datos temporal al pie de la pantalla de la TV (para diagnosticar la escala de la página)
+    private fun startDbg(w: WebView) {
+        val dm = resources.displayMetrics
+        val tv = TextView(this).apply {
+            setTextColor(Color.YELLOW)
+            setBackgroundColor(0xB0000000.toInt())
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, minOf(dm.widthPixels, dm.heightPixels) / 30f)
+            setPadding(12, 4, 12, 4)
+            text = "..."
+        }
+        (w.parent as? android.view.ViewGroup)?.removeView(w)
+        val frame = FrameLayout(this)
+        frame.addView(w, FrameLayout.LayoutParams(-1, -1))
+        frame.addView(tv, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.START))
+        setContentView(frame)
+        val js = """(function(){var s=document.getElementById('st'),e=document.getElementById('err'),v=window.visualViewport;return innerWidth+'x'+innerHeight+' dpr '+devicePixelRatio+' | vv '+(v?(v.scale+' '+v.width):'-')+' | st '+(s?s.style.transform:'sin st')+' | compat '+(window.__compatInfo?JSON.stringify(window.__compatInfo):'no')+(e?' | ERR '+e.textContent:'')})()"""
+        val tick = object : Runnable {
+            override fun run() {
+                if (inWeb && relay != null && curWeb === w) {
+                    w.evaluateJavascript(js) { r -> tv.text = (r ?: "?").trim('"').replace("\\\"", "\"") }
+                    dbgHandler.postDelayed(this, 1500)
+                }
+            }
+        }
+        dbgHandler.postDelayed(tick, 1500)
     }
 
     private fun openDiag() {
