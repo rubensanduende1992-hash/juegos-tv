@@ -28,8 +28,6 @@ class MainActivity : Activity() {
     private var relay: Relay? = null
     private var inWeb = false
     private var curWeb: WebView? = null
-    private var diagShown = false
-    private val dbgHandler = android.os.Handler(android.os.Looper.getMainLooper())
 
     inner class Bridge {
         @JavascriptInterface fun ip(): String = localIp()
@@ -134,21 +132,14 @@ class MainActivity : Activity() {
                     .setPrompt("Apuntá al QR de la TV").setBeepEnabled(false).setOrientationLocked(false).initiateScan()
             }
         }
-        val bd = Button(this).apply { text = "Diagnóstico (si algo se ve mal)"; btn(this); setOnClickListener { openDiag() } }
         val left = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
         val right = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
         left.addView(t, lpv()); left.addView(bt, lpv())
-        right.addView(bs, lpv()); right.addView(ip, lpv()); right.addView(bp, lpv()); right.addView(bd, lpv())
+        right.addView(bs, lpv()); right.addView(ip, lpv()); right.addView(bp, lpv())
         l.addView(left, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(px(20f), 0, px(20f), 0) })
         l.addView(right, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(px(20f), 0, px(20f), 0) })
         root.addView(l, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER).apply { setMargins(px(120f), 0, px(120f), 0) })
 
-        // Línea de datos del aparato (útil para saber por qué una caja se ve distinto a otra)
-        root.addView(TextView(this).apply {
-            text = "${dm.widthPixels}x${dm.heightPixels} · ${dm.densityDpi} dpi · Android ${Build.VERSION.RELEASE} · ${Build.SUPPORTED_ABIS.firstOrNull() ?: "?"}"
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, 22f * u)
-            setTextColor(Color.LTGRAY)
-        }, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL).apply { bottomMargin = px(24f) })
         setContentView(root)
         bt.requestFocus()
     }
@@ -161,15 +152,6 @@ class MainActivity : Activity() {
         w.settings.mediaPlaybackRequiresUserGesture = false
         w.setBackgroundColor(0xFF0E1117.toInt())
         w.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(v: WebView, url: String?) {
-                // Solo en Modo TV y una vez: muestra el tamaño que ve la página, para detectar cajas con escala rara
-                if (relay != null && !diagShown) {
-                    diagShown = true
-                    v.evaluateJavascript("innerWidth+'x'+innerHeight+' dpr '+devicePixelRatio") { r ->
-                        android.widget.Toast.makeText(this@MainActivity, "Web " + (r ?: "?") + "  |  pantalla " + resources.displayMetrics.widthPixels + "x" + resources.displayMetrics.heightPixels, android.widget.Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
             override fun onReceivedError(v: WebView, req: WebResourceRequest, err: WebResourceError) {
                 if (req.isForMainFrame) v.loadDataWithBaseURL(null,
                     "<body style='background:#0e1117;color:#fff;font:20px sans-serif;padding:24px'><h2>No se pudo abrir la sala</h2><p>${err.description}</p><p>Revisá que la TV tenga la app abierta en Modo TV y que estén en la misma Wi-Fi. Apretá Atrás para volver al menú.</p><p><a style='color:#6ec1ff' href='${req.url}'>Reintentar</a></p></body>",
@@ -190,39 +172,6 @@ class MainActivity : Activity() {
             android.widget.Toast.makeText(this, "No se pudo iniciar la sala: " + e.message, android.widget.Toast.LENGTH_LONG).show()
         }
         w.loadUrl("http://127.0.0.1:3000/")
-        startDbg(w)
-    }
-
-    // Línea de datos temporal al pie de la pantalla de la TV (para diagnosticar la escala de la página)
-    private fun startDbg(w: WebView) {
-        val dm = resources.displayMetrics
-        val tv = TextView(this).apply {
-            setTextColor(Color.YELLOW)
-            setBackgroundColor(0xB0000000.toInt())
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, minOf(dm.widthPixels, dm.heightPixels) / 30f)
-            setPadding(12, 4, 12, 4)
-            text = "..."
-        }
-        (w.parent as? android.view.ViewGroup)?.removeView(w)
-        val frame = FrameLayout(this)
-        frame.addView(w, FrameLayout.LayoutParams(-1, -1))
-        frame.addView(tv, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.START))
-        setContentView(frame)
-        val js = """(function(){var s=document.getElementById('st'),e=document.getElementById('err'),v=window.visualViewport;return innerWidth+'x'+innerHeight+' dpr '+devicePixelRatio+' | vv '+(v?(v.scale+' '+v.width):'-')+' | st '+(s?s.style.transform:'sin st')+' | compat '+(window.__compatInfo?JSON.stringify(window.__compatInfo):'no')+(e?' | ERR '+e.textContent:'')})()"""
-        val tick = object : Runnable {
-            override fun run() {
-                if (inWeb && relay != null && curWeb === w) {
-                    w.evaluateJavascript(js) { r -> tv.text = (r ?: "?").trim('"').replace("\\\"", "\"") }
-                    dbgHandler.postDelayed(this, 1500)
-                }
-            }
-        }
-        dbgHandler.postDelayed(tick, 1500)
-    }
-
-    private fun openDiag() {
-        val w = web()
-        w.loadUrl("file:///android_asset/www/diag.html")
     }
 
     private fun startPhone(ip: String) {
