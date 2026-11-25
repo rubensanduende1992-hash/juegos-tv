@@ -7,7 +7,7 @@
 .tile:after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;border-radius:inherit;background:rgba(0,0,0,.42);transition:opacity .2s}
 .tile.on:after{opacity:0}
 .tile.on{box-shadow:0 0 0 .6em #fff3b0,0 0 4em 1.2em rgba(255,215,90,.95)}
-.qp{position:absolute;top:36%;display:none;width:11.5%;text-align:center;color:#fff;background:rgba(20,10,4,.78);border:.25em solid #c9962e;border-radius:1.2em;padding:.7em .5em .5em;font-size:1em}
+.qp{position:absolute;top:24%;display:none;width:21%;text-align:center;color:#fff;background:rgba(20,10,4,.78);border:.25em solid #c9962e;border-radius:1.2em;padding:.7em .5em .5em;font-size:1em}
 .qp svg{width:100%;height:auto;display:block}.qp b{display:block;font-size:1.5em;margin-top:.3em}.qp small{display:block;font-size:1.1em;opacity:.85}
 .chips{position:absolute;left:0;right:0;bottom:3%;display:flex;justify-content:center;font-size:1.7em;font-weight:700;color:#ffe9b0;text-shadow:0 .1em .3em #000}
 .chips span{margin:0 .5em;background:rgba(20,10,4,.75);border:.12em solid #c9962e;border-radius:99px;padding:.1em .8em}
@@ -41,7 +41,7 @@ function render(){document.querySelectorAll('.bgi').forEach((b,i)=>b.classList.t
  try{Android.changed()}catch(e){}}
 const host=ip+':3000';
 document.getElementById('q1').innerHTML=qr('unotv://'+host+'/sala?g=home')+'<b>Con la app</b><small>controlá desde tu celular</small>';
-document.getElementById('q2').innerHTML=qr('http://'+host+'/control.html')+'<b>Sin la app</b><small>'+E(ip)+'</small>';
+document.getElementById('q2').innerHTML=qr('http://'+host+'/control.html')+'<b>Sin la app</b><small>'+E(host)+'/control.html</small>';
 T.forEach((t,i)=>t.onclick=()=>{S.sel=i;launch()});
 const tq=()=>document.body.classList.toggle('q');document.getElementById('hint').onclick=tq;
 document.addEventListener('keydown',e=>{
